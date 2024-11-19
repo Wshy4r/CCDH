@@ -131,6 +131,11 @@ with col1:
             title='Average Temperature Trends in Kurdistan Cities',
             labels={'Temperature': 'Temperature (°C)'}
         )
+        fig.update_layout(
+            yaxis_title="Temperature (°C)",
+            xaxis_title="Year",
+            height=500
+        )
         st.plotly_chart(fig, use_container_width=True)
         
     elif chart_type == "Rainfall Patterns":
@@ -141,6 +146,11 @@ with col1:
             color='City',
             title='Annual Rainfall Patterns in Kurdistan Cities',
             labels={'Rainfall': 'Rainfall (mm/year)'}
+        )
+        fig.update_layout(
+            yaxis_title="Rainfall (mm/year)",
+            xaxis_title="Year",
+            height=500
         )
         st.plotly_chart(fig, use_container_width=True)
         
@@ -181,7 +191,8 @@ with col1:
                 titlefont=dict(color='#1F77B4'),
                 overlaying='y',
                 side='right'
-            )
+            ),
+            height=500
         )
         st.plotly_chart(fig, use_container_width=True)
 
@@ -201,19 +212,21 @@ with col2:
         latest_rain = city_rain['Rainfall'].iloc[-1]
         rain_change = city_rain['Rainfall'].iloc[-1] - city_rain['Rainfall'].iloc[0]
         
-        # Display metrics
+        # Display metrics with correct color indicators
         col_temp, col_rain = st.columns(2)
         with col_temp:
             st.metric(
                 "Temperature",
                 f"{latest_temp:.1f}°C",
-                f"{temp_change:+.1f}°C"
+                f"{temp_change:+.1f}°C",
+                delta_color="inverse"  # Temperature increase is red (bad)
             )
         with col_rain:
             st.metric(
                 "Rainfall",
                 f"{latest_rain:.0f}mm",
-                f"{rain_change:+.0f}mm"
+                f"{rain_change:+.0f}mm",
+                delta_color="normal"  # Rainfall increase is green (good)
             )
 
     # Add information about the data
@@ -221,8 +234,8 @@ with col2:
     **About this Dashboard**
     
     This dashboard shows historical climate trends for major Kurdistan cities:
-    - Historical temperature trends since 1950
-    - Annual rainfall patterns
+    - Historical temperature trends since 1950 (🔴 increase is concerning)
+    - Annual rainfall patterns (🔴 decrease is concerning)
     - Combined analysis showing climate change impacts
     
     Note: This uses simulated data patterns based on:
@@ -235,5 +248,6 @@ with col2:
 st.markdown("---")
 st.markdown("""
 <small>Data patterns are simulated based on historical climate trends and geographical features of Kurdistan Region. 
+Red indicators show concerning trends: temperature increases and rainfall decreases.
 For future versions, integration with local weather stations and meteorological databases would provide actual measurements.</small>
 """, unsafe_allow_html=True)
