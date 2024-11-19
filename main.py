@@ -6,7 +6,7 @@ import numpy as np
 
 # Set page configuration
 st.set_page_config(
-    page_title="Iraq Cities Climate Dashboard",
+    page_title="Kurdistan Cities Climate Dashboard",
     page_icon="🌍",
     layout="wide"
 )
@@ -14,7 +14,7 @@ st.set_page_config(
 # Title and description
 st.title("🌍 Iraq Cities Climate Dashboard")
 st.markdown("""
-This dashboard visualizes climate change indicators for major cities in Iraqi Kurdistan and Iraq:
+This dashboard visualizes climate change indicators for major cities in Iraqi Kurdistan:
 - Erbil
 - Duhok
 - Kirkuk
