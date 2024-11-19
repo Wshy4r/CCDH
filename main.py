@@ -15,10 +15,11 @@ st.set_page_config(
 st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
 st.markdown("""
 This dashboard visualizes historical climate change indicators for major cities in Kurdistan Region from 1950 onwards:
-- Hewlêr (Erbil)
-- Duhok
-- Silêmanî (Sulaymaniyah)
-- Halabja
+* Hewlêr (Erbil)
+* Dihok (Duhok)
+* Silêmanî (Sulaymaniyah)
+* Helebice (Halabja)
+* Kerkuk (Kirkuk)
 """)
 
 # Sample data generation for Kurdistan cities
@@ -26,15 +27,16 @@ This dashboard visualizes historical climate change indicators for major cities 
 def load_temperature_data():
     # Simulated temperature data for Kurdistan cities from 1950
     years = list(range(1950, 2024))
-    cities = ['Hewlêr', 'Duhok', 'Silêmanî', 'Halabja']
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
     
     data = []
     # Historical baseline temperatures for each city
     baselines = {
-        'Hewlêr': 33,     # Historical baseline for Hewlêr (Erbil)
-        'Duhok': 31,      # Historically cooler in Duhok
+        'Hewlêr': 33,     # Historical baseline for Hewlêr
+        'Dihok': 31,      # Historically cooler in Dihok
         'Silêmanî': 30,   # Cooler due to elevation
-        'Halabja': 29     # Coolest due to highest elevation
+        'Helebice': 29,   # Coolest due to highest elevation
+        'Kerkuk': 34      # Warmest due to location
     }
     
     for year in years:
@@ -59,15 +61,16 @@ def load_temperature_data():
 def load_rainfall_data():
     # Simulated rainfall data for Kurdistan cities
     years = list(range(1950, 2024))
-    cities = ['Hewlêr', 'Duhok', 'Silêmanî', 'Halabja']
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
     
     data = []
     # Historical rainfall patterns for each city
     baselines = {
         'Hewlêr': 400,    # Annual rainfall in mm
-        'Duhok': 550,     # Higher rainfall in Duhok
+        'Dihok': 550,     # Higher rainfall in Dihok
         'Silêmanî': 650,  # High rainfall due to mountains
-        'Halabja': 700    # Highest rainfall due to location
+        'Helebice': 700,  # Highest rainfall due to location
+        'Kerkuk': 350     # Lower rainfall
     }
     
     for year in years:
@@ -95,8 +98,8 @@ rainfall_df = load_rainfall_data()
 st.sidebar.header("Dashboard Controls")
 selected_cities = st.sidebar.multiselect(
     "Select Cities",
-    ['Hewlêr', 'Duhok', 'Silêmanî', 'Halabja'],
-    default=['Hewlêr', 'Duhok', 'Silêmanî', 'Halabja']
+    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk'],
+    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
 )
 
 start_year = st.sidebar.slider("Select Start Year", 1950, 2023, 1950)
@@ -222,18 +225,15 @@ with col2:
     - Annual rainfall patterns
     - Combined analysis showing climate change impacts
     
-    Note: This uses simulated data. For accurate local data, connect to:
-    - Kurdistan Region Statistics Office
-    - Local meteorological stations
-    - Regional climate research centers
+    Note: This uses simulated data patterns based on:
+    - Geographic elevation differences
+    - Regional climate patterns
+    - Historical weather trends
     """)
 
 # Footer
 st.markdown("---")
 st.markdown("""
-<small>💡 To get real climate data for Kurdistan cities, you would need to:
-- Access Kurdistan Region meteorological databases
-- Connect to local weather stations
-- Use satellite data from climate monitoring services
-- Partner with Kurdish universities and research centers</small>
+<small>Data patterns are simulated based on historical climate trends and geographical features of Kurdistan Region. 
+For future versions, integration with local weather stations and meteorological databases would provide actual measurements.</small>
 """, unsafe_allow_html=True)
