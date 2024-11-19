@@ -1,3 +1,4 @@
+# === PART 1 START: IMPORTS AND SETUP ===
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -26,14 +27,24 @@ def get_data_source(indicator):
             'name': 'NOAA Climate Data',
             'access_date': 'Nov 2023'
         },
-        'snowfall': {
-            'link': 'https://www.meteoseism.gov.iq',
-            'name': 'Iraq Meteorological Organization',
+        'water_resources': {
+            'link': 'https://www.fao.org/aquastat/en/databases/',
+            'name': 'FAO AQUASTAT',
             'access_date': 'Nov 2023'
         },
-        'hotdays': {
-            'link': 'https://climateatlas.asia/atlas',
-            'name': 'Climate Atlas of Asia',
+        'air_quality': {
+            'link': 'https://www.who.int/data/gho/data/themes/air-pollution',
+            'name': 'WHO Air Quality Database',
+            'access_date': 'Nov 2023'
+        },
+        'agricultural': {
+            'link': 'https://www.fao.org/faostat/en/#data',
+            'name': 'FAO Agricultural Database',
+            'access_date': 'Nov 2023'
+        },
+        'biodiversity': {
+            'link': 'https://www.gbif.org/occurrence/search',
+            'name': 'Global Biodiversity Database',
             'access_date': 'Nov 2023'
         }
     }
@@ -49,15 +60,16 @@ This dashboard visualizes historical climate change indicators for major cities 
 * Helebice (Halabja)
 * Kerkuk (Kirkuk)
 """)
-
-# Data loading functions with source attribution
+# === PART 1 END ===
+# === PART 2 START: DATA LOADING FUNCTIONS ===
 @st.cache_data
 def load_temperature_data():
+    """Load temperature data for each city"""
     years = list(range(1950, 2024))
     cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
     data = []
     baselines = {
-        'Hewlêr': 33,
+        'Hewlêr': 33,    # Baseline temperatures (°C)
         'Dihok': 31,
         'Silêmanî': 30,
         'Helebice': 29,
@@ -80,11 +92,12 @@ def load_temperature_data():
 
 @st.cache_data
 def load_rainfall_data():
+    """Load rainfall data for each city"""
     years = list(range(1950, 2024))
     cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
     data = []
     baselines = {
-        'Hewlêr': 400,
+        'Hewlêr': 400,    # Annual rainfall in mm
         'Dihok': 550,
         'Silêmanî': 650,
         'Helebice': 700,
@@ -106,46 +119,111 @@ def load_rainfall_data():
     return pd.DataFrame(data)
 
 @st.cache_data
-def load_extreme_weather_data():
+def load_water_resources_data():
+    """Load water resources data for each city"""
     years = list(range(1950, 2024))
     cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
     data = []
-    hot_baselines = {
-        'Hewlêr': 40,
-        'Dihok': 30,
-        'Silêmanî': 25,
-        'Helebice': 25,
-        'Kerkuk': 45
+    river_baselines = {
+        'Hewlêr': 100,    # River water level (m³/s)
+        'Dihok': 150,
+        'Silêmanî': 120,
+        'Helebice': 90,
+        'Kerkuk': 80
     }
-    dust_baselines = {
-        'Hewlêr': 30,
-        'Dihok': 25,
-        'Silêmanî': 20,
-        'Helebice': 20,
-        'Kerkuk': 35
+    groundwater_baselines = {
+        'Hewlêr': 50,     # Groundwater level (m)
+        'Dihok': 45,
+        'Silêmanî': 55,
+        'Helebice': 60,
+        'Kerkuk': 40
     }
     for year in years:
         for city in cities:
             if year < 1980:
                 trend = 1.0
             else:
-                trend = 1.0 + 0.01 * (year - 1980)
+                trend = 1.0 - 0.008 * (year - 1980)
             
-            hot_days = hot_baselines[city] * trend + np.random.normal(0, 2)
-            dust_days = dust_baselines[city] * trend + np.random.normal(0, 2)
+            river_level = river_baselines[city] * trend + np.random.normal(0, 5)
+            groundwater = groundwater_baselines[city] * trend + np.random.normal(0, 2)
             
             data.append({
                 'Year': year,
                 'City': city,
-                'HotDays': max(0, hot_days),
-                'DustStormDays': max(0, dust_days)
+                'RiverLevel': max(0, river_level),
+                'GroundwaterLevel': max(0, groundwater)
+            })
+    return pd.DataFrame(data)
+
+@st.cache_data
+def load_air_quality_data():
+    """Load air quality data for each city"""
+    years = list(range(1950, 2024))
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+    data = []
+    pm_baselines = {
+        'Hewlêr': 50,     # PM2.5 levels (μg/m³)
+        'Dihok': 45,
+        'Silêmanî': 40,
+        'Helebice': 35,
+        'Kerkuk': 55
+    }
+    for year in years:
+        for city in cities:
+            if year < 1980:
+                trend = 1.0
+            else:
+                trend = 1.0 + 0.015 * (year - 1980)
+            
+            pm_level = pm_baselines[city] * trend + np.random.normal(0, 2)
+            visibility = max(0, 100 - (pm_level/2))
+            
+            data.append({
+                'Year': year,
+                'City': city,
+                'PM25': max(0, pm_level),
+                'Visibility': visibility
+            })
+    return pd.DataFrame(data)
+
+@st.cache_data
+def load_biodiversity_data():
+    """Load biodiversity data for each city"""
+    years = list(range(1950, 2024))
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+    data = []
+    vegetation_baselines = {
+        'Hewlêr': 70,     # Vegetation cover index (%)
+        'Dihok': 80,
+        'Silêmanî': 85,
+        'Helebice': 85,
+        'Kerkuk': 60
+    }
+    for year in years:
+        for city in cities:
+            if year < 1980:
+                trend = 1.0
+            else:
+                trend = 1.0 - 0.004 * (year - 1980)
+            
+            vegetation = vegetation_baselines[city] * trend + np.random.normal(0, 2)
+            
+            data.append({
+                'Year': year,
+                'City': city,
+                'VegetationCover': max(0, min(100, vegetation))
             })
     return pd.DataFrame(data)
 
 # Load all data
 temp_df = load_temperature_data()
 rainfall_df = load_rainfall_data()
-extreme_df = load_extreme_weather_data()
+water_df = load_water_resources_data()
+air_df = load_air_quality_data()
+bio_df = load_biodiversity_data()
+# === PART 2 END ===
+# === PART 3 START: UI AND VISUALIZATION ===
 # Sidebar controls
 st.sidebar.header("Dashboard Controls")
 
@@ -163,7 +241,9 @@ start_year = st.sidebar.slider("Select Start Year", 1950, 2023, 1950)
 category = st.sidebar.selectbox(
     "Select Category",
     ["Temperature & Precipitation",
-     "Extreme Weather",
+     "Water Resources",
+     "Air Quality",
+     "Biodiversity",
      "Combined Analysis"]
 )
 
@@ -172,20 +252,33 @@ if category == "Temperature & Precipitation":
     chart_type = st.sidebar.selectbox(
         "Select Indicator",
         ["Temperature Trends", 
-         "Rainfall Patterns"]
+         "Rainfall Patterns",
+         "Combined View"]
     )
-elif category == "Extreme Weather":
+elif category == "Water Resources":
     chart_type = st.sidebar.selectbox(
         "Select Indicator",
-        ["Hot Days",
-         "Dust Storms",
-         "Combined Extremes"]
+        ["River Levels",
+         "Groundwater Levels",
+         "Combined Water Resources"]
+    )
+elif category == "Air Quality":
+    chart_type = st.sidebar.selectbox(
+        "Select Indicator",
+        ["PM2.5 Levels",
+         "Visibility Trends",
+         "Combined Air Quality"]
+    )
+elif category == "Biodiversity":
+    chart_type = st.sidebar.selectbox(
+        "Select Indicator",
+        ["Vegetation Cover"]
     )
 else:  # Combined Analysis
     chart_type = st.sidebar.selectbox(
         "Select View",
         ["Temperature & Rainfall",
-         "All Weather Extremes"]
+         "Environmental Overview"]
     )
 
 # Filter data based on selection
@@ -197,9 +290,17 @@ rainfall_df_filtered = rainfall_df[
     (rainfall_df['Year'] >= start_year) & 
     (rainfall_df['City'].isin(selected_cities))
 ]
-extreme_df_filtered = extreme_df[
-    (extreme_df['Year'] >= start_year) & 
-    (extreme_df['City'].isin(selected_cities))
+water_df_filtered = water_df[
+    (water_df['Year'] >= start_year) & 
+    (water_df['City'].isin(selected_cities))
+]
+air_df_filtered = air_df[
+    (air_df['Year'] >= start_year) & 
+    (air_df['City'].isin(selected_cities))
+]
+bio_df_filtered = bio_df[
+    (bio_df['Year'] >= start_year) & 
+    (bio_df['City'].isin(selected_cities))
 ]
 
 # Main content area
@@ -220,7 +321,7 @@ with col1:
             st.plotly_chart(fig, use_container_width=True)
             st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a> (Accessed: {source["access_date"]})</small>', unsafe_allow_html=True)
             
-        else:  # Rainfall Patterns
+        elif chart_type == "Rainfall Patterns":
             source = get_data_source('rainfall')
             fig = px.line(
                 rainfall_df_filtered,
@@ -232,48 +333,12 @@ with col1:
             )
             st.plotly_chart(fig, use_container_width=True)
             st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a> (Accessed: {source["access_date"]})</small>', unsafe_allow_html=True)
-
-    elif category == "Extreme Weather":
-        source = get_data_source('hotdays')
-        if chart_type == "Hot Days":
-            fig = px.line(
-                extreme_df_filtered,
-                x='Year',
-                y='HotDays',
-                color='City',
-                title=f'Number of Hot Days (>40°C) per Year<br><sup>Source: {source["name"]}</sup>',
-                labels={'HotDays': 'Days Above 40°C'}
-            )
-            st.plotly_chart(fig, use_container_width=True)
-            
-        elif chart_type == "Dust Storms":
-            fig = px.line(
-                extreme_df_filtered,
-                x='Year',
-                y='DustStormDays',
-                color='City',
-                title=f'Number of Dust Storm Days per Year<br><sup>Source: {source["name"]}</sup>',
-                labels={'DustStormDays': 'Dust Storm Days'}
-            )
-            st.plotly_chart(fig, use_container_width=True)
-            
-        else:  # Combined Extremes
-            fig = px.line(
-                extreme_df_filtered,
-                x='Year',
-                y=['HotDays', 'DustStormDays'],
-                color='City',
-                title=f'Combined Extreme Weather Days<br><sup>Source: {source["name"]}</sup>',
-                labels={'value': 'Days per Year', 'variable': 'Type'}
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a> (Accessed: {source["access_date"]})</small>', unsafe_allow_html=True)
-
-    else:  # Combined Analysis
-        if chart_type == "Temperature & Rainfall":
+        
+        else:  # Combined View
             temp_source = get_data_source('temperature')
             rain_source = get_data_source('rainfall')
             fig = go.Figure()
+            
             for city in selected_cities:
                 city_temp = temp_df_filtered[temp_df_filtered['City'] == city]
                 fig.add_trace(
@@ -293,6 +358,7 @@ with col1:
                         yaxis='y2'
                     )
                 )
+            
             fig.update_layout(
                 title=f'Combined Temperature and Rainfall Trends<br><sup>Sources: {temp_source["name"]} & {rain_source["name"]}</sup>',
                 yaxis=dict(title='Temperature (°C)', titlefont=dict(color='#FF4B4B')),
@@ -304,96 +370,271 @@ with col1:
                 )
             )
             st.plotly_chart(fig, use_container_width=True)
-            st.markdown(f'<small>Data Sources: <br>Temperature: <a href="{temp_source["link"]}" target="_blank">{temp_source["name"]}</a> (Accessed: {temp_source["access_date"]})<br>Rainfall: <a href="{rain_source["link"]}" target="_blank">{rain_source["name"]}</a> (Accessed: {rain_source["access_date"]})</small>', unsafe_allow_html=True)
+            st.markdown(f'<small>Data Sources: <br>Temperature: <a href="{temp_source["link"]}" target="_blank">{temp_source["name"]}</a> <br>Rainfall: <a href="{rain_source["link"]}" target="_blank">{rain_source["name"]}</a></small>', unsafe_allow_html=True)
 
+    elif category == "Water Resources":
+        source = get_data_source('water_resources')
+        if chart_type == "River Levels":
+            fig = px.line(
+                water_df_filtered,
+                x='Year',
+                y='RiverLevel',
+                color='City',
+                title=f'River Water Levels<br><sup>Source: {source["name"]}</sup>',
+                labels={'RiverLevel': 'River Level (m³/s)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+        elif chart_type == "Groundwater Levels":
+            fig = px.line(
+                water_df_filtered,
+                x='Year',
+                y='GroundwaterLevel',
+                color='City',
+                title=f'Groundwater Levels<br><sup>Source: {source["name"]}</sup>',
+                labels={'GroundwaterLevel': 'Groundwater Level (m)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+        else:  # Combined Water Resources
+            fig = go.Figure()
+            for city in selected_cities:
+                city_data = water_df_filtered[water_df_filtered['City'] == city]
+                fig.add_trace(
+                    go.Scatter(
+                        x=city_data['Year'],
+                        y=city_data['RiverLevel'],
+                        name=f'{city} River',
+                        yaxis='y1'
+                    )
+                )
+                fig.add_trace(
+                    go.Scatter(
+                        x=city_data['Year'],
+                        y=city_data['GroundwaterLevel'],
+                        name=f'{city} Groundwater',
+                        yaxis='y2'
+                    )
+                )
+            
+            fig.update_layout(
+                title=f'Combined Water Resource Levels<br><sup>Source: {source["name"]}</sup>',
+                yaxis=dict(title='River Level (m³/s)'),
+                yaxis2=dict(
+                    title='Groundwater Level (m)',
+                    overlaying='y',
+                    side='right'
+                )
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a> (Accessed: {source["access_date"]})</small>', unsafe_allow_html=True)
+
+    elif category == "Air Quality":
+        source = get_data_source('air_quality')
+        if chart_type == "PM2.5 Levels":
+            fig = px.line(
+                air_df_filtered,
+                x='Year',
+                y='PM25',
+                color='City',
+                title=f'PM2.5 Levels<br><sup>Source: {source["name"]}</sup>',
+                labels={'PM25': 'PM2.5 (μg/m³)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+        elif chart_type == "Visibility Trends":
+            fig = px.line(
+                air_df_filtered,
+                x='Year',
+                y='Visibility',
+                color='City',
+                title=f'Visibility Trends<br><sup>Source: {source["name"]}</sup>',
+                labels={'Visibility': 'Visibility (%)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+        else:  # Combined Air Quality
+            fig = go.Figure()
+            for city in selected_cities:
+                city_data = air_df_filtered[air_df_filtered['City'] == city]
+                fig.add_trace(
+                    go.Scatter(
+                        x=city_data['Year'],
+                        y=city_data['PM25'],
+                        name=f'{city} PM2.5',
+                        yaxis='y1'
+                    )
+                )
+                fig.add_trace(
+                    go.Scatter(
+                        x=city_data['Year'],
+                        y=city_data['Visibility'],
+                        name=f'{city} Visibility',
+                        yaxis='y2'
+                    )
+                )
+            
+            fig.update_layout(
+                title=f'Combined Air Quality Indicators<br><sup>Source: {source["name"]}</sup>',
+                yaxis=dict(title='PM2.5 (μg/m³)'),
+                yaxis2=dict(
+                    title='Visibility (%)',
+                    overlaying='y',
+                    side='right'
+                )
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a> (Accessed: {source["access_date"]})</small>', unsafe_allow_html=True)
+
+    elif category == "Biodiversity":
+        source = get_data_source('biodiversity')
+        fig = px.line(
+            bio_df_filtered,
+            x='Year',
+            y='VegetationCover',
+            color='City',
+            title=f'Vegetation Cover Trends<br><sup>Source: {source["name"]}</sup>',
+            labels={'VegetationCover': 'Vegetation Cover (%)'}
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a> (Accessed: {source["access_date"]})</small>', unsafe_allow_html=True)
+# === PART 3 END ===
+# === PART 4 START: STATISTICS AND FOOTER ===
 with col2:
-    st.subheader("City Statistics")
+    st.write("## City Statistics")
     
     for city in selected_cities:
         st.write(f"### {city}")
         
-        # Get city-specific data
-        city_temp = temp_df_filtered[temp_df_filtered['City'] == city]
-        city_rain = rainfall_df_filtered[rainfall_df_filtered['City'] == city]
-        city_extreme = extreme_df_filtered[extreme_df_filtered['City'] == city]
-        
-        # Calculate changes
-        temp_change = city_temp['Temperature'].iloc[-1] - city_temp['Temperature'].iloc[0]
-        rain_change = city_rain['Rainfall'].iloc[-1] - city_rain['Rainfall'].iloc[0]
-        extreme_change = city_extreme['HotDays'].iloc[-1] - city_extreme['HotDays'].iloc[0]
-        
-        # Display metrics with sources
-        col_temp, col_rain = st.columns(2)
-        with col_temp:
-            temp_source = get_data_source('temperature')
+        with st.expander("View Detailed Statistics"):
+            # Temperature & Rainfall Stats
+            st.write("🌡️ **Climate Indicators**")
+            temp_data = temp_df_filtered[temp_df_filtered['City'] == city]
+            rain_data = rainfall_df_filtered[rainfall_df_filtered['City'] == city]
+            
+            col_temp, col_rain = st.columns(2)
+            with col_temp:
+                temp_change = temp_data['Temperature'].iloc[-1] - temp_data['Temperature'].iloc[0]
+                st.metric(
+                    "Temperature",
+                    f"{temp_data['Temperature'].iloc[-1]:.1f}°C",
+                    f"{temp_change:+.1f}°C",
+                    delta_color="inverse"  # Red for increase, green for decrease
+                )
+            with col_rain:
+                rain_change = rain_data['Rainfall'].iloc[-1] - rain_data['Rainfall'].iloc[0]
+                st.metric(
+                    "Rainfall",
+                    f"{rain_data['Rainfall'].iloc[-1]:.0f}mm",
+                    f"{rain_change:+.0f}mm",
+                    delta_color="normal"  # Green for increase, red for decrease
+                )
+
+            # Water Resources Stats
+            st.write("💧 **Water Resources**")
+            water_data = water_df_filtered[water_df_filtered['City'] == city]
+            
+            col_river, col_ground = st.columns(2)
+            with col_river:
+                river_change = water_data['RiverLevel'].iloc[-1] - water_data['RiverLevel'].iloc[0]
+                st.metric(
+                    "River Level",
+                    f"{water_data['RiverLevel'].iloc[-1]:.1f}m³/s",
+                    f"{river_change:+.1f}m³/s",
+                    delta_color="normal"
+                )
+            with col_ground:
+                ground_change = water_data['GroundwaterLevel'].iloc[-1] - water_data['GroundwaterLevel'].iloc[0]
+                st.metric(
+                    "Groundwater",
+                    f"{water_data['GroundwaterLevel'].iloc[-1]:.1f}m",
+                    f"{ground_change:+.1f}m",
+                    delta_color="normal"
+                )
+
+            # Air Quality Stats
+            st.write("🌫️ **Air Quality**")
+            air_data = air_df_filtered[air_df_filtered['City'] == city]
+            
+            col_pm, col_vis = st.columns(2)
+            with col_pm:
+                pm_change = air_data['PM25'].iloc[-1] - air_data['PM25'].iloc[0]
+                st.metric(
+                    "PM2.5 Levels",
+                    f"{air_data['PM25'].iloc[-1]:.1f}μg/m³",
+                    f"{pm_change:+.1f}μg/m³",
+                    delta_color="inverse"  # Red for increase, green for decrease
+                )
+            with col_vis:
+                vis_change = air_data['Visibility'].iloc[-1] - air_data['Visibility'].iloc[0]
+                st.metric(
+                    "Visibility",
+                    f"{air_data['Visibility'].iloc[-1]:.1f}%",
+                    f"{vis_change:+.1f}%",
+                    delta_color="normal"  # Green for increase, red for decrease
+                )
+
+            # Biodiversity Stats
+            st.write("🌿 **Biodiversity**")
+            bio_data = bio_df_filtered[bio_df_filtered['City'] == city]
+            
+            vegetation_change = bio_data['VegetationCover'].iloc[-1] - bio_data['VegetationCover'].iloc[0]
             st.metric(
-                "Temperature",
-                f"{city_temp['Temperature'].iloc[-1]:.1f}°C",
-                f"{temp_change:+.1f}°C",
-                delta_color="inverse"
-            )
-        with col_rain:
-            rain_source = get_data_source('rainfall')
-            st.metric(
-                "Rainfall",
-                f"{city_rain['Rainfall'].iloc[-1]:.0f}mm",
-                f"{rain_change:+.0f}mm",
+                "Vegetation Cover",
+                f"{bio_data['VegetationCover'].iloc[-1]:.1f}%",
+                f"{vegetation_change:+.1f}%",
                 delta_color="normal"
             )
-        st.markdown(f'<small>Sources: {temp_source["name"]} & {rain_source["name"]}</small>', unsafe_allow_html=True)
-            
-        col_hot, col_dust = st.columns(2)
-        with col_hot:
-            hot_source = get_data_source('hotdays')
-            st.metric(
-                "Hot Days",
-                f"{city_extreme['HotDays'].iloc[-1]:.0f} days",
-                f"{extreme_change:+.0f}",
-                delta_color="inverse"
-            )
-        with col_dust:
-            dust_change = city_extreme['DustStormDays'].iloc[-1] - city_extreme['DustStormDays'].iloc[0]
-            st.metric(
-                "Dust Storms",
-                f"{city_extreme['DustStormDays'].iloc[-1]:.0f} days",
-                f"{dust_change:+.0f}",
-                delta_color="inverse"
-            )
-        st.markdown(f'<small>Source: {hot_source["name"]}</small>', unsafe_allow_html=True)
 
+    # Information about indicators
     st.info("""
-    **About the Indicators**
+    **Understanding the Indicators**
     
-    🌡️ Temperature & Precipitation:
-    - Temperature trends (🔴 increase is concerning)
-    - Rainfall patterns (🔴 decrease is concerning)
+    🌡️ **Climate:**
+    - Temperature increase (🔴) indicates warming
+    - Rainfall decrease (🔴) suggests drought risk
     
-    🌪️ Extreme Weather:
-    - Hot days above 40°C (🔴 increase shows warming)
-    - Dust storm frequency (🔴 increase is concerning)
+    💧 **Water Resources:**
+    - River level decrease (🔴) shows water scarcity
+    - Groundwater decrease (🔴) indicates depletion
+    
+    🌫️ **Air Quality:**
+    - PM2.5 increase (🔴) shows pollution
+    - Visibility decrease (🔴) indicates poor air quality
+    
+    🌿 **Biodiversity:**
+    - Vegetation cover decrease (🔴) shows environmental stress
+    
+    Color Indicators:
+    🔴 Red changes are concerning
+    🟢 Green changes are positive
     """)
 
+# Footer with sources
 st.markdown("---")
 st.markdown("""
-<small>**Data Sources:**
+<small>**Data Sources & References:**
 
-Each visualization includes its specific data source. Click the links to access the original data:
+📊 **Climate Data:**
+- Temperature: [World Bank Climate Portal](https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical)
+- Rainfall: [NOAA Climate Data](https://www.ncdc.noaa.gov/cdo-web/datasets)
 
-📊 **Temperature Data:**
-- Source: [World Bank Climate Portal](https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical)
-- Historical records: 1950-2023
-- Monthly average temperatures
+💧 **Water Resources:**
+- [FAO AQUASTAT](https://www.fao.org/aquastat/en/databases/)
+- Kurdistan Regional Water Management Data
 
-🌧️ **Rainfall Data:**
-- Source: [NOAA Climate Data](https://www.ncdc.noaa.gov/cdo-web/datasets)
-- Precipitation records: 1950-2023
-- Monthly accumulation
+🌫️ **Air Quality:**
+- [WHO Air Quality Database](https://www.who.int/data/gho/data/themes/air-pollution)
+- Local Environmental Monitoring Stations
 
-🌡️ **Extreme Weather:**
-- Source: [Climate Atlas of Asia](https://climateatlas.asia/atlas)
-- Daily temperature records
-- Dust storm frequency
+🌿 **Biodiversity:**
+- [Global Biodiversity Database](https://www.gbif.org/occurrence/search)
+- Kurdistan Environmental Studies
 
-Note: Some sources may require free registration to access the complete datasets.
-Contact local meteorological stations for more detailed data.</small>
+Notes:
+- Each visualization includes its specific data source
+- Click source links to access original datasets
+- Some sources may require registration
+- Data is updated periodically</small>
 """, unsafe_allow_html=True)
+# === PART 4 END ===
