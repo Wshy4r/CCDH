@@ -6,42 +6,47 @@ import numpy as np
 
 # Set page configuration
 st.set_page_config(
-    page_title="Kurdistan Cities Climate Dashboard",
+    page_title="Kurdistan Cities Climate Dashboard (1950-Present)",
     page_icon="🌍",
     layout="wide"
 )
 
 # Title and description
-st.title("🌍 Iraq Cities Climate Dashboard")
+st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
 st.markdown("""
-This dashboard visualizes climate change indicators for major cities in Iraqi Kurdistan:
-- Erbil
+This dashboard visualizes historical climate change indicators for major cities in Kurdistan Region from 1950 onwards:
+- Hewlêr (Erbil)
 - Duhok
-- Kirkuk
-- Sulaymaniyah
+- Silêmanî (Sulaymaniyah)
+- Halabja
 """)
 
-# Sample data generation for Iraqi cities
+# Sample data generation for Kurdistan cities
 @st.cache_data
 def load_temperature_data():
-    # Simulated temperature data for Iraqi cities
-    years = list(range(2000, 2024))
-    cities = ['Erbil', 'Duhok', 'Kirkuk', 'Sulaymaniyah']
+    # Simulated temperature data for Kurdistan cities from 1950
+    years = list(range(1950, 2024))
+    cities = ['Hewlêr', 'Duhok', 'Silêmanî', 'Halabja']
     
     data = []
-    # Simulate different baseline temperatures and trends for each city
+    # Historical baseline temperatures for each city
     baselines = {
-        'Erbil': 35,      # Higher baseline for Erbil
-        'Duhok': 33,      # Slightly cooler in Duhok
-        'Kirkuk': 36,     # Warmest in Kirkuk
-        'Sulaymaniyah': 32 # Coolest in Sulaymaniyah due to elevation
+        'Hewlêr': 33,     # Historical baseline for Hewlêr (Erbil)
+        'Duhok': 31,      # Historically cooler in Duhok
+        'Silêmanî': 30,   # Cooler due to elevation
+        'Halabja': 29     # Coolest due to highest elevation
     }
     
     for year in years:
         for city in cities:
             baseline = baselines[city]
-            # Add yearly trend and random variation
-            temp = baseline + 0.04 * (year - 2000) + np.random.normal(0, 0.5)
+            # Add historical trend and random variation
+            # Stronger warming trend after 1980
+            if year < 1980:
+                trend = 0.01 * (year - 1950)
+            else:
+                trend = 0.3 + 0.03 * (year - 1980)
+            temp = baseline + trend + np.random.normal(0, 0.5)
             data.append({
                 'Year': year,
                 'City': city,
@@ -52,24 +57,28 @@ def load_temperature_data():
 
 @st.cache_data
 def load_rainfall_data():
-    # Simulated rainfall data for Iraqi cities
-    years = list(range(2000, 2024))
-    cities = ['Erbil', 'Duhok', 'Kirkuk', 'Sulaymaniyah']
+    # Simulated rainfall data for Kurdistan cities
+    years = list(range(1950, 2024))
+    cities = ['Hewlêr', 'Duhok', 'Silêmanî', 'Halabja']
     
     data = []
-    # Simulate different rainfall patterns for each city
+    # Historical rainfall patterns for each city
     baselines = {
-        'Erbil': 400,      # Annual rainfall in mm
-        'Duhok': 550,      # Higher rainfall in Duhok
-        'Kirkuk': 350,     # Drier in Kirkuk
-        'Sulaymaniyah': 650 # Highest rainfall in Sulaymaniyah
+        'Hewlêr': 400,    # Annual rainfall in mm
+        'Duhok': 550,     # Higher rainfall in Duhok
+        'Silêmanî': 650,  # High rainfall due to mountains
+        'Halabja': 700    # Highest rainfall due to location
     }
     
     for year in years:
         for city in cities:
             baseline = baselines[city]
-            # Add yearly trend (slight decrease) and random variation
-            rainfall = baseline * (1 - 0.005 * (year - 2000)) + np.random.normal(0, 30)
+            # Add yearly trend (decrease after 1980) and random variation
+            if year < 1980:
+                trend = 1.0
+            else:
+                trend = 1.0 - 0.005 * (year - 1980)
+            rainfall = baseline * trend + np.random.normal(0, 30)
             data.append({
                 'Year': year,
                 'City': city,
@@ -86,11 +95,11 @@ rainfall_df = load_rainfall_data()
 st.sidebar.header("Dashboard Controls")
 selected_cities = st.sidebar.multiselect(
     "Select Cities",
-    ['Erbil', 'Duhok', 'Kirkuk', 'Sulaymaniyah'],
-    default=['Erbil', 'Duhok', 'Kirkuk', 'Sulaymaniyah']
+    ['Hewlêr', 'Duhok', 'Silêmanî', 'Halabja'],
+    default=['Hewlêr', 'Duhok', 'Silêmanî', 'Halabja']
 )
 
-start_year = st.sidebar.slider("Select Start Year", 2000, 2023, 2000)
+start_year = st.sidebar.slider("Select Start Year", 1950, 2023, 1950)
 chart_type = st.sidebar.selectbox(
     "Select Chart Type",
     ["Temperature Trends", "Rainfall Patterns", "Combined View"]
@@ -116,7 +125,7 @@ with col1:
             x='Year',
             y='Temperature',
             color='City',
-            title='Average Temperature Trends by City',
+            title='Average Temperature Trends in Kurdistan Cities',
             labels={'Temperature': 'Temperature (°C)'}
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -127,7 +136,7 @@ with col1:
             x='Year',
             y='Rainfall',
             color='City',
-            title='Annual Rainfall Patterns by City',
+            title='Annual Rainfall Patterns in Kurdistan Cities',
             labels={'Rainfall': 'Rainfall (mm/year)'}
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -162,11 +171,11 @@ with col1:
             )
             
         fig.update_layout(
-            title='Combined Temperature and Rainfall Trends',
-            yaxis=dict(title='Temperature (°C)', titlefont=dict(color='red')),
+            title='Combined Temperature and Rainfall Trends in Kurdistan Cities',
+            yaxis=dict(title='Temperature (°C)', titlefont=dict(color='#FF4B4B')),
             yaxis2=dict(
                 title='Rainfall (mm/year)',
-                titlefont=dict(color='blue'),
+                titlefont=dict(color='#1F77B4'),
                 overlaying='y',
                 side='right'
             )
@@ -208,23 +217,23 @@ with col2:
     st.info("""
     **About this Dashboard**
     
-    This dashboard shows climate trends for major Iraqi cities:
-    - Temperature trends over time
+    This dashboard shows historical climate trends for major Kurdistan cities:
+    - Historical temperature trends since 1950
     - Annual rainfall patterns
-    - Combined view for correlation analysis
+    - Combined analysis showing climate change impacts
     
     Note: This uses simulated data. For accurate local data, connect to:
-    - Iraqi Meteorological Organization
     - Kurdistan Region Statistics Office
-    - Local weather stations
+    - Local meteorological stations
+    - Regional climate research centers
     """)
 
 # Footer
 st.markdown("---")
 st.markdown("""
-<small>💡 To get real climate data for these cities, you would need to:
+<small>💡 To get real climate data for Kurdistan cities, you would need to:
+- Access Kurdistan Region meteorological databases
 - Connect to local weather stations
-- Access Iraqi meteorological databases
 - Use satellite data from climate monitoring services
-- Partner with local environmental agencies</small>
+- Partner with Kurdish universities and research centers</small>
 """, unsafe_allow_html=True)
