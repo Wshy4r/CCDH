@@ -1,4 +1,3 @@
-# climate_dashboard.py
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -7,143 +6,225 @@ import numpy as np
 
 # Set page configuration
 st.set_page_config(
-    page_title="Climate Change Dashboard",
+    page_title="Iraq Cities Climate Dashboard",
     page_icon="🌍",
     layout="wide"
 )
 
 # Title and description
-st.title("🌍 Climate Change Dashboard")
+st.title("🌍 Iraq Cities Climate Dashboard")
 st.markdown("""
-This dashboard visualizes various climate change indicators and metrics.
-Data is for demonstration purposes - replace with real climate data sources.
+This dashboard visualizes climate change indicators for major cities in Iraqi Kurdistan and Iraq:
+- Erbil
+- Duhok
+- Kirkuk
+- Sulaymaniyah
 """)
 
-# Sample data generation (replace with real data)
+# Sample data generation for Iraqi cities
 @st.cache_data
 def load_temperature_data():
-    # Simulated global temperature anomaly data
-    years = list(range(1900, 2024))
-    temp_anomaly = [0.1 * (year - 1900) + np.random.normal(0, 0.2) for year in years]
-    return pd.DataFrame({
-        'Year': years,
-        'Temperature_Anomaly': temp_anomaly
-    })
+    # Simulated temperature data for Iraqi cities
+    years = list(range(2000, 2024))
+    cities = ['Erbil', 'Duhok', 'Kirkuk', 'Sulaymaniyah']
+    
+    data = []
+    # Simulate different baseline temperatures and trends for each city
+    baselines = {
+        'Erbil': 35,      # Higher baseline for Erbil
+        'Duhok': 33,      # Slightly cooler in Duhok
+        'Kirkuk': 36,     # Warmest in Kirkuk
+        'Sulaymaniyah': 32 # Coolest in Sulaymaniyah due to elevation
+    }
+    
+    for year in years:
+        for city in cities:
+            baseline = baselines[city]
+            # Add yearly trend and random variation
+            temp = baseline + 0.04 * (year - 2000) + np.random.normal(0, 0.5)
+            data.append({
+                'Year': year,
+                'City': city,
+                'Temperature': temp
+            })
+    
+    return pd.DataFrame(data)
 
 @st.cache_data
-def load_emissions_data():
-    # Simulated CO2 emissions data
-    years = list(range(1900, 2024))
-    emissions = [2000 * np.exp(0.02 * (year - 1900)) + np.random.normal(0, 1000) for year in years]
-    return pd.DataFrame({
-        'Year': years,
-        'CO2_Emissions': emissions
-    })
+def load_rainfall_data():
+    # Simulated rainfall data for Iraqi cities
+    years = list(range(2000, 2024))
+    cities = ['Erbil', 'Duhok', 'Kirkuk', 'Sulaymaniyah']
+    
+    data = []
+    # Simulate different rainfall patterns for each city
+    baselines = {
+        'Erbil': 400,      # Annual rainfall in mm
+        'Duhok': 550,      # Higher rainfall in Duhok
+        'Kirkuk': 350,     # Drier in Kirkuk
+        'Sulaymaniyah': 650 # Highest rainfall in Sulaymaniyah
+    }
+    
+    for year in years:
+        for city in cities:
+            baseline = baselines[city]
+            # Add yearly trend (slight decrease) and random variation
+            rainfall = baseline * (1 - 0.005 * (year - 2000)) + np.random.normal(0, 30)
+            data.append({
+                'Year': year,
+                'City': city,
+                'Rainfall': max(0, rainfall)  # Ensure non-negative rainfall
+            })
+    
+    return pd.DataFrame(data)
 
 # Load data
 temp_df = load_temperature_data()
-emissions_df = load_emissions_data()
+rainfall_df = load_rainfall_data()
 
-# Sidebar for controls
+# Sidebar controls
 st.sidebar.header("Dashboard Controls")
-start_year = st.sidebar.slider("Select Start Year", 1900, 2023, 1900)
-chart_type = st.sidebar.selectbox(
-    "Select Chart Type",
-    ["Temperature Anomalies", "CO2 Emissions", "Combined View"]
+selected_cities = st.sidebar.multiselect(
+    "Select Cities",
+    ['Erbil', 'Duhok', 'Kirkuk', 'Sulaymaniyah'],
+    default=['Erbil', 'Duhok', 'Kirkuk', 'Sulaymaniyah']
 )
 
-# Filter data based on selected year
-temp_df_filtered = temp_df[temp_df['Year'] >= start_year]
-emissions_df_filtered = emissions_df[emissions_df['Year'] >= start_year]
+start_year = st.sidebar.slider("Select Start Year", 2000, 2023, 2000)
+chart_type = st.sidebar.selectbox(
+    "Select Chart Type",
+    ["Temperature Trends", "Rainfall Patterns", "Combined View"]
+)
+
+# Filter data
+temp_df_filtered = temp_df[
+    (temp_df['Year'] >= start_year) & 
+    (temp_df['City'].isin(selected_cities))
+]
+rainfall_df_filtered = rainfall_df[
+    (rainfall_df['Year'] >= start_year) & 
+    (rainfall_df['City'].isin(selected_cities))
+]
 
 # Main content area
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    if chart_type == "Temperature Anomalies":
+    if chart_type == "Temperature Trends":
         fig = px.line(
             temp_df_filtered,
             x='Year',
-            y='Temperature_Anomaly',
-            title='Global Temperature Anomalies Over Time'
+            y='Temperature',
+            color='City',
+            title='Average Temperature Trends by City',
+            labels={'Temperature': 'Temperature (°C)'}
         )
         st.plotly_chart(fig, use_container_width=True)
         
-    elif chart_type == "CO2 Emissions":
+    elif chart_type == "Rainfall Patterns":
         fig = px.line(
-            emissions_df_filtered,
+            rainfall_df_filtered,
             x='Year',
-            y='CO2_Emissions',
-            title='Global CO2 Emissions Over Time'
+            y='Rainfall',
+            color='City',
+            title='Annual Rainfall Patterns by City',
+            labels={'Rainfall': 'Rainfall (mm/year)'}
         )
         st.plotly_chart(fig, use_container_width=True)
         
     else:  # Combined View
         fig = go.Figure()
-        fig.add_trace(
-            go.Scatter(
-                x=temp_df_filtered['Year'],
-                y=temp_df_filtered['Temperature_Anomaly'],
-                name='Temperature Anomaly',
-                yaxis='y1'
+        
+        # Add temperature traces
+        for city in selected_cities:
+            city_temp = temp_df_filtered[temp_df_filtered['City'] == city]
+            fig.add_trace(
+                go.Scatter(
+                    x=city_temp['Year'],
+                    y=city_temp['Temperature'],
+                    name=f'{city} Temperature',
+                    yaxis='y1',
+                    line=dict(dash='solid')
+                )
             )
-        )
-        fig.add_trace(
-            go.Scatter(
-                x=emissions_df_filtered['Year'],
-                y=emissions_df_filtered['CO2_Emissions'],
-                name='CO2 Emissions',
-                yaxis='y2'
+        
+        # Add rainfall traces
+        for city in selected_cities:
+            city_rain = rainfall_df_filtered[rainfall_df_filtered['City'] == city]
+            fig.add_trace(
+                go.Scatter(
+                    x=city_rain['Year'],
+                    y=city_rain['Rainfall'],
+                    name=f'{city} Rainfall',
+                    yaxis='y2',
+                    line=dict(dash='dot')
+                )
             )
-        )
+            
         fig.update_layout(
-            title='Combined Climate Indicators',
-            yaxis=dict(title='Temperature Anomaly (°C)'),
-            yaxis2=dict(title='CO2 Emissions (Mt)', overlaying='y', side='right')
+            title='Combined Temperature and Rainfall Trends',
+            yaxis=dict(title='Temperature (°C)', titlefont=dict(color='red')),
+            yaxis2=dict(
+                title='Rainfall (mm/year)',
+                titlefont=dict(color='blue'),
+                overlaying='y',
+                side='right'
+            )
         )
         st.plotly_chart(fig, use_container_width=True)
 
 with col2:
-    st.subheader("Key Statistics")
+    st.subheader("City Statistics")
     
-    # Calculate and display key metrics
-    latest_temp = temp_df_filtered['Temperature_Anomaly'].iloc[-1]
-    temp_change = temp_df_filtered['Temperature_Anomaly'].iloc[-1] - \
-                 temp_df_filtered['Temperature_Anomaly'].iloc[0]
-    
-    latest_emissions = emissions_df_filtered['CO2_Emissions'].iloc[-1]
-    emissions_change = emissions_df_filtered['CO2_Emissions'].iloc[-1] - \
-                      emissions_df_filtered['CO2_Emissions'].iloc[0]
-    
-    st.metric(
-        "Current Temperature Anomaly",
-        f"{latest_temp:.2f}°C",
-        f"{temp_change:+.2f}°C since {start_year}"
-    )
-    
-    st.metric(
-        "Current Annual CO2 Emissions",
-        f"{latest_emissions:.0f} Mt",
-        f"{emissions_change:+.0f} Mt since {start_year}"
-    )
+    for city in selected_cities:
+        st.write(f"### {city}")
+        
+        # Temperature statistics
+        city_temp = temp_df_filtered[temp_df_filtered['City'] == city]
+        latest_temp = city_temp['Temperature'].iloc[-1]
+        temp_change = city_temp['Temperature'].iloc[-1] - city_temp['Temperature'].iloc[0]
+        
+        # Rainfall statistics
+        city_rain = rainfall_df_filtered[rainfall_df_filtered['City'] == city]
+        latest_rain = city_rain['Rainfall'].iloc[-1]
+        rain_change = city_rain['Rainfall'].iloc[-1] - city_rain['Rainfall'].iloc[0]
+        
+        # Display metrics
+        col_temp, col_rain = st.columns(2)
+        with col_temp:
+            st.metric(
+                "Temperature",
+                f"{latest_temp:.1f}°C",
+                f"{temp_change:+.1f}°C"
+            )
+        with col_rain:
+            st.metric(
+                "Rainfall",
+                f"{latest_rain:.0f}mm",
+                f"{rain_change:+.0f}mm"
+            )
 
-    # Add additional information
+    # Add information about the data
     st.info("""
     **About this Dashboard**
     
-    This dashboard shows key climate indicators:
-    - Temperature anomalies relative to pre-industrial levels
-    - Annual CO2 emissions
+    This dashboard shows climate trends for major Iraqi cities:
+    - Temperature trends over time
+    - Annual rainfall patterns
     - Combined view for correlation analysis
     
-    Use the sidebar controls to adjust the view and time period.
+    Note: This uses simulated data. For accurate local data, connect to:
+    - Iraqi Meteorological Organization
+    - Kurdistan Region Statistics Office
+    - Local weather stations
     """)
 
 # Footer
 st.markdown("---")
 st.markdown("""
-<small>Data sources: Sample data for demonstration. Replace with real climate data from sources like:
-- NASA GISS Surface Temperature Analysis
-- Global Carbon Project
-- NOAA Climate Data</small>
+<small>💡 To get real climate data for these cities, you would need to:
+- Connect to local weather stations
+- Access Iraqi meteorological databases
+- Use satellite data from climate monitoring services
+- Partner with local environmental agencies</small>
 """, unsafe_allow_html=True)
