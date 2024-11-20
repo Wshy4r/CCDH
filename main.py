@@ -504,17 +504,6 @@ with col1:
                     title=f'Average Temperature Trends (Yearly)<br><sup>Source: {source["name"]}</sup>',
                     labels={'Temperature': 'Temperature (°C)'}
                 )
-                if show_trend:
-                    fig.add_traces([
-                        go.Scatter(
-                            x=[yearly_temp['Year'].min(), yearly_temp['Year'].max()],
-                            y=[yearly_temp[yearly_temp['City'] == city]['Temperature'].mean(),
-                               yearly_temp[yearly_temp['City'] == city]['Temperature'].mean()],
-                            name=f'{city} Trend',
-                            line=dict(dash='dash'),
-                            showlegend=False
-                        ) for city in selected_cities
-                    ])
             
             elif time_frame == "Monthly":
                 fig = px.line(
@@ -555,20 +544,6 @@ with col1:
                     title=f'Annual Rainfall Patterns<br><sup>Source: {source["name"]}</sup>',
                     labels={'Rainfall': 'Rainfall (mm/year)'}
                 )
-                if show_confidence:
-                    for city in selected_cities:
-                        city_data = yearly_rain[yearly_rain['City'] == city]
-                        z = np.polyfit(city_data['Year'], city_data['Rainfall'], 1)
-                        p = np.poly1d(z)
-                        fig.add_trace(
-                            go.Scatter(
-                                x=city_data['Year'],
-                                y=p(city_data['Year']),
-                                name=f'{city} Trend',
-                                line=dict(dash='dash'),
-                                showlegend=False
-                            )
-                        )
 
             elif time_frame == "Monthly":
                 fig = px.box(
@@ -597,50 +572,32 @@ with col1:
             st.plotly_chart(fig, use_container_width=True)
             st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a> (Accessed: {source["access_date"]})</small>', unsafe_allow_html=True)
 
-        elif chart_type == "Extreme Weather Events":
-            # Heat waves analysis
-            extreme_days = temp_df_filtered[temp_df_filtered['ExtremeHeatDay']].groupby(['Year', 'City']).size().reset_index(name='ExtremeDays')
-            
-            fig = px.line(
-                extreme_days,
-                x='Year',
-                y='ExtremeDays',
-                color='City',
-                title='Number of Extreme Heat Days (>40°C) per Year',
-                labels={'ExtremeDays': 'Days Above 40°C'}
-            )
-            st.plotly_chart(fig, use_container_width=True)
-
-            # Drought analysis
-            drought_data = rainfall_df_filtered.groupby(['Year', 'City'])['DroughtRisk'].mean().reset_index()
-            fig2 = px.line(
-                drought_data,
-                x='Year',
-                y='DroughtRisk',
-                color='City',
-                title='Drought Risk Index',
-                labels={'DroughtRisk': 'Risk Index (0-1)'}
-            )
-            st.plotly_chart(fig2, use_container_width=True)
-
     elif category == "Water Resources":
         source = get_data_source('water_resources')
-        
-        if chart_type == "Water Stress Index":
-            stress_data = water_df_filtered.groupby(['Year', 'City'])['WaterStress'].mean().reset_index()
+        if chart_type == "River Levels":
             fig = px.line(
-                stress_data,
+                water_df_filtered,
                 x='Year',
-                y='WaterStress',
+                y='RiverLevel',
                 color='City',
-                title=f'Water Stress Index<br><sup>Source: {source["name"]}</sup>',
-                labels={'WaterStress': 'Stress Index (0-1)'}
+                title=f'River Water Levels<br><sup>Source: {source["name"]}</sup>',
+                labels={'RiverLevel': 'River Level (m³/s)'}
             )
             st.plotly_chart(fig, use_container_width=True)
-
-        elif chart_type == "Combined Water Resources":
-            fig = make_subplots(specs=[[{"secondary_y": True}]])
             
+        elif chart_type == "Groundwater Levels":
+            fig = px.line(
+                water_df_filtered,
+                x='Year',
+                y='GroundwaterLevel',
+                color='City',
+                title=f'Groundwater Levels<br><sup>Source: {source["name"]}</sup>',
+                labels={'GroundwaterLevel': 'Groundwater Level (m)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        
+        else:  # Combined Water Resources
+            fig = go.Figure()
             for city in selected_cities:
                 city_data = water_df_filtered[water_df_filtered['City'] == city]
                 fig.add_trace(
@@ -649,8 +606,7 @@ with col1:
                         y=city_data['RiverLevel'],
                         name=f'{city} River',
                         mode='lines'
-                    ),
-                    secondary_y=False
+                    )
                 )
                 fig.add_trace(
                     go.Scatter(
@@ -658,23 +614,43 @@ with col1:
                         y=city_data['GroundwaterLevel'],
                         name=f'{city} Groundwater',
                         line=dict(dash='dash')
-                    ),
-                    secondary_y=True
+                    )
                 )
             
             fig.update_layout(
                 title=f'Combined Water Resources<br><sup>Source: {source["name"]}</sup>',
                 yaxis_title="River Level (m³/s)",
-                yaxis2_title="Groundwater Level (m)"
+                xaxis_title="Year"
             )
             st.plotly_chart(fig, use_container_width=True)
+        st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a></small>', unsafe_allow_html=True)
 
     elif category == "Economic Impact":
         source = get_data_source('economic')
-        
-        if chart_type == "Combined Economic Impact":
-            fig = make_subplots(specs=[[{"secondary_y": True}]])
+        if chart_type == "Energy Demand":
+            fig = px.line(
+                economic_df_filtered,
+                x='Year',
+                y='EnergyDemand',
+                color='City',
+                title=f'Energy Demand Trends<br><sup>Source: {source["name"]}</sup>',
+                labels={'EnergyDemand': 'Energy Demand (MW)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
             
+        elif chart_type == "Agricultural Production":
+            fig = px.line(
+                economic_df_filtered,
+                x='Year',
+                y='AgriculturalProduction',
+                color='City',
+                title=f'Agricultural Production Trends<br><sup>Source: {source["name"]}</sup>',
+                labels={'AgriculturalProduction': 'Production (tons)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+        else:  # Combined Economic Impact
+            fig = go.Figure()
             for city in selected_cities:
                 city_data = economic_df_filtered[economic_df_filtered['City'] == city]
                 fig.add_trace(
@@ -683,8 +659,7 @@ with col1:
                         y=city_data['EnergyDemand'],
                         name=f'{city} Energy',
                         mode='lines'
-                    ),
-                    secondary_y=False
+                    )
                 )
                 fig.add_trace(
                     go.Scatter(
@@ -692,110 +667,106 @@ with col1:
                         y=city_data['AgriculturalProduction'],
                         name=f'{city} Agriculture',
                         line=dict(dash='dash')
-                    ),
-                    secondary_y=True
+                    )
                 )
             
             fig.update_layout(
-                title=f'Economic Indicators<br><sup>Source: {source["name"]}</sup>',
+                title=f'Combined Economic Indicators<br><sup>Source: {source["name"]}</sup>',
                 yaxis_title="Energy Demand (MW)",
-                yaxis2_title="Agricultural Production (tons)"
+                xaxis_title="Year"
             )
             st.plotly_chart(fig, use_container_width=True)
+        st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a></small>', unsafe_allow_html=True)
 
     elif category == "Health Impact":
         source = get_data_source('health')
-        
-        if time_frame == "Yearly":
-            yearly_health = health_df_filtered.groupby(['Year', 'City'])[['HeatStressIndex', 'AirHealthIndex']].mean().reset_index()
-            
-            if chart_type == "Combined Health Indicators":
-                fig = make_subplots(specs=[[{"secondary_y": True}]])
-                
-                for city in selected_cities:
-                    city_data = yearly_health[yearly_health['City'] == city]
-                    fig.add_trace(
-                        go.Scatter(
-                            x=city_data['Year'],
-                            y=city_data['HeatStressIndex'],
-                            name=f'{city} Heat Stress',
-                            mode='lines'
-                        ),
-                        secondary_y=False
-                    )
-                    fig.add_trace(
-                        go.Scatter(
-                            x=city_data['Year'],
-                            y=city_data['AirHealthIndex'],
-                            name=f'{city} Air Quality',
-                            line=dict(dash='dash')
-                        ),
-                        secondary_y=True
-                    )
-                
-                fig.update_layout(
-                    title=f'Health Impact Indicators<br><sup>Source: {source["name"]}</sup>',
-                    yaxis_title="Heat Stress Index",
-                    yaxis2_title="Air Quality Index"
-                )
-                st.plotly_chart(fig, use_container_width=True)
-
-    elif category == "Future Projections":
-        if chart_type == "Temperature Forecast":
-            # Simple linear projection for next 10 years
-            future_years = list(range(end_year + 1, end_year + 11))
-            forecast_data = []
-            
-            for city in selected_cities:
-                city_data = temp_df_filtered[temp_df_filtered['City'] == city]
-                z = np.polyfit(city_data['Year'], city_data['Temperature'], 1)
-                p = np.poly1d(z)
-                
-                # Historical data
-                forecast_data.extend([{
-                    'Year': year,
-                    'Temperature': temp,
-                    'City': city,
-                    'Type': 'Historical'
-                } for year, temp in zip(city_data['Year'], city_data['Temperature'])])
-                
-                # Projected data
-                forecast_data.extend([{
-                    'Year': year,
-                    'Temperature': p(year),
-                    'City': city,
-                    'Type': 'Projected'
-                } for year in future_years])
-            
-            forecast_df = pd.DataFrame(forecast_data)
-            
+        if chart_type == "Heat Stress Index":
             fig = px.line(
-                forecast_df,
+                health_df_filtered,
+                x='Year',
+                y='HeatStressIndex',
+                color='City',
+                title=f'Heat Stress Index<br><sup>Source: {source["name"]}</sup>',
+                labels={'HeatStressIndex': 'Heat Stress Index'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+        elif chart_type == "Air Health Index":
+            fig = px.line(
+                health_df_filtered,
+                x='Year',
+                y='AirHealthIndex',
+                color='City',
+                title=f'Air Quality Health Index<br><sup>Source: {source["name"]}</sup>',
+                labels={'AirHealthIndex': 'Air Quality Index'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+        else:  # Combined Health Indicators
+            fig = go.Figure()
+            for city in selected_cities:
+                city_data = health_df_filtered[health_df_filtered['City'] == city]
+                fig.add_trace(
+                    go.Scatter(
+                        x=city_data['Year'],
+                        y=city_data['HeatStressIndex'],
+                        name=f'{city} Heat Stress',
+                        mode='lines'
+                    )
+                )
+                fig.add_trace(
+                    go.Scatter(
+                        x=city_data['Year'],
+                        y=city_data['AirHealthIndex'],
+                        name=f'{city} Air Quality',
+                        line=dict(dash='dash')
+                    )
+                )
+            
+            fig.update_layout(
+                title=f'Combined Health Indicators<br><sup>Source: {source["name"]}</sup>',
+                yaxis_title="Index Value",
+                xaxis_title="Year"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        st.markdown(f'<small>Data Source: <a href="{source["link"]}" target="_blank">{source["name"]}</a></small>', unsafe_allow_html=True)
+
+    elif category == "Seasonal Analysis":
+        if chart_type == "Temperature Patterns":
+            seasonal_temp = temp_df_filtered.groupby(['Year', 'Season', 'City'])['Temperature'].mean().reset_index()
+            fig = px.line(
+                seasonal_temp,
                 x='Year',
                 y='Temperature',
                 color='City',
-                line_dash='Type',
-                title='Temperature Forecast (10-Year Projection)',
+                facet_col='Season',
+                title='Seasonal Temperature Patterns',
                 labels={'Temperature': 'Temperature (°C)'}
             )
             st.plotly_chart(fig, use_container_width=True)
-
-    elif category == "Comparative Analysis":
-        if chart_type == "City Comparisons":
-            # Temperature comparison
-            temp_comparison = temp_df_filtered.groupby(['City'])['Temperature'].agg(['mean', 'std', 'min', 'max']).reset_index()
             
-            fig = go.Figure()
-            fig.add_trace(go.Bar(
-                x=temp_comparison['City'],
-                y=temp_comparison['mean'],
-                error_y=dict(type='data', array=temp_comparison['std']),
-                name='Average Temperature'
-            ))
+        elif chart_type == "Rainfall Distribution":
+            seasonal_rain = rainfall_df_filtered.groupby(['Year', 'Season', 'City'])['Rainfall'].sum().reset_index()
+            fig = px.line(
+                seasonal_rain,
+                x='Year',
+                y='Rainfall',
+                color='City',
+                facet_col='Season',
+                title='Seasonal Rainfall Distribution',
+                labels={'Rainfall': 'Rainfall (mm)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
             
-            fig.update_layout(
-                title='Temperature Comparison Across Cities',
-                yaxis_title='Temperature (°C)'
+        else:  # Seasonal Comparisons
+            fig = px.box(
+                temp_df_filtered,
+                x='Season',
+                y='Temperature',
+                color='City',
+                title='Temperature Distribution by Season',
+                labels={'Temperature': 'Temperature (°C)'},
+                category_orders={"Season": ["Winter", "Spring", "Summer", "Autumn"]}
             )
             st.plotly_chart(fig, use_container_width=True)
 # === PART 4 END ===
