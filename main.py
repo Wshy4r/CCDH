@@ -45,7 +45,7 @@ This comprehensive dashboard visualizes climate and energy data for major cities
 * Hewlêr (Erbil)
 * Dihok (Duhok)
 * Silêmanî (Sulaymaniyah)
-* Helebice (Halabja)
+* Helebce (Halabja)
 * Kerkuk (Kirkuk)
 """)
 # === PART 2: DATA LOADING FUNCTIONS ===
@@ -53,14 +53,14 @@ This comprehensive dashboard visualizes climate and energy data for major cities
 def load_temperature_data():
    years = list(range(1950, 2024))
    months = list(range(1, 13))
-   cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+   cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkuk']
    data = []
    
    baselines = {
        'Hewlêr': {'temp': 33, 'seasonal_var': 15},
        'Dihok': {'temp': 31, 'seasonal_var': 14},
        'Silêmanî': {'temp': 30, 'seasonal_var': 13}, 
-       'Helebice': {'temp': 29, 'seasonal_var': 13},
+       'Helebce': {'temp': 29, 'seasonal_var': 13},
        'Kerkuk': {'temp': 34, 'seasonal_var': 16}
    }
 
@@ -102,8 +102,8 @@ st.sidebar.header("Dashboard Controls")
 # Basic selections
 selected_cities = st.sidebar.multiselect(
    "Select Cities",
-   ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk'],
-   default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+   ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkuk'],
+   default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkuk']
 )
 
 time_frame = st.sidebar.radio(
