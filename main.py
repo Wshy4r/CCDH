@@ -383,7 +383,6 @@ elif time_frame == "Seasonal":
     )
 
 # Main category selection
-# Top-level category selection with easy extensibility
 data_category = st.sidebar.selectbox(
     "Select Data Source Category",
     [
@@ -466,7 +465,7 @@ if data_category == "Open Source Data":
         )
 
 elif data_category == "Governmental Data":
-    st.sidebar.info("""
+    st.info("""
     🏛️ Governmental Data Category
     
     This section is currently under development.
@@ -481,7 +480,7 @@ elif data_category == "Governmental Data":
     - Policy impact assessments
     - Authorized data sources
     """)
-    st.sidebar.warning("Data sources and indicators will be added in future updates.")
+    st.warning("Data sources and indicators will be added in future updates.")
 
 # Additional analysis options
 show_trend = st.sidebar.checkbox("Show Trend Lines", value=True)
