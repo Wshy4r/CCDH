@@ -500,12 +500,32 @@ def filter_data(df):
         (df['City'].isin(selected_cities))
     ]
     
-    if time_frame == "Monthly" and 'Month' in df.columns:
-        filtered = filtered[filtered['MonthName'].isin(months)]
-    elif time_frame == "Seasonal" and 'Season' in df.columns:
+    import pandas as pd
+import streamlit as st
+
+def filter_data(df, time_frame, months, seasons):
+    # Check if df is a valid DataFrame
+    if not isinstance(df, pd.DataFrame):
+        st.error("The data source is not a valid DataFrame. Please check your data source.")
+        return pd.DataFrame()  # Return an empty DataFrame
+
+    # Initial filtering based on the selected time frame
+    filtered = df.copy()
+
+    if time_frame == "Monthly":
+        if 'MonthName' not in filtered.columns:
+            st.error("The selected data source is missing the 'MonthName' column. Please check your data or select a different source.")
+        elif filtered.empty:
+            st.warning("No data available for the selected filters. Please adjust your selection or check the data.")
+        else:
+            # Filter the data based on the selected months
+            filtered = filtered[filtered['MonthName'].isin(months)]
+            
+    elif time_frame == "Seasonal" and 'Season' in filtered.columns:
         filtered = filtered[filtered['Season'].isin(seasons)]
-    
+
     return filtered
+
 
 # Apply filters to all dataframes
 temp_df_filtered = filter_data(temp_df)
