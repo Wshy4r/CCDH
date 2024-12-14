@@ -69,8 +69,8 @@ This comprehensive dashboard visualizes historical climate change indicators for
 * Hewlêr (Erbil)
 * Dihok (Duhok)
 * Silêmanî (Sulaymaniyah)
-* Helebice (Halabja)
-* Kerkuk (Kirkuk)
+* Helebce (Halabja)
+* Kerkûk (Kirkuk)
 """)
 # === PART 1 END ===
 # === PART 2 START: DATA LOADING FUNCTIONS ===
@@ -78,15 +78,15 @@ This comprehensive dashboard visualizes historical climate change indicators for
 def load_temperature_data():
     years = list(range(1950, 2024))
     months = list(range(1, 13))
-    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     data = []
     
     baselines = {
         'Hewlêr': {'temp': 33, 'seasonal_var': 15},
         'Dihok': {'temp': 31, 'seasonal_var': 14},
         'Silêmanî': {'temp': 30, 'seasonal_var': 13},
-        'Helebice': {'temp': 29, 'seasonal_var': 13},
-        'Kerkuk': {'temp': 34, 'seasonal_var': 16}
+        'Helebce': {'temp': 29, 'seasonal_var': 13},
+        'Kerkûk': {'temp': 34, 'seasonal_var': 16}
     }
 
     for year in years:
@@ -131,15 +131,15 @@ def load_temperature_data():
 def load_rainfall_data():
     years = list(range(1950, 2024))
     months = list(range(1, 13))
-    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     data = []
     
     baselines = {
         'Hewlêr': {'rain': 400, 'seasonal_var': 0.8},
         'Dihok': {'rain': 550, 'seasonal_var': 0.7},
         'Silêmanî': {'rain': 650, 'seasonal_var': 0.6},
-        'Helebice': {'rain': 700, 'seasonal_var': 0.6},
-        'Kerkuk': {'rain': 350, 'seasonal_var': 0.9}
+        'Helebce': {'rain': 700, 'seasonal_var': 0.6},
+        'Kerkûk': {'rain': 350, 'seasonal_var': 0.9}
     }
 
     for year in years:
@@ -190,23 +190,23 @@ def load_rainfall_data():
 def load_water_resources_data():
     years = list(range(1950, 2024))
     months = list(range(1, 13))
-    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     data = []
     
     river_baselines = {
         'Hewlêr': 100,
         'Dihok': 150,
         'Silêmanî': 120,
-        'Helebice': 90,
-        'Kerkuk': 80
+        'Helebce': 90,
+        'Kerkûk': 80
     }
     
     groundwater_baselines = {
         'Hewlêr': 50,
         'Dihok': 45,
         'Silêmanî': 55,
-        'Helebice': 60,
-        'Kerkuk': 40
+        'Helebce': 60,
+        'Kerkûk': 40
     }
 
     for year in years:
@@ -252,15 +252,15 @@ def load_water_resources_data():
 @st.cache_data
 def load_economic_impact_data():
     years = list(range(1950, 2024))
-    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     data = []
     
     baselines = {
         'Hewlêr': {'energy': 1000, 'agri': 800},
         'Dihok': {'energy': 800, 'agri': 1000},
         'Silêmanî': {'energy': 900, 'agri': 1100},
-        'Helebice': {'energy': 700, 'agri': 900},
-        'Kerkuk': {'energy': 1100, 'agri': 700}
+        'Helebce': {'energy': 700, 'agri': 900},
+        'Kerkûk': {'energy': 1100, 'agri': 700}
     }
 
     for year in years:
@@ -293,15 +293,15 @@ def load_economic_impact_data():
 def load_health_impact_data():
     years = list(range(1950, 2024))
     months = list(range(1, 13))
-    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+    cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     data = []
     
     baselines = {
         'Hewlêr': {'heat_stress': 30, 'air_health': 80},
         'Dihok': {'heat_stress': 25, 'air_health': 85},
         'Silêmanî': {'heat_stress': 20, 'air_health': 90},
-        'Helebice': {'heat_stress': 20, 'air_health': 90},
-        'Kerkuk': {'heat_stress': 35, 'air_health': 75}
+        'Helebce': {'heat_stress': 20, 'air_health': 90},
+        'Kerkûk': {'heat_stress': 35, 'air_health': 75}
     }
 
     for year in years:
@@ -353,8 +353,8 @@ st.sidebar.header("Dashboard Controls")
 # City selection
 selected_cities = st.sidebar.multiselect(
     "Select Cities",
-    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk'],
-    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebice', 'Kerkuk']
+    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
 )
 
 # Time range
