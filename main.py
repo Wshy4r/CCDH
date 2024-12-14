@@ -464,6 +464,24 @@ if data_category == "Open Source Data":
              "Historical Benchmarks"]
         )
 
+elif data_category == "Governmental Data":
+    st.info("""
+    🏛️ Governmental Data Category
+    
+    This section is currently under development.
+    
+    Planned Features:
+    - Official government climate records
+    - Ministerial reports
+    - Policy-related climate data
+    
+    Coming Soon:
+    - Detailed governmental climate indicators
+    - Policy impact assessments
+    - Authorized data sources
+    """)
+    st.warning("Data sources and indicators will be added in future updates.")
+
 # Additional analysis options
 show_trend = st.sidebar.checkbox("Show Trend Lines", value=True)
 show_confidence = st.sidebar.checkbox("Show Confidence Intervals")
