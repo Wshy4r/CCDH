@@ -348,26 +348,57 @@ health_df = load_health_impact_data()
 # === PART 2 END ===
 # === PART 3 START: ANALYSIS FUNCTIONS AND UI ===
 # Sidebar controls
+# Sidebar controls
 st.sidebar.header("Dashboard Controls")
 
-# City selection
-selected_cities = st.sidebar.multiselect(
-    "Select Cities",
-    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+# Main category selection
+data_category = st.sidebar.selectbox(
+    "Select Data Source Category",
+    [
+        "Open Source Data",
+        "Governmental Data"  # New category, currently without implementation
+    ]
 )
 
-# Time range
-time_frame = st.sidebar.radio(
-    "Select Time Frame",
-    ["Yearly", "Monthly", "Seasonal"]
-)
+# Only show additional controls if a category is selected
+if data_category == "Open Source Data":
+    # Main category selection
+    category = st.sidebar.selectbox(
+        "Select Category",
+        ["Temperature & Precipitation",
+         "Water Resources",
+         "Economic Impact",
+         "Health Impact",
+         "Seasonal Analysis",
+         "Future Projections",
+         "Comparative Analysis"]
+    )
+    
+    # Only show these controls after category is selected
+    if category:
+        # City selection
+        selected_cities = st.sidebar.multiselect(
+            "Select Cities",
+            ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+            default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+        )
 
-# Year range
-start_year, end_year = st.sidebar.slider(
-    "Select Year Range",
-    1950, 2023, (1950, 2023)
-)
+        # Time range
+        time_frame = st.sidebar.radio(
+            "Select Time Frame",
+            ["Yearly", "Monthly", "Seasonal"]
+        )
+
+        # Year range
+        start_year, end_year = st.sidebar.slider(
+            "Select Year Range",
+            1950, 2023, (1950, 2023)
+        )
+else:
+    # Set default values when no category is selected
+    selected_cities = ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    time_frame = "Yearly"
+    start_year, end_year = 1950, 2023
 
 if time_frame == "Monthly":
     months = st.sidebar.multiselect(
@@ -382,14 +413,8 @@ elif time_frame == "Seasonal":
         default=["Winter", "Spring", "Summer", "Autumn"]
     )
 
-# Main category selection
-data_category = st.sidebar.selectbox(
-    "Select Data Source Category",
-    [
-        "Open Source Data",
-        "Governmental Data"  # New category, currently without implementation
-    ]
-)
+
+
 
 # Conditional logic for data source categories
 if data_category == "Open Source Data":
