@@ -63,7 +63,7 @@ def get_data_source(indicator):
     return sources.get(indicator, {'link': '#', 'name': 'Data Source', 'access_date': 'Nov 2023'})
 
 # Title and description
-st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
+st.title("🌍 Kurdistan Citiesssss Climate Dashboard (1950-Present)")
 st.markdown("""
 This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region from 1950 onwards:
 * Hewlêr (Erbil)
