@@ -390,17 +390,24 @@ def load_waste_forecast_data():
 @st.cache_data
 def load_waste_detailed_forecast_data():
     try:
-        # Load the detailed waste forecast Excel file
-        file_path = "GovData/waste/WasteGenerationForecastDetailed.xlsx"  # Update the path if needed
-        waste_detailed_forecast_data = pd.read_excel(file_path)
-
-        # Strip column names to avoid leading/trailing whitespace issues
-        waste_detailed_forecast_data.columns = waste_detailed_forecast_data.columns.str.strip()
-
-        return waste_detailed_forecast_data
+        # Load the Excel file
+        file_path = "GovData/waste/WasteGenerationForecastDetailed.xlsx"
+        data = pd.read_excel(file_path)
+        
+        # Clean column names
+        data.columns = data.columns.str.strip()
+        
+        # Ensure the necessary columns are present
+        required_columns = ["Category", "2025", "2030", "2040", "2050"]
+        for col in required_columns:
+            if col not in data.columns:
+                raise ValueError(f"Missing column: {col}")
+        
+        return data
     except Exception as e:
         st.error(f"Error loading detailed waste forecast data: {str(e)}")
         return pd.DataFrame()
+
 
 
 # Load all data
