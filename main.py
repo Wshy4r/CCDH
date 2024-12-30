@@ -501,32 +501,56 @@ if data_source == "Governmental Data":
         ["Waste Management", "Category 2", "Category 3"]  # Add other categories as needed
     )
 
-    if category == "Waste Management":  # Ensure proper indentation here
-        try:
-            # Load the waste composition data
-            waste_data = load_waste_data()
+    if category == "Waste Management":
+        # Load Municipal Solid Waste Composition data
+        waste_data = load_waste_data()
+        
+        if not waste_data.empty:
+            st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
+            st.write("Source: DSEPSWT, MOMT")
 
-            if not waste_data.empty:
-                # Display waste composition data
-                st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
-                st.write("Source: DSEPSWT, MOMT")
+            # Create an interactive pie chart
+            fig = px.pie(
+                waste_data,
+                values='Percentage',
+                names='Type',
+                title="Municipal Solid Waste Composition in Erbil City (2020)",
+                hole=0.3
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
-                # Create an interactive pie chart
-                fig = px.pie(
-                    waste_data,
-                    values='Percentage',  # Percentage column for values
-                    names='Type',  # Type column for labels
-                    title="Municipal Solid Waste Composition in Erbil City (2020)",
-                    hole=0.3
-                )
-                st.plotly_chart(fig, use_container_width=True)
+            # Optional: Display raw data
+            if st.checkbox("Show raw data for Municipal Solid Waste Composition"):
+                st.write(waste_data)
+        else:
+            st.error("Municipal Solid Waste Composition data is unavailable.")
 
-                # Optional: Display raw data
-                if st.checkbox("Show raw data"):
-                    st.write(waste_data)
-        except Exception as e:
-            st.error(f"Error loading waste data: {str(e)}")
+        # Add a separator between the two datasets
+        st.markdown("---")
 
+        # Load Waste Generation Forecast data
+        waste_forecast_data = load_waste_forecast_data()
+        
+        if not waste_forecast_data.empty:
+            st.write("### Waste Generation Forecast")
+            st.write("Source: JICA Project Team")
+
+            # Create a line chart for visualization
+            fig = px.line(
+                waste_forecast_data,
+                x="Year",
+                y="Total Waste Generation (ton/d)",
+                title="Waste Generation Forecast (2025-2050)",
+                labels={"Total Waste Generation (ton/d)": "Total Waste (ton/d)", "Year": "Year"},
+                markers=True
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Optional: Display raw data
+            if st.checkbox("Show raw data for Waste Generation Forecast"):
+                st.write(waste_forecast_data)
+        else:
+            st.error("Waste Generation Forecast data is unavailable.")
 
 
 # Additional analysis options
