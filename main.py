@@ -342,18 +342,27 @@ def load_health_impact_data():
 @st.cache_data
 def load_waste_data():
     try:
-        # Define the path to the Excel file
-        file_path = "GovData/waste/waste_composition.xlsx"
-        
-        # Load the data using pandas
+        # Load the Excel file into a DataFrame
+        file_path = "GovData/waste/waste_composition.xlsx"  # Update this path if necessary
         waste_data = pd.read_excel(file_path)
-        
-        # Return the data as a DataFrame
-        return waste_data
+
+        # Strip column names to avoid leading/trailing whitespace issues
+        waste_data.columns = waste_data.columns.str.strip()
+
+        # Ensure column names are exactly 'Type' and 'Percentage'
+        if 'Type' not in waste_data.columns or 'Percentage' not in waste_data.columns:
+            raise ValueError("The columns 'Type' and 'Percentage' are not found in the data.")
+
+        # Ensure Percentage column is numeric
+        waste_data['Percentage'] = pd.to_numeric(waste_data['Percentage'], errors='coerce')
+
+        # Return the validated DataFrame
+        return waste_data.dropna()
     except Exception as e:
         st.error(f"Error loading waste data: {str(e)}")
         # Return empty DataFrame if file loading fails
         return pd.DataFrame({'Type': [], 'Percentage': []})
+
 
 # Load all data
 temp_df = load_temperature_data()
@@ -486,37 +495,34 @@ if data_source == "Open Source Data":
              "Historical Benchmarks"]
         )
 
-if data_source == "Governmental Data":
-    # Categories specific to Governmental Data
-    category = st.sidebar.selectbox(
-        "Select Category (Governmental Data)",
-        ["Waste Management", "Category 2", "Category 3"]  # Add other categories as needed
-    )
-    
-    if category == "Waste Management":  # This line needs same indentation as 'category = '
-        try:  # This needs to be indented under the if statement
-            waste_data = load_waste_data()
-            
-            if not waste_data.empty:
-                # Display waste composition data
-                st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
-                st.write("Source: DSEPSWT, MOMT")
+if category == "Waste Management":
+    try:
+        # Load the waste composition data
+        waste_data = load_waste_data()
 
-                # Create an interactive pie chart
-                fig = px.pie(
-                    waste_data,
-                    values='Percentage',
-                    names='Type',
-                    title="Municipal Solid Waste Composition in Erbil City (2020)",
-                    hole=0.3
-                )
-                st.plotly_chart(fig, use_container_width=True)
+        if not waste_data.empty:
+            # Display waste composition data
+            st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
+            st.write("Source: DSEPSWT, MOMT")
 
-                # Optional: Display raw data
-                if st.checkbox("Show raw data"):
-                    st.write(waste_data)
-        except Exception as e:
-            st.error(f"Error loading waste data: {str(e)}")
+            # Create an interactive pie chart
+            fig = px.pie(
+                waste_data,
+                values='Percentage',  # Percentage column for values
+                names='Type',         # Type column for labels
+                title="Municipal Solid Waste Composition in Erbil City (2020)",
+                hole=0.3
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Optional: Display raw data
+            if st.checkbox("Show raw data"):
+                st.write(waste_data)
+        else:
+            st.warning("No waste data available to display.")
+    except Exception as e:
+        st.error(f"Error loading waste data: {str(e)}")
+
 
 
 # Additional analysis options
