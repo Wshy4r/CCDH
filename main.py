@@ -591,7 +591,7 @@ with col1:
                     color='City',
                     title=f'Seasonal Temperature Patterns<br><sup>Source: {source["name"]}</sup>',
                     labels={'Temperature': 'Temperature (°C)'},
-                    category_orders={"Season": ["Winter", "Spring", "Summer", "Autumn"]}
+                    category_orders={"Season": ["Wwinter", "Spring", "Summer", "Autumn"]}
                 )
             
             st.plotly_chart(fig, use_container_width=True)
