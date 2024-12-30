@@ -494,34 +494,38 @@ if data_source == "Open Source Data":
              "Regional Patterns",
              "Historical Benchmarks"]
         )
+if data_source == "Governmental Data":
+    # Categories specific to Governmental Data
+    category = st.sidebar.selectbox(
+        "Select Category (Governmental Data)",
+        ["Waste Management", "Category 2", "Category 3"]  # Add other categories as needed
+    )
 
-if category == "Waste Management":
-    try:
-        # Load the waste composition data
-        waste_data = load_waste_data()
+    if category == "Waste Management":  # Ensure proper indentation here
+        try:
+            # Load the waste composition data
+            waste_data = load_waste_data()
 
-        if not waste_data.empty:
-            # Display waste composition data
-            st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
-            st.write("Source: DSEPSWT, MOMT")
+            if not waste_data.empty:
+                # Display waste composition data
+                st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
+                st.write("Source: DSEPSWT, MOMT")
 
-            # Create an interactive pie chart
-            fig = px.pie(
-                waste_data,
-                values='Percentage',  # Percentage column for values
-                names='Type',         # Type column for labels
-                title="Municipal Solid Waste Composition in Erbil City (2020)",
-                hole=0.3
-            )
-            st.plotly_chart(fig, use_container_width=True)
+                # Create an interactive pie chart
+                fig = px.pie(
+                    waste_data,
+                    values='Percentage',  # Percentage column for values
+                    names='Type',  # Type column for labels
+                    title="Municipal Solid Waste Composition in Erbil City (2020)",
+                    hole=0.3
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
-            # Optional: Display raw data
-            if st.checkbox("Show raw data"):
-                st.write(waste_data)
-        else:
-            st.warning("No waste data available to display.")
-    except Exception as e:
-        st.error(f"Error loading waste data: {str(e)}")
+                # Optional: Display raw data
+                if st.checkbox("Show raw data"):
+                    st.write(waste_data)
+        except Exception as e:
+            st.error(f"Error loading waste data: {str(e)}")
 
 
 
