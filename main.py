@@ -348,6 +348,10 @@ health_df = load_health_impact_data()
 # === PART 2 END ===
 # === PART 3 START: ANALYSIS FUNCTIONS AND UI ===
 # Sidebar controls
+# Display logo in the sidebar
+logo_url = "https://i.imgur.com/zLYxLQw.jpeg"
+st.sidebar.image(logo_url, width=150)  # Adjust width if needed
+
 st.sidebar.header("Dashboard Controls")
 
 
