@@ -63,7 +63,7 @@ def get_data_source(indicator):
     return sources.get(indicator, {'link': '#', 'name': 'Data Source', 'access_date': 'Nov 2023'})
 
 # Title and description
-st.title("🌍 Kurdistan Citiesssss Climate Dashboard (1950-Present)")
+st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
 st.markdown("""
 This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region from 1950 onwards:
 * Hewlêr (Erbil)
@@ -350,6 +350,7 @@ health_df = load_health_impact_data()
 # Sidebar controls
 st.sidebar.header("Dashboard Controls")
 
+
 # City selection
 selected_cities = st.sidebar.multiselect(
     "Select Cities",
@@ -382,76 +383,99 @@ elif time_frame == "Seasonal":
         default=["Winter", "Spring", "Summer", "Autumn"]
     )
 
-# Main category selection
-category = st.sidebar.selectbox(
-    "Select Category",
-    ["Temperature & Precipitation",
-     "Water Resources",
-     "Economic Impact",
-     "Health Impact",
-     "Seasonal Analysis",
-     "Future Projections",
-     "Comparative Analysis"]
+# Data source selection
+data_source = st.sidebar.selectbox(
+    "Select Data Source",
+    ["Open Source Data", "Governmental Data"],
+    index=0  # Default to "Open Source Data"
 )
 
-# Category-specific options
-if category == "Temperature & Precipitation":
-    chart_type = st.sidebar.selectbox(
-        "Select Indicator",
-        ["Temperature Trends",
-         "Rainfall Patterns",
-         "Extreme Weather Events",
-         "Drought Analysis",
-         "Combined View"]
+# Variables for category and chart type
+category = None
+chart_type = None
+
+if data_source == "Open Source Data":
+    # Categories specific to Open Source Data
+    category = st.sidebar.selectbox(
+        "Select Category (Open Source Data)",
+        ["Temperature & Precipitation",
+         "Water Resources",
+         "Economic Impact",
+         "Health Impact",
+         "Seasonal Analysis",
+         "Future Projections",
+         "Comparative Analysis"]
     )
-elif category == "Water Resources":
-    chart_type = st.sidebar.selectbox(
-        "Select Indicator",
-        ["River Levels",
-         "Groundwater Levels",
-         "Water Stress Index",
-         "Combined Water Resources"]
+
+    # Category-specific options for Open Source Data
+    if category == "Temperature & Precipitation":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            ["Temperature Trends",
+             "Rainfall Patterns",
+             "Extreme Weather Events",
+             "Drought Analysis",
+             "Combined View"]
+        )
+    elif category == "Water Resources":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            ["River Levels",
+             "Groundwater Levels",
+             "Water Stress Index",
+             "Combined Water Resources"]
+        )
+    elif category == "Economic Impact":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            ["Energy Demand",
+             "Agricultural Production",
+             "Economic Trends",
+             "Combined Economic Impact"]
+        )
+    elif category == "Health Impact":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            ["Heat Stress Index",
+             "Air Health Index",
+             "Health Risk Patterns",
+             "Combined Health Indicators"]
+        )
+    elif category == "Seasonal Analysis":
+        chart_type = st.sidebar.selectbox(
+            "Select Analysis",
+            ["Temperature Patterns",
+             "Rainfall Distribution",
+             "Seasonal Comparisons",
+             "Year-over-Year Changes"]
+        )
+    elif category == "Future Projections":
+        chart_type = st.sidebar.selectbox(
+            "Select Projection",
+            ["Temperature Forecast",
+             "Rainfall Forecast",
+             "Water Resource Outlook",
+             "Combined Projections"]
+        )
+    else:  # Comparative Analysis
+        chart_type = st.sidebar.selectbox(
+            "Select Analysis",
+            ["City Comparisons",
+             "Trend Analysis",
+             "Regional Patterns",
+             "Historical Benchmarks"]
+        )
+
+elif data_source == "Governmental Data":
+    # Categories specific to Governmental Data
+    category = st.sidebar.selectbox(
+        "Select Category (Governmental Data)",
+        ["Category 1", "Category 2", "Category 3"]  # Replace with your actual categories
     )
-elif category == "Economic Impact":
-    chart_type = st.sidebar.selectbox(
-        "Select Indicator",
-        ["Energy Demand",
-         "Agricultural Production",
-         "Economic Trends",
-         "Combined Economic Impact"]
-    )
-elif category == "Health Impact":
-    chart_type = st.sidebar.selectbox(
-        "Select Indicator",
-        ["Heat Stress Index",
-         "Air Health Index",
-         "Health Risk Patterns",
-         "Combined Health Indicators"]
-    )
-elif category == "Seasonal Analysis":
-    chart_type = st.sidebar.selectbox(
-        "Select Analysis",
-        ["Temperature Patterns",
-         "Rainfall Distribution",
-         "Seasonal Comparisons",
-         "Year-over-Year Changes"]
-    )
-elif category == "Future Projections":
-    chart_type = st.sidebar.selectbox(
-        "Select Projection",
-        ["Temperature Forecast",
-         "Rainfall Forecast",
-         "Water Resource Outlook",
-         "Combined Projections"]
-    )
-else:  # Comparative Analysis
-    chart_type = st.sidebar.selectbox(
-        "Select Analysis",
-        ["City Comparisons",
-         "Trend Analysis",
-         "Regional Patterns",
-         "Historical Benchmarks"]
-    )
+
+    # Placeholder for future category-specific options
+    st.sidebar.markdown("Indicators will be added for governmental data in the future.")
+
 
 # Additional analysis options
 show_trend = st.sidebar.checkbox("Show Trend Lines", value=True)
