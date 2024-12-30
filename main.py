@@ -338,6 +338,16 @@ def load_health_impact_data():
                     )
                 })
     return pd.DataFrame(data)
+    
+@st.cache_data
+def load_waste_data():
+    # Define the path to the Excel file
+    file_path = "GovData/waste/waste_composition.xlsx"  # Adjust to the actual path
+    # Load the data using pandas
+    waste_data = pd.read_excel(file_path)
+    # Return the data as a DataFrame
+    return waste_data
+
 
 # Load all data
 temp_df = load_temperature_data()
@@ -487,8 +497,8 @@ if data_source == "Governmental Data":
         # Create an interactive pie chart
         fig = px.pie(
             waste_data,
-            values='Percentage',
-            names='Type',
+            values='Percentage',  # Ensure this column exists in the Excel file
+            names='Type',         # Ensure this column exists in the Excel file
             title="Municipal Solid Waste Composition in Erbil City (2020)",
             hole=0.3  # Optional: donut chart effect
         )
