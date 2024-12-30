@@ -617,30 +617,27 @@ if not waste_detailed_forecast_data.empty:
     st.write("### Detailed Waste Generation Forecast Breakdown")
     st.write("Source: JICA Project Team")
 
-    # Prepare data for stacked bar chart
-    melted_data = pd.melt(
-        waste_detailed_forecast_data,
-        id_vars="Category",
-        value_vars=["2025", "2030", "2040", "2050"],
-        var_name="Year",
+    # Combine data for all years into one DataFrame
+    melted_data = waste_detailed_forecast_data.melt(
+        id_vars=["Category"], 
+        var_name="Year", 
         value_name="Value"
     )
+    melted_data["Year"] = melted_data["Year"].astype(str)  # Ensure 'Year' is treated as categorical
 
-    # Create a stacked bar chart
+    # Plot a single stacked bar chart
     fig = px.bar(
         melted_data,
         x="Year",
         y="Value",
         color="Category",
-        title="Waste Generation Forecast Breakdown (2025-2050)",
-        labels={"Value": "Waste (ton/d)", "Year": "Year", "Category": "Category"},
-        text_auto=True
+        title="Waste Generation Breakdown (2025-2050)",
+        labels={"Value": "Waste Generation (ton/d)", "Year": "Year"},
     )
-    fig.update_layout(barmode="stack", xaxis={"categoryorder": "category ascending"})
-
     st.plotly_chart(fig, use_container_width=True)
 else:
     st.error("Detailed Waste Generation Forecast data is unavailable.")
+
 
 
 # Additional analysis options
