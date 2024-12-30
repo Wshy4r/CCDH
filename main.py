@@ -470,15 +470,33 @@ if data_source == "Open Source Data":
              "Historical Benchmarks"]
         )
 
-elif data_source == "Governmental Data":
+if data_source == "Governmental Data":
     # Categories specific to Governmental Data
     category = st.sidebar.selectbox(
         "Select Category (Governmental Data)",
-        ["Category 1", "Category 2", "Category 3"]  # Replace with your actual categories
+        ["Waste Management", "Category 2", "Category 3"]  # Add other categories as needed
     )
 
-    # Placeholder for future category-specific options
-    st.sidebar.markdown("Indicators will be added for governmental data in the future.")
+    if category == "Waste Management":
+        waste_data = load_waste_data()
+
+        # Display waste composition data in the main area
+        st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
+        st.write("Source: DSEPSWT, MOMT")
+
+        # Create an interactive pie chart
+        fig = px.pie(
+            waste_data,
+            values='Percentage',
+            names='Type',
+            title="Municipal Solid Waste Composition in Erbil City (2020)",
+            hole=0.3  # Optional: donut chart effect
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Optional: Display raw data
+        if st.checkbox("Show raw data"):
+            st.write(waste_data)
 
 
 # Additional analysis options
