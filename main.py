@@ -350,7 +350,7 @@ health_df = load_health_impact_data()
 # Sidebar controls
 # Display logo in the sidebar
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
-st.sidebar.image(logo_url, width=150)  # Adjust width if needed
+st.sidebar.image(logo_url, width=100)  # Adjust width if needed
 
 st.sidebar.header("Dashboard Controls")
 
