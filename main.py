@@ -363,6 +363,30 @@ def load_waste_data():
         # Return empty DataFrame if file loading fails
         return pd.DataFrame({'Type': [], 'Percentage': []})
 
+@st.cache_data
+def load_waste_forecast_data():
+    try:
+        # Define the path to the Excel file
+        file_path = "GovData/waste/WasteGenerationForecast.xlsx"  # Update this path if necessary
+        
+        # Load the data using pandas
+        waste_forecast_data = pd.read_excel(file_path)
+        
+        # Strip column names to avoid leading/trailing whitespace issues
+        waste_forecast_data.columns = waste_forecast_data.columns.str.strip()
+
+        # Ensure column names match the expected names
+        required_columns = ["Year", "Total Waste Generation (ton/d)"]
+        if not all(col in waste_forecast_data.columns for col in required_columns):
+            raise ValueError(f"The data does not have the required columns: {required_columns}")
+
+        # Return the validated DataFrame
+        return waste_forecast_data
+    except Exception as e:
+        st.error(f"Error loading waste forecast data: {str(e)}")
+        # Return empty DataFrame if file loading fails
+        return pd.DataFrame({"Year": [], "Total Waste Generation (ton/d)": []})
+
 
 # Load all data
 temp_df = load_temperature_data()
