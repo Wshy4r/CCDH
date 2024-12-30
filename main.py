@@ -610,28 +610,37 @@ if data_source == "Governmental Data":
                 st.write("### Detailed Waste Generation Forecast Breakdown")
                 st.write("Source: JICA Project Team")
 
-                # Loop through years and create stacked pie charts
-                for year in ["2025", "2030", "2040", "2050"]:
-                    st.write(f"#### Waste Breakdown for {year}")
+                # Load detailed waste generation forecast data
+waste_detailed_forecast_data = load_waste_detailed_forecast_data()
 
-                    # Filter the data for the selected year
-                    year_data = waste_detailed_forecast_data[["Category", year]].copy()
-                    year_data = year_data.rename(columns={year: "Value"})
+if not waste_detailed_forecast_data.empty:
+    st.write("### Detailed Waste Generation Forecast Breakdown")
+    st.write("Source: JICA Project Team")
 
-                    # Create a pie chart
-                    fig = px.pie(
-                        year_data,
-                        values="Value",
-                        names="Category",
-                        title=f"Waste Breakdown ({year})",
-                        hole=0.3
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.error("Detailed Waste Generation Forecast data is unavailable.")
-        else:
-            st.error("Waste Generation Forecast data is unavailable.")
+    # Prepare data for stacked bar chart
+    melted_data = pd.melt(
+        waste_detailed_forecast_data,
+        id_vars="Category",
+        value_vars=["2025", "2030", "2040", "2050"],
+        var_name="Year",
+        value_name="Value"
+    )
 
+    # Create a stacked bar chart
+    fig = px.bar(
+        melted_data,
+        x="Year",
+        y="Value",
+        color="Category",
+        title="Waste Generation Forecast Breakdown (2025-2050)",
+        labels={"Value": "Waste (ton/d)", "Year": "Year", "Category": "Category"},
+        text_auto=True
+    )
+    fig.update_layout(barmode="stack", xaxis={"categoryorder": "category ascending"})
+
+    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.error("Detailed Waste Generation Forecast data is unavailable.")
 
 
 # Additional analysis options
