@@ -392,28 +392,22 @@ def load_waste_detailed_forecast_data():
     try:
         # Load the Excel file
         file_path = "GovData/waste/WasteGenerationForecastDetailed.xlsx"
-        data = pd.read_excel(file_path)
-        
-        # Debug: Output the raw data read from the file
-        st.write("Raw data loaded from Excel:")
+        data = pd.read_excel(file_path, header=None)  # Load without assuming a header
+
+        # Debug: Output raw data
+        st.write("Raw data loaded from Excel (no headers):")
         st.write(data)
-        
-        # Clean column names
-        data.columns = data.columns.str.strip()
-        
-        # Debug: Check cleaned column names
-        st.write("Cleaned column names:", data.columns.tolist())
-        
-        # Ensure the necessary columns are present
-        required_columns = ["Category", "2025", "2030", "2040", "2050"]
-        for col in required_columns:
-            if col not in data.columns:
-                raise ValueError(f"Missing column: {col}")
-        
-        # Debug: Show the first few rows of the validated data
-        st.write("Validated data:")
-        st.write(data.head())
-        
+
+        # Set proper column names manually
+        data.columns = ["Category", "2025", "2030", "2040", "2050"]
+
+        # Drop any extra rows (if there are non-relevant rows above or below the main data)
+        data = data.dropna(subset=["Category"])  # Ensure there's no NaN in the "Category" column
+
+        # Debug: Show the cleaned data
+        st.write("Cleaned data with manually set headers:")
+        st.write(data)
+
         return data
     except Exception as e:
         st.error(f"Error loading detailed waste forecast data: {str(e)}")
