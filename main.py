@@ -397,6 +397,9 @@ def load_waste_detailed_forecast_data():
         # Clean column names
         data.columns = data.columns.str.strip()
         
+        # Debug: Print loaded column names
+        st.write("Loaded columns:", data.columns.tolist())
+        
         # Ensure the necessary columns are present
         required_columns = ["Category", "2025", "2030", "2040", "2050"]
         for col in required_columns:
@@ -407,6 +410,7 @@ def load_waste_detailed_forecast_data():
     except Exception as e:
         st.error(f"Error loading detailed waste forecast data: {str(e)}")
         return pd.DataFrame()
+
 
 
 
