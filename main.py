@@ -387,6 +387,21 @@ def load_waste_forecast_data():
         # Return empty DataFrame if file loading fails
         return pd.DataFrame({"Year": [], "Total Waste Generation (ton/d)": []})
 
+@st.cache_data
+def load_waste_detailed_forecast_data():
+    try:
+        # Load the detailed waste forecast Excel file
+        file_path = "GovData/waste/WasteGenerationForecastDetailed.xlsx"  # Update the path if needed
+        waste_detailed_forecast_data = pd.read_excel(file_path)
+
+        # Strip column names to avoid leading/trailing whitespace issues
+        waste_detailed_forecast_data.columns = waste_detailed_forecast_data.columns.str.strip()
+
+        return waste_detailed_forecast_data
+    except Exception as e:
+        st.error(f"Error loading detailed waste forecast data: {str(e)}")
+        return pd.DataFrame()
+
 
 # Load all data
 temp_df = load_temperature_data()
@@ -573,8 +588,39 @@ if data_source == "Governmental Data":
             # Optional: Display raw data
             if st.checkbox("Show raw data for Waste Generation Forecast"):
                 st.write(waste_forecast_data)
+
+            # Add a separator before stacked pie chart visualization
+            st.markdown("---")
+
+            # Load detailed waste generation forecast data
+            waste_detailed_forecast_data = load_waste_detailed_forecast_data()
+
+            if not waste_detailed_forecast_data.empty:
+                st.write("### Detailed Waste Generation Forecast Breakdown")
+                st.write("Source: JICA Project Team")
+
+                # Loop through years and create stacked pie charts
+                for year in ["2025", "2030", "2040", "2050"]:
+                    st.write(f"#### Waste Breakdown for {year}")
+
+                    # Filter the data for the selected year
+                    year_data = waste_detailed_forecast_data[["Category", year]].copy()
+                    year_data = year_data.rename(columns={year: "Value"})
+
+                    # Create a pie chart
+                    fig = px.pie(
+                        year_data,
+                        values="Value",
+                        names="Category",
+                        title=f"Waste Breakdown ({year})",
+                        hole=0.3
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.error("Detailed Waste Generation Forecast data is unavailable.")
         else:
             st.error("Waste Generation Forecast data is unavailable.")
+
 
 
 # Additional analysis options
