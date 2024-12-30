@@ -341,13 +341,19 @@ def load_health_impact_data():
     
 @st.cache_data
 def load_waste_data():
-    # Define the path to the Excel file
-    file_path = "GovData/waste/waste_composition.xlsx"  # Adjust to the actual path
-    # Load the data using pandas
-    waste_data = pd.read_excel(file_path)
-    # Return the data as a DataFrame
-    return waste_data
-
+    try:
+        # Define the path to the Excel file
+        file_path = "GovData/waste/waste_composition.xlsx"
+        
+        # Load the data using pandas
+        waste_data = pd.read_excel(file_path)
+        
+        # Return the data as a DataFrame
+        return waste_data
+    except Exception as e:
+        st.error(f"Error loading waste data: {str(e)}")
+        # Return empty DataFrame if file loading fails
+        return pd.DataFrame({'Type': [], 'Percentage': []})
 
 # Load all data
 temp_df = load_temperature_data()
@@ -486,27 +492,31 @@ if data_source == "Governmental Data":
         "Select Category (Governmental Data)",
         ["Waste Management", "Category 2", "Category 3"]  # Add other categories as needed
     )
+    
+    if category == "Waste Management":  # This line needs same indentation as 'category = '
+        try:  # This needs to be indented under the if statement
+            waste_data = load_waste_data()
+            
+            if not waste_data.empty:
+                # Display waste composition data
+                st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
+                st.write("Source: DSEPSWT, MOMT")
 
-    if category == "Waste Management":
-        waste_data = load_waste_data()
+                # Create an interactive pie chart
+                fig = px.pie(
+                    waste_data,
+                    values='Percentage',
+                    names='Type',
+                    title="Municipal Solid Waste Composition in Erbil City (2020)",
+                    hole=0.3
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
-        # Display waste composition data in the main area
-        st.write("### Municipal Solid Waste Composition in Erbil City (2020)")
-        st.write("Source: DSEPSWT, MOMT")
-
-        # Create an interactive pie chart
-        fig = px.pie(
-            waste_data,
-            values='Percentage',  # Ensure this column exists in the Excel file
-            names='Type',         # Ensure this column exists in the Excel file
-            title="Municipal Solid Waste Composition in Erbil City (2020)",
-            hole=0.3  # Optional: donut chart effect
-        )
-        st.plotly_chart(fig, use_container_width=True)
-
-        # Optional: Display raw data
-        if st.checkbox("Show raw data"):
-            st.write(waste_data)
+                # Optional: Display raw data
+                if st.checkbox("Show raw data"):
+                    st.write(waste_data)
+        except Exception as e:
+            st.error(f"Error loading waste data: {str(e)}")
 
 
 # Additional analysis options
