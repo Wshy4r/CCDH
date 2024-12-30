@@ -392,32 +392,26 @@ def load_waste_detailed_forecast_data():
     try:
         # Load the Excel file
         file_path = "GovData/waste/WasteGenerationForecastDetailed.xlsx"
-        data = pd.read_excel(file_path, header=None)
+        data = pd.read_excel(file_path, header=None)  # Load without assuming a header
 
-        # Debug: Display raw data before cleaning (for troubleshooting only, remove after debugging)
+        # Debug: Output raw data
         st.write("Raw data loaded from Excel (no headers):")
-        st.dataframe(data)
+        st.write(data)
 
-        # Clean the data
-        # Assuming first row is headers
-        headers = data.iloc[0]  # Get first row as headers
-        data = data[1:]  # Skip the first row
-        data.columns = headers  # Assign headers
+        # Set proper column names manually
+        data.columns = ["Category", "2025", "2030", "2040", "2050"]
 
-        # Ensure numeric columns are properly parsed
-        data.columns = data.columns.map(str.strip)  # Strip extra spaces
-        numeric_cols = data.columns[1:]  # Exclude "Category" column
-        data[numeric_cols] = data[numeric_cols].apply(pd.to_numeric, errors='coerce')
+        # Drop any extra rows (if there are non-relevant rows above or below the main data)
+        data = data.dropna(subset=["Category"])  # Ensure there's no NaN in the "Category" column
 
-        # Debug: Display cleaned data (for troubleshooting only, remove after debugging)
+        # Debug: Show the cleaned data
         st.write("Cleaned data with manually set headers:")
-        st.dataframe(data)
+        st.write(data)
 
         return data
     except Exception as e:
         st.error(f"Error loading detailed waste forecast data: {str(e)}")
         return pd.DataFrame()
-
 
 
 # Load all data
@@ -623,15 +617,15 @@ if not waste_detailed_forecast_data.empty:
     st.write("### Detailed Waste Generation Forecast Breakdown")
     st.write("Source: JICA Project Team")
 
-    # Reshape data for visualization
+    # Combine data for all years into one DataFrame
     melted_data = waste_detailed_forecast_data.melt(
         id_vars=["Category"], 
         var_name="Year", 
         value_name="Value"
     )
-    melted_data["Year"] = melted_data["Year"].astype(str)  # Ensure 'Year' is categorical
+    melted_data["Year"] = melted_data["Year"].astype(str)  # Ensure 'Year' is treated as categorical
 
-    # Plot stacked bar chart
+    # Plot a single stacked bar chart
     fig = px.bar(
         melted_data,
         x="Year",
