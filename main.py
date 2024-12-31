@@ -443,18 +443,6 @@ def load_dams_ponds_data():
         st.error(f"Error loading dams and ponds data: {str(e)}")
         return pd.DataFrame()
 
-@st.cache_data
-def load_planning_dams_data():
-    try:
-        file_path = "GovData/water/Planning_Dams_Erbil_City.xlsx"  # Update with your file path
-        planning_dams_data = pd.read_excel(file_path)
-        planning_dams_data.columns = planning_dams_data.columns.str.strip()  # Clean column names
-        return planning_dams_data
-    except Exception as e:
-        st.error(f"Error loading planning dams data: {str(e)}")
-        return pd.DataFrame()
-
-
 # Load all data
 temp_df = load_temperature_data()
 rainfall_df = load_rainfall_data()
@@ -589,7 +577,7 @@ if data_source == "Governmental Data":
     # Categories specific to Governmental Data
     category = st.sidebar.selectbox(
         "Select Category (Governmental Data)",
-        ["Waste Management", "Power & Energy", "Water Resources Management"]
+        ["Waste Management", "Power & Energy", "Category 3"]  # Add other categories as needed
     )
 
     if category == "Waste Management":
@@ -644,45 +632,124 @@ if data_source == "Governmental Data":
             st.error("Waste Generation Forecast data is unavailable.")
 
     elif category == "Power & Energy":
-        # Existing Power & Energy implementation remains unchanged
-        ...
-
-    elif category == "Water Resources Management":
-        # Load Dams and Ponds Data
-        dams_ponds_data = load_dams_ponds_data()
-
-        if not dams_ponds_data.empty:
-            st.write("### Dams and Ponds Effective for Groundwater Recharge")
-            st.write("Source: JICA Project Team")
-
-            # Bar chart: Reservoir Volumes by Dam and Pond
+        # Load Power Demand Data
+        power_data = load_power_demand_data()
+        if not power_data.empty:
+            st.write("### Power Demand Data for Kurdistan Region (2022)")
+            st.write("Source: Ministry of Electricity")
+            
+            # Display raw data table
+            if st.checkbox("Show raw data for Power Demand"):
+                st.write(power_data)
+            
+            # Create a bar chart for visualization
             fig = px.bar(
-                dams_ponds_data,
-                x="Dam/Pond Name",
-                y="Reservoir Volume (m³)",
-                color="Priority",
-                title="Reservoir Volumes by Dam and Pond",
-                labels={"Reservoir Volume (m³)": "Volume (m³)", "Priority": "Priority Level"}
+                power_data,
+                x="City",
+                y=["Supplied Demand (MW)", "Potential Peak Demand (MW)", "Suppressed Demand (MW)"],
+                title="Supplied vs Potential Peak vs Suppressed Demand (2022)",
+                barmode="group",
+                labels={"value": "MW", "City": "City"}
             )
             st.plotly_chart(fig, use_container_width=True)
-
-            # Table: Catchment Areas and Heights
-            fig = px.bar(
-                dams_ponds_data,
-                x="Dam/Pond Name",
-                y="Catchment Area (Km²)",
-                color="Height (m)",
-                title="Catchment Areas and Heights of Dams and Ponds",
-                labels={"Catchment Area (Km²)": "Catchment Area (Km²)", "Height (m)": "Height (m)"}
-            )
-            st.plotly_chart(fig, use_container_width=True)
-
-            # Optional: Display raw data
-            if st.checkbox("Show raw data for Dams and Ponds"):
-                st.write(dams_ponds_data)
         else:
-            st.error("Dams and Ponds data is unavailable.")
-
+            st.error("Power demand data is unavailable.")
+        
+        # Add a separator between datasets
+        st.markdown("---")
+        
+        # Load Power Demand Forecast Data
+        forecast_data = load_power_demand_forecast()
+        if not forecast_data.empty:
+            st.write("### City-Level Power Demand Forecast for Kurdistan Region (2022-2032)")
+            st.write("Source: Ministry of Electricity")
+            
+            # Display raw data table
+            if st.checkbox("Show raw data for Power Demand Forecast"):
+                st.write(forecast_data)
+            
+            # Melt data for visualization
+            city_data = forecast_data.melt(
+                id_vars="Year",
+                value_vars=["Erbil", "Dohuk", "Sulaymaniyah"],  # Exclude "KRG"
+                var_name="City",
+                value_name="Demand (MW)"
+            )
+            
+            # Create a stacked area chart
+            fig = px.area(
+                city_data,
+                x="Year",
+                y="Demand (MW)",
+                color="City",
+                title="City-Level Power Demand Forecast (2022-2032)",
+                labels={"Demand (MW)": "Demand (MW)", "Year": "Year", "City": "City"}
+            )
+            
+            # Customize layout
+            fig.update_layout(
+                xaxis_title="Year",
+                yaxis_title="Demand (MW)",
+                legend_title="City",
+                title_x=0.5,
+                height=600,  # Adjust height for better readability
+            )
+            
+            # Display the chart
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("Power demand forecast data is unavailable.")
+        
+        # Add Peak Power Demand Data
+        st.markdown("---")
+        peak_power_data = load_peak_power_data()
+        if not peak_power_data.empty:
+            st.write("### Peak Power Demand by Region in Erbil Governorate (2022)")
+            st.write("Source: Ministry of Electricity")
+            
+            # Display raw data with Average and Ratio (%)
+            if st.checkbox("Show raw data for Peak Power Demand"):
+                st.write(peak_power_data)
+            
+            # Exclude Average and Ratio (%) for visualization
+            filtered_peak_power_data = peak_power_data[~peak_power_data["Month"].isin(["Average", "Ratio (%)"])]
+            filtered_peak_power_data["Month"] = pd.Categorical(
+                filtered_peak_power_data["Month"],
+                categories=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                ordered=True
+            )
+            filtered_peak_power_data = filtered_peak_power_data.sort_values(by="Month")
+            
+            # Create line chart for visualization
+            fig = px.line(
+                filtered_peak_power_data,
+                x="Month",
+                y=[
+                    "Electricity Distribution Directorate (1)",
+                    "Electricity Distribution Directorate (2)",
+                    "Salahaddin",
+                    "Shaqlawa",
+                    "Soran",
+                    "Koya"
+                ],
+                title="Peak Power Demand by Region in Erbil Governorate (2022)",
+                labels={"value": "MW", "Month": "Month"},
+                markers=True
+            )
+            
+            # Customize layout
+            fig.update_layout(
+                xaxis_title="Month",
+                yaxis_title="Power Demand (MW)",
+                legend_title="Region",
+                title_x=0.5,
+                height=600
+            )
+            
+            # Show the chart
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("Peak Power Demand data is unavailable.")
 
 
 # Additional analysis options
