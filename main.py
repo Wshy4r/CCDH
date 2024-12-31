@@ -645,42 +645,47 @@ if data_source == "Governmental Data":
         # Add a separator between the datasets
         st.markdown("---")
         
-        # Load Peak Power Demand by Region Data
-        peak_power_data = load_peak_power_data()
-        if not peak_power_data.empty:
-            # Filter out "Average" and "Ratio (%)" rows
-            filtered_peak_power_data = peak_power_data[~peak_power_data["Month"].isin(["Average", "Ratio (%)"])]
+        # Load Power Demand Forecast Data
+        forecast_data = load_power_demand_forecast()
+        if not forecast_data.empty:
+            st.write("### City-Level Power Demand Forecast for Kurdistan Region (2022-2032)")
+            st.write("Source: Ministry of Electricity")
             
-            # Create a line chart for visualization
-            fig = px.line(
-                filtered_peak_power_data,
-                x="Month",
-                y=[
-                    "Electricity Distribution Directorate (1)",
-                    "Electricity Distribution Directorate (2)",
-                    "Salahaddin",
-                    "Shaqlawa",
-                    "Soran",
-                    "Koya"
-                ],
-                title="Peak Power Demand by Region in Erbil Governorate (2022)",
-                labels={"value": "MW", "Month": "Month"},
-                markers=True
+            # Display raw data table
+            if st.checkbox("Show raw data for Power Demand Forecast"):
+                st.write(forecast_data)
+            
+            # Melt data for visualization
+            city_data = forecast_data.melt(
+                id_vars="Year",
+                value_vars=["Erbil", "Dohuk", "Sulaymaniyah"],  # Exclude "KRG"
+                var_name="City",
+                value_name="Demand (MW)"
             )
             
-            # Customize layout for better readability
+            # Create a stacked area chart
+            fig = px.area(
+                city_data,
+                x="Year",
+                y="Demand (MW)",
+                color="City",
+                title="City-Level Power Demand Forecast (2022-2032)",
+                labels={"Demand (MW)": "Demand (MW)", "Year": "Year", "City": "City"}
+            )
+            
+            # Customize layout
             fig.update_layout(
-                xaxis_title="Month",
-                yaxis_title="Power Demand (MW)",
-                legend_title="Region",
+                xaxis_title="Year",
+                yaxis_title="Demand (MW)",
+                legend_title="City",
                 title_x=0.5,
-                height=600  # Adjust height for better visualization
+                height=600,  # Adjust height for better readability
             )
             
-            # Show the chart
+            # Display the chart
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.error("Peak power demand data is unavailable.")
+            st.error("Power demand forecast data is unavailable.")
 
 
 
