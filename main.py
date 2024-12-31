@@ -645,64 +645,15 @@ if data_source == "Governmental Data":
         # Add a separator between the datasets
         st.markdown("---")
         
-        # Load Power Demand Forecast Data
-        forecast_data = load_power_demand_forecast()
-        if not forecast_data.empty:
-            st.write("### City-Level Power Demand Forecast for Kurdistan Region (2022-2032)")
-            st.write("Source: Ministry of Electricity")
-            
-            # Display raw data table
-            if st.checkbox("Show raw data for Power Demand Forecast"):
-                st.write(forecast_data)
-            
-            # Melt data for visualization
-            city_data = forecast_data.melt(
-                id_vars="Year",
-                value_vars=["Erbil", "Dohuk", "Sulaymaniyah"],  # Exclude "KRG"
-                var_name="City",
-                value_name="Demand (MW)"
-            )
-            
-            # Create a stacked area chart
-            fig = px.area(
-                city_data,
-                x="Year",
-                y="Demand (MW)",
-                color="City",
-                title="City-Level Power Demand Forecast (2022-2032)",
-                labels={"Demand (MW)": "Demand (MW)", "Year": "Year", "City": "City"}
-            )
-            
-            # Customize layout
-            fig.update_layout(
-                xaxis_title="Year",
-                yaxis_title="Demand (MW)",
-                legend_title="City",
-                title_x=0.5,
-                height=600,  # Adjust height for better readability
-            )
-            
-            # Display the chart
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.error("Power demand forecast data is unavailable.")
-        
-        # Add a separator
-        st.markdown("---")
-        
-        # Load Peak Power Demand Data for Erbil
-        peak_power_data = load_peak_power_demand_erbil()
+        # Load Peak Power Demand by Region Data
+        peak_power_data = load_peak_power_data()
         if not peak_power_data.empty:
-            st.write("### Peak Power Demand in Erbil Governorate (2022)")
-            st.write("Source: Ministry of Electricity")
-
-            # Display raw data table
-            if st.checkbox("Show raw data for Peak Power Demand in Erbil"):
-                st.write(peak_power_data)
-
+            # Filter out "Average" and "Ratio (%)" rows
+            filtered_peak_power_data = peak_power_data[~peak_power_data["Month"].isin(["Average", "Ratio (%)"])]
+            
             # Create a line chart for visualization
             fig = px.line(
-                peak_power_data,
+                filtered_peak_power_data,
                 x="Month",
                 y=[
                     "Electricity Distribution Directorate (1)",
@@ -717,7 +668,7 @@ if data_source == "Governmental Data":
                 markers=True
             )
             
-            # Update layout for better readability
+            # Customize layout for better readability
             fig.update_layout(
                 xaxis_title="Month",
                 yaxis_title="Power Demand (MW)",
@@ -729,7 +680,7 @@ if data_source == "Governmental Data":
             # Show the chart
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.error("Peak Power Demand data for Erbil is unavailable.")
+            st.error("Peak power demand data is unavailable.")
 
 
 
