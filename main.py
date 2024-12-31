@@ -390,7 +390,7 @@ def load_waste_forecast_data():
 @st.cache_data
 def load_power_demand_data():
     try:
-        file_path = "GovData/power/PowerDemandData.xlsx"  # Update this path to match your file location
+        file_path = "GovData/energy/PowerDemandData.xlsx"  # Update this path to match your file location
         power_data = pd.read_excel(file_path)
         return power_data
     except Exception as e:
