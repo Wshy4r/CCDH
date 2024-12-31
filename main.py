@@ -387,36 +387,6 @@ def load_waste_forecast_data():
         # Return empty DataFrame if file loading fails
         return pd.DataFrame({"Year": [], "Total Waste Generation (ton/d)": []})
 
-@st.cache_data
-def load_waste_forecast_detailed():
-    try:
-        # Define the path to the Excel file
-        file_path = "GovData/waste/WasteGenerationForecastDetailed.xlsx"
-        
-        # Load the data using pandas
-        detailed_forecast = pd.read_excel(file_path)
-        
-        # Debugging: Print available columns
-        st.write("Columns in the dataset:", detailed_forecast.columns)
-
-        # Melt the dataframe to convert it to long format for stacked bar chart
-        melted_df = pd.melt(
-            detailed_forecast,
-            id_vars=['Category'],  # Use the correct column name here
-            value_vars=['2025', '2030', '2040', '2050'],  # The year columns
-            var_name='Year',
-            value_name='Amount'
-        )
-        
-        # Filter out the total rows if needed
-        melted_df = melted_df[~melted_df['Category'].str.contains('Total', case=False, na=False)]
-        
-        return melted_df
-    except Exception as e:
-        st.error(f"Error loading detailed waste forecast data: {str(e)}")
-        return pd.DataFrame()
-
-
 
 # Load all data
 temp_df = load_temperature_data()
@@ -605,49 +575,6 @@ if data_source == "Governmental Data":
                 st.write(waste_forecast_data)
         else:
             st.error("Waste Generation Forecast data is unavailable.")
-
-        # Add a separator between the forecasts
-        st.markdown("---")
-        
-        # Load and display detailed forecast
-        detailed_forecast = load_waste_forecast_detailed()
-        
-        if not detailed_forecast.empty:
-            st.write("### Detailed Waste Generation Forecast by Category")
-            st.write("Source: JICA Project Team")
-            
-            # Create a stacked bar chart
-            fig = px.bar(
-                detailed_forecast,
-                x='Year',
-                y='Amount',
-                color='Item',
-                title="Detailed Waste Generation Forecast by Category (2025-2050)",
-                labels={
-                    'Amount': 'Waste Generation (ton/d)',
-                    'Year': 'Year',
-                    'Item': 'Category'
-                },
-                barmode='stack'
-            )
-            
-            # Update layout for better readability
-            fig.update_layout(
-                legend_title="Waste Category",
-                xaxis_title="Year",
-                yaxis_title="Waste Generation (ton/d)",
-                height=600  # Make the chart taller
-            )
-            
-            # Display the chart
-            st.plotly_chart(fig, use_container_width=True)
-
-            # Optional: Display raw data
-            if st.checkbox("Show raw data for Detailed Waste Generation Forecast"):
-                st.write(detailed_forecast)
-        else:
-            st.error("Detailed waste generation forecast data is unavailable.")
-
 
 
 # Additional analysis options
