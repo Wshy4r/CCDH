@@ -636,32 +636,36 @@ if data_source == "Governmental Data":
         # Load Power Demand Forecast Data
         forecast_data = load_power_demand_forecast()
         if not forecast_data.empty:
-            st.write("### Combined Power Demand Forecast for Kurdistan Region (2022-2032)")
+            st.write("### City-Level Power Demand Forecast for Kurdistan Region (2022-2032)")
             st.write("Source: Ministry of Electricity")
             
-            # Melt data for stacked area chart
-            melted_data = forecast_data.melt(
+            # Display raw data table
+            if st.checkbox("Show raw data for Power Demand Forecast"):
+                st.write(forecast_data)
+            
+            # Melt data for visualization
+            city_data = forecast_data.melt(
                 id_vars="Year",
-                value_vars=["Erbil", "Dohuk", "Sulaymaniyah", "KRG"],
-                var_name="Region",
+                value_vars=["Erbil", "Dohuk", "Sulaymaniyah"],  # Exclude "KRG"
+                var_name="City",
                 value_name="Demand (MW)"
             )
             
             # Create a stacked area chart
             fig = px.area(
-                melted_data,
+                city_data,
                 x="Year",
                 y="Demand (MW)",
-                color="Region",
-                title="Power Demand Forecast (2022-2032)",
-                labels={"Demand (MW)": "Demand (MW)", "Year": "Year", "Region": "City/KRG"},
+                color="City",
+                title="City-Level Power Demand Forecast (2022-2032)",
+                labels={"Demand (MW)": "Demand (MW)", "Year": "Year", "City": "City"}
             )
             
             # Customize layout
             fig.update_layout(
                 xaxis_title="Year",
                 yaxis_title="Demand (MW)",
-                legend_title="Region",
+                legend_title="City",
                 title_x=0.5,
                 height=600,  # Adjust height for better readability
             )
