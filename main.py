@@ -396,6 +396,25 @@ def load_power_demand_data():
     except Exception as e:
         st.error(f"Error loading power demand data: {str(e)}")
         return pd.DataFrame()
+    
+@st.cache_data
+def load_power_demand_forecast():
+    try:
+        # Define the path to the Excel file
+        file_path = "GovData/energy/PowerDemandForecast.xlsx"
+        
+        # Load the data using pandas
+        forecast_data = pd.read_excel(file_path)
+        
+        # Strip column names to avoid leading/trailing whitespace issues
+        forecast_data.columns = forecast_data.columns.str.strip()
+        
+        # Return the validated DataFrame
+        return forecast_data
+    except Exception as e:
+        st.error(f"Error loading power demand forecast data: {str(e)}")
+        # Return an empty DataFrame if loading fails
+        return pd.DataFrame()
 
 
 
@@ -586,7 +605,7 @@ if data_source == "Governmental Data":
                 st.write(waste_forecast_data)
         else:
             st.error("Waste Generation Forecast data is unavailable.")
-    
+
     elif category == "Power & Energy":
         # Load Power Demand Data
         power_data = load_power_demand_data()
@@ -610,6 +629,32 @@ if data_source == "Governmental Data":
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Power demand data is unavailable.")
+        
+        # Add a separator between the datasets
+        st.markdown("---")
+        
+        # Load Power Demand Forecast Data
+        forecast_data = load_power_demand_forecast()
+        if not forecast_data.empty:
+            st.write("### Power Demand Forecast for Kurdistan Region (2022-2032)")
+            st.write("Source: Ministry of Electricity")
+            
+            # Display raw data table
+            if st.checkbox("Show raw data for Power Demand Forecast"):
+                st.write(forecast_data)
+            
+            # Create a line chart for visualization
+            fig = px.line(
+                forecast_data,
+                x="Year",
+                y=["Erbil", "Dohuk", "Sulaymaniyah", "KRG"],
+                title="Power Demand Forecast (2022-2032)",
+                labels={"value": "MW", "Year": "Year"},
+                markers=True
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("Power demand forecast data is unavailable.")
 
 
 
