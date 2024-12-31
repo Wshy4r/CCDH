@@ -415,7 +415,19 @@ def load_power_demand_forecast():
         st.error(f"Error loading power demand forecast data: {str(e)}")
         # Return an empty DataFrame if loading fails
         return pd.DataFrame()
-
+@st.cache_data
+def load_peak_power_demand_erbil():
+    try:
+        # Load the Excel file
+        file_path = "GovData/energy/Peak_Power_Demand_Erbil_2022.xlsx"
+        data = pd.read_excel(file_path)
+        
+        # Ensure columns are clean and standardized
+        data.columns = data.columns.str.strip()
+        return data
+    except Exception as e:
+        st.error(f"Error loading Peak Power Demand data: {str(e)}")
+        return pd.DataFrame()
 
 
 # Load all data
@@ -674,6 +686,50 @@ if data_source == "Governmental Data":
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Power demand forecast data is unavailable.")
+        
+        # Add a separator
+        st.markdown("---")
+        
+        # Load Peak Power Demand Data for Erbil
+        peak_power_data = load_peak_power_demand_erbil()
+        if not peak_power_data.empty:
+            st.write("### Peak Power Demand in Erbil Governorate (2022)")
+            st.write("Source: Ministry of Electricity")
+
+            # Display raw data table
+            if st.checkbox("Show raw data for Peak Power Demand in Erbil"):
+                st.write(peak_power_data)
+
+            # Create a line chart for visualization
+            fig = px.line(
+                peak_power_data,
+                x="Month",
+                y=[
+                    "Electricity Distribution Directorate (1)",
+                    "Electricity Distribution Directorate (2)",
+                    "Salahaddin",
+                    "Shaqlawa",
+                    "Soran",
+                    "Koya"
+                ],
+                title="Peak Power Demand by Region in Erbil Governorate (2022)",
+                labels={"value": "MW", "Month": "Month"},
+                markers=True
+            )
+            
+            # Update layout for better readability
+            fig.update_layout(
+                xaxis_title="Month",
+                yaxis_title="Power Demand (MW)",
+                legend_title="Region",
+                title_x=0.5,
+                height=600  # Adjust height for better visualization
+            )
+            
+            # Show the chart
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("Peak Power Demand data for Erbil is unavailable.")
 
 
 
