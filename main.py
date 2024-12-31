@@ -446,7 +446,7 @@ def load_dams_ponds_data():
 def load_planning_dams_data():
     try:
         # Define the file path for the planning dams Excel file
-        file_path = "GovData/water/Planning_Dams_Erbil_City.xlsx"  # Adjust the file path if needed
+        file_path = "GovData/water/Planning_Dams_Erbil.xlsx"  # Adjust the file path if needed
         planning_dams_data = pd.read_excel(file_path)
         
         # Clean column names
