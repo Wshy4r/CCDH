@@ -420,7 +420,7 @@ def load_power_demand_forecast():
 def load_peak_power_data():
     try:
         # Replace with the correct file path for your Excel data
-        file_path = "GovData/energy/PeakPowerDemand2022_Erbil.xlsx"  # Update this path as needed
+        file_path = "GovData/energy/Peak_Power_Demand_Erbil_2022.xlsx"  # Update this path as needed
         peak_power_data = pd.read_excel(file_path)
         
         # Strip column names to avoid whitespace issues
