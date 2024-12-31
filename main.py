@@ -387,33 +387,6 @@ def load_waste_forecast_data():
         # Return empty DataFrame if file loading fails
         return pd.DataFrame({"Year": [], "Total Waste Generation (ton/d)": []})
 
-@st.cache_data
-def load_waste_detailed_forecast_data():
-    try:
-        # Load the Excel file
-        file_path = "GovData/waste/WasteGenerationForecastDetailed.xlsx"
-        data = pd.read_excel(file_path, header=None)  # Load without assuming a header
-
-        # Debug: Output raw data
-        st.write("Raw data loaded from Excel (no headers):")
-        st.write(data)
-
-        # Set proper column names manually
-        data.columns = ["Category", "2025", "2030", "2040", "2050"]
-
-        # Drop any extra rows (if there are non-relevant rows above or below the main data)
-        data = data.dropna(subset=["Category"])  # Ensure there's no NaN in the "Category" column
-
-        # Debug: Show the cleaned data
-        st.write("Cleaned data with manually set headers:")
-        st.write(data)
-
-        return data
-    except Exception as e:
-        st.error(f"Error loading detailed waste forecast data: {str(e)}")
-        return pd.DataFrame()
-
-
 # Load all data
 temp_df = load_temperature_data()
 rainfall_df = load_rainfall_data()
@@ -599,45 +572,8 @@ if data_source == "Governmental Data":
             # Optional: Display raw data
             if st.checkbox("Show raw data for Waste Generation Forecast"):
                 st.write(waste_forecast_data)
-
-            # Add a separator before stacked pie chart visualization
-            st.markdown("---")
-
-            # Load detailed waste generation forecast data
-            waste_detailed_forecast_data = load_waste_detailed_forecast_data()
-
-            if not waste_detailed_forecast_data.empty:
-                st.write("### Detailed Waste Generation Forecast Breakdown")
-                st.write("Source: JICA Project Team")
-
-                # Load detailed waste generation forecast data
-waste_detailed_forecast_data = load_waste_detailed_forecast_data()
-
-if not waste_detailed_forecast_data.empty:
-    st.write("### Detailed Waste Generation Forecast Breakdown")
-    st.write("Source: JICA Project Team")
-
-    # Combine data for all years into one DataFrame
-    melted_data = waste_detailed_forecast_data.melt(
-        id_vars=["Category"], 
-        var_name="Year", 
-        value_name="Value"
-    )
-    melted_data["Year"] = melted_data["Year"].astype(str)  # Ensure 'Year' is treated as categorical
-
-    # Plot a single stacked bar chart
-    fig = px.bar(
-        melted_data,
-        x="Year",
-        y="Value",
-        color="Category",
-        title="Waste Generation Breakdown (2025-2050)",
-        labels={"Value": "Waste Generation (ton/d)", "Year": "Year"},
-    )
-    st.plotly_chart(fig, use_container_width=True)
-else:
-    st.error("Detailed Waste Generation Forecast data is unavailable.")
-
+        else:
+            st.error("Waste Generation Forecast data is unavailable.")
 
 
 # Additional analysis options
