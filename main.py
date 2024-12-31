@@ -443,6 +443,18 @@ def load_dams_ponds_data():
         st.error(f"Error loading dams and ponds data: {str(e)}")
         return pd.DataFrame()
 
+@st.cache_data
+def load_planning_dams_data():
+    try:
+        file_path = "GovData/water/Planning_Dams_Erbil_City.xlsx"  # Update with your file path
+        planning_dams_data = pd.read_excel(file_path)
+        planning_dams_data.columns = planning_dams_data.columns.str.strip()  # Clean column names
+        return planning_dams_data
+    except Exception as e:
+        st.error(f"Error loading planning dams data: {str(e)}")
+        return pd.DataFrame()
+
+
 # Load all data
 temp_df = load_temperature_data()
 rainfall_df = load_rainfall_data()
@@ -635,41 +647,75 @@ if data_source == "Governmental Data":
         # Existing Power & Energy implementation remains unchanged
         ...
 
-    elif category == "Water Resources Management":
-        # Load Dams and Ponds Data
-        dams_ponds_data = load_dams_ponds_data()
+elif category == "Water Resources Management":
+    # Load Dams and Ponds Data
+    dams_ponds_data = load_dams_ponds_data()
+    planning_dams_data = load_planning_dams_data()
 
-        if not dams_ponds_data.empty:
-            st.write("### Dams and Ponds Effective for Groundwater Recharge")
-            st.write("Source: JICA Project Team")
+    if not dams_ponds_data.empty:
+        st.write("### Dams and Ponds Effective for Groundwater Recharge")
+        st.write("Source: JICA Project Team")
 
-            # Bar chart: Reservoir Volumes by Dam and Pond
-            fig = px.bar(
-                dams_ponds_data,
-                x="Dam/Pond Name",
-                y="Reservoir Volume (m³)",
-                color="Priority",
-                title="Reservoir Volumes by Dam and Pond",
-                labels={"Reservoir Volume (m³)": "Volume (m³)", "Priority": "Priority Level"}
-            )
-            st.plotly_chart(fig, use_container_width=True)
+        # Bar chart: Reservoir Volumes by Dam and Pond
+        fig = px.bar(
+            dams_ponds_data,
+            x="Dam/Pond Name",
+            y="Reservoir Volume (m³)",
+            color="Priority",
+            title="Reservoir Volumes by Dam and Pond",
+            labels={"Reservoir Volume (m³)": "Volume (m³)", "Priority": "Priority Level"}
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-            # Table: Catchment Areas and Heights
-            fig = px.bar(
-                dams_ponds_data,
-                x="Dam/Pond Name",
-                y="Catchment Area (Km²)",
-                color="Height (m)",
-                title="Catchment Areas and Heights of Dams and Ponds",
-                labels={"Catchment Area (Km²)": "Catchment Area (Km²)", "Height (m)": "Height (m)"}
-            )
-            st.plotly_chart(fig, use_container_width=True)
+        # Table: Catchment Areas and Heights
+        fig = px.bar(
+            dams_ponds_data,
+            x="Dam/Pond Name",
+            y="Catchment Area (Km²)",
+            color="Height (m)",
+            title="Catchment Areas and Heights of Dams and Ponds",
+            labels={"Catchment Area (Km²)": "Catchment Area (Km²)", "Height (m)": "Height (m)"}
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-            # Optional: Display raw data
-            if st.checkbox("Show raw data for Dams and Ponds"):
-                st.write(dams_ponds_data)
-        else:
-            st.error("Dams and Ponds data is unavailable.")
+        # Optional: Display raw data
+        if st.checkbox("Show raw data for Dams and Ponds"):
+            st.write(dams_ponds_data)
+    else:
+        st.error("Dams and Ponds data is unavailable.")
+
+    st.markdown("---")
+
+    if not planning_dams_data.empty:
+        st.write("### Details of the Planning Dams - Erbil City")
+        st.write("Source: GDUP")
+
+        # Bar chart: Dam Heights
+        fig = px.bar(
+            planning_dams_data,
+            x="Site Name",
+            y="Dam Height (m)",
+            color="River Catchment",
+            title="Planned Dams and Their Heights",
+            labels={"Dam Height (m)": "Height (m)", "River Catchment": "River Catchment"}
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Pie chart: Types of Dams
+        fig = px.pie(
+            planning_dams_data,
+            names="Type of Dam",
+            title="Distribution of Planned Dam Types",
+            hole=0.3
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Optional: Display raw data
+        if st.checkbox("Show raw data for Planning Dams"):
+            st.write(planning_dams_data)
+    else:
+        st.error("Planning Dams data is unavailable.")
+
 
 
 
