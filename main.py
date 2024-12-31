@@ -618,7 +618,7 @@ if data_source == "Governmental Data":
         else:
             st.error("Waste Generation Forecast data is unavailable.")
 
-elif category == "Power & Energy":
+    elif category == "Power & Energy":
     # Load Power Demand Data
     power_data = load_power_demand_data()
     if not power_data.empty:
@@ -648,7 +648,11 @@ elif category == "Power & Energy":
     # Load Peak Power Demand by Region Data
     peak_power_data = load_peak_power_data()
     if not peak_power_data.empty:
-        # Filter out "Average" and "Ratio (%)" rows
+        # Display raw data including "Average" and "Ratio (%)"
+        if st.checkbox("Show raw data for Peak Power Demand by Region"):
+            st.write(peak_power_data)
+        
+        # Filter out "Average" and "Ratio (%)" rows for visualization
         filtered_peak_power_data = peak_power_data[~peak_power_data["Month"].isin(["Average", "Ratio (%)"])]
         
         # Convert Month column to categorical type to maintain proper order
@@ -691,6 +695,7 @@ elif category == "Power & Energy":
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.error("Peak power demand data is unavailable.")
+
 
 
 
