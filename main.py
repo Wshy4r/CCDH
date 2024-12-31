@@ -643,18 +643,40 @@ if data_source == "Governmental Data":
             if st.checkbox("Show raw data for Power Demand Forecast"):
                 st.write(forecast_data)
             
-            # Create a line chart for visualization
-            fig = px.line(
-                forecast_data,
+            # Separate total (KRG) from individual cities
+            city_data = forecast_data.melt(
+                id_vars="Year",
+                value_vars=["Erbil", "Dohuk", "Sulaymaniyah"],
+                var_name="City",
+                value_name="Demand (MW)"
+            )
+            krg_data = forecast_data[["Year", "KRG"]].rename(columns={"KRG": "Demand (MW)"})
+            
+            # Create a line chart for individual cities
+            fig_city = px.line(
+                city_data,
                 x="Year",
-                y=["Erbil", "Dohuk", "Sulaymaniyah", "KRG"],
-                title="Power Demand Forecast (2022-2032)",
-                labels={"value": "MW", "Year": "Year"},
+                y="Demand (MW)",
+                color="City",
+                title="City-Level Power Demand Forecast (2022-2032)",
+                labels={"Demand (MW)": "MW", "Year": "Year"},
                 markers=True
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig_city, use_container_width=True)
+            
+            # Create a separate line chart for KRG total
+            fig_krg = px.line(
+                krg_data,
+                x="Year",
+                y="Demand (MW)",
+                title="KRG Total Power Demand Forecast (2022-2032)",
+                labels={"Demand (MW)": "MW", "Year": "Year"},
+                markers=True
+            )
+            st.plotly_chart(fig_krg, use_container_width=True)
         else:
             st.error("Power demand forecast data is unavailable.")
+
 
 
 
