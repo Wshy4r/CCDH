@@ -667,7 +667,7 @@ elif category == "Water Resources Management":
         )
         st.plotly_chart(fig, use_container_width=True)
 
-        # Table: Catchment Areas and Heights
+        # Bar chart: Catchment Areas and Heights
         fig = px.bar(
             dams_ponds_data,
             x="Dam/Pond Name",
