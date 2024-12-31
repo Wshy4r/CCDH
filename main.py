@@ -387,6 +387,17 @@ def load_waste_forecast_data():
         # Return empty DataFrame if file loading fails
         return pd.DataFrame({"Year": [], "Total Waste Generation (ton/d)": []})
 
+@st.cache_data
+def load_power_demand_data():
+    try:
+        file_path = "GovData/power/PowerDemandData.xlsx"  # Update this path to match your file location
+        power_data = pd.read_excel(file_path)
+        return power_data
+    except Exception as e:
+        st.error(f"Error loading power demand data: {str(e)}")
+        return pd.DataFrame()
+
+
 
 # Load all data
 temp_df = load_temperature_data()
@@ -522,7 +533,7 @@ if data_source == "Governmental Data":
     # Categories specific to Governmental Data
     category = st.sidebar.selectbox(
         "Select Category (Governmental Data)",
-        ["Waste Management", "Category 2", "Category 3"]  # Add other categories as needed
+        ["Waste Management", "Power & Energy", "Category 3"]  # Add other categories as needed
     )
 
     if category == "Waste Management":
@@ -575,6 +586,31 @@ if data_source == "Governmental Data":
                 st.write(waste_forecast_data)
         else:
             st.error("Waste Generation Forecast data is unavailable.")
+    
+    elif category == "Power & Energy":
+        # Load Power Demand Data
+        power_data = load_power_demand_data()
+        if not power_data.empty:
+            st.write("### Power Demand Data for Kurdistan Region (2022)")
+            st.write("Source: Ministry of Electricity")
+            
+            # Display raw data table
+            if st.checkbox("Show raw data for Power Demand"):
+                st.write(power_data)
+            
+            # Create a bar chart for visualization
+            fig = px.bar(
+                power_data,
+                x="City",
+                y=["Supplied Demand (MW)", "Potential Peak Demand (MW)", "Suppressed Demand (MW)"],
+                title="Supplied vs Potential Peak vs Suppressed Demand (2022)",
+                barmode="group",
+                labels={"value": "MW", "City": "City"}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("Power demand data is unavailable.")
+
 
 
 # Additional analysis options
