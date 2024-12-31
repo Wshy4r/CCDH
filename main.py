@@ -416,6 +416,21 @@ def load_power_demand_forecast():
         # Return an empty DataFrame if loading fails
         return pd.DataFrame()
 
+@st.cache_data
+def load_peak_power_data():
+    try:
+        # Replace with the correct file path for your Excel data
+        file_path = "GovData/energy/PeakPowerDemand2022_Erbil.xlsx"  # Update this path as needed
+        peak_power_data = pd.read_excel(file_path)
+        
+        # Strip column names to avoid whitespace issues
+        peak_power_data.columns = peak_power_data.columns.str.strip()
+        
+        # Return the DataFrame
+        return peak_power_data
+    except Exception as e:
+        st.error(f"Error loading peak power demand data: {str(e)}")
+        return pd.DataFrame()
 
 
 # Load all data
@@ -630,7 +645,7 @@ if data_source == "Governmental Data":
         else:
             st.error("Power demand data is unavailable.")
         
-        # Add a separator between the datasets
+        # Add a separator between datasets
         st.markdown("---")
         
         # Load Power Demand Forecast Data
@@ -674,7 +689,57 @@ if data_source == "Governmental Data":
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Power demand forecast data is unavailable.")
-
+        
+        # Add Peak Power Demand Data
+        st.markdown("---")
+        peak_power_data = load_peak_power_data()
+        if not peak_power_data.empty:
+            st.write("### Peak Power Demand by Region in Erbil Governorate (2022)")
+            st.write("Source: Ministry of Electricity")
+            
+            # Display raw data with Average and Ratio (%)
+            if st.checkbox("Show raw data for Peak Power Demand"):
+                st.write(peak_power_data)
+            
+            # Exclude Average and Ratio (%) for visualization
+            filtered_peak_power_data = peak_power_data[~peak_power_data["Month"].isin(["Average", "Ratio (%)"])]
+            filtered_peak_power_data["Month"] = pd.Categorical(
+                filtered_peak_power_data["Month"],
+                categories=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                ordered=True
+            )
+            filtered_peak_power_data = filtered_peak_power_data.sort_values(by="Month")
+            
+            # Create line chart for visualization
+            fig = px.line(
+                filtered_peak_power_data,
+                x="Month",
+                y=[
+                    "Electricity Distribution Directorate (1)",
+                    "Electricity Distribution Directorate (2)",
+                    "Salahaddin",
+                    "Shaqlawa",
+                    "Soran",
+                    "Koya"
+                ],
+                title="Peak Power Demand by Region in Erbil Governorate (2022)",
+                labels={"value": "MW", "Month": "Month"},
+                markers=True
+            )
+            
+            # Customize layout
+            fig.update_layout(
+                xaxis_title="Month",
+                yaxis_title="Power Demand (MW)",
+                legend_title="Region",
+                title_x=0.5,
+                height=600
+            )
+            
+            # Show the chart
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("Peak Power Demand data is unavailable.")
 
 
 # Additional analysis options
