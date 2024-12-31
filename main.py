@@ -415,19 +415,7 @@ def load_power_demand_forecast():
         st.error(f"Error loading power demand forecast data: {str(e)}")
         # Return an empty DataFrame if loading fails
         return pd.DataFrame()
-@st.cache_data
-def load_peak_power_demand_erbil():
-    try:
-        # Load the Excel file
-        file_path = "GovData/energy/Peak_Power_Demand_Erbil_2022.xlsx"
-        data = pd.read_excel(file_path)
-        
-        # Ensure columns are clean and standardized
-        data.columns = data.columns.str.strip()
-        return data
-    except Exception as e:
-        st.error(f"Error loading Peak Power Demand data: {str(e)}")
-        return pd.DataFrame()
+
 
 
 # Load all data
@@ -648,100 +636,75 @@ if data_source == "Governmental Data":
         # Load Power Demand Forecast Data
         forecast_data = load_power_demand_forecast()
         if not forecast_data.empty:
-            st.write("### City-Level Power Demand Forecast for Kurdistan Region (2022-2032)")
+            st.write("### Combined Power Demand Forecast for Kurdistan Region (2022-2032)")
             st.write("Source: Ministry of Electricity")
             
             # Display raw data table
             if st.checkbox("Show raw data for Power Demand Forecast"):
                 st.write(forecast_data)
             
-            # Melt data for visualization
+            # Separate city-level data and KRG total
             city_data = forecast_data.melt(
                 id_vars="Year",
-                value_vars=["Erbil", "Dohuk", "Sulaymaniyah"],  # Exclude "KRG"
+                value_vars=["Erbil", "Dohuk", "Sulaymaniyah"],
                 var_name="City",
                 value_name="Demand (MW)"
             )
+            krg_data = forecast_data[["Year", "KRG"]].rename(columns={"KRG": "Demand (MW)"})
             
-            # Create a stacked area chart
-            fig = px.area(
-                city_data,
-                x="Year",
-                y="Demand (MW)",
-                color="City",
-                title="City-Level Power Demand Forecast (2022-2032)",
-                labels={"Demand (MW)": "Demand (MW)", "Year": "Year", "City": "City"}
+            # Create a combined figure with subplots
+            from plotly.subplots import make_subplots
+            
+            # Create subplots: 1 row, 2 columns
+            fig = make_subplots(
+                rows=2, cols=1,
+                shared_xaxes=True,
+                vertical_spacing=0.1,
+                subplot_titles=(
+                    "City-Level Power Demand Forecast (2022-2032)",
+                    "KRG Total Power Demand Forecast (2022-2032)"
+                )
             )
             
-            # Customize layout
+            # Add city-level data
+            for city in ["Erbil", "Dohuk", "Sulaymaniyah"]:
+                city_trace = city_data[city_data["City"] == city]
+                fig.add_trace(
+                    go.Scatter(
+                        x=city_trace["Year"],
+                        y=city_trace["Demand (MW)"],
+                        mode="lines+markers",
+                        name=city
+                    ),
+                    row=1, col=1
+                )
+            
+            # Add KRG total data
+            fig.add_trace(
+                go.Scatter(
+                    x=krg_data["Year"],
+                    y=krg_data["Demand (MW)"],
+                    mode="lines+markers",
+                    name="KRG Total",
+                    line=dict(color="red", width=3, dash="dot")
+                ),
+                row=2, col=1
+            )
+            
+            # Update layout
             fig.update_layout(
+                height=600,  # Adjust the height
+                title_text="Power Demand Forecast (2022-2032)",
+                title_x=0.5,  # Center title
                 xaxis_title="Year",
                 yaxis_title="Demand (MW)",
-                legend_title="City",
-                title_x=0.5,
-                height=600,  # Adjust height for better readability
+                showlegend=True
             )
             
-            # Display the chart
+            # Show the combined chart
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Power demand forecast data is unavailable.")
-
-        # Add a separator between datasets
-        st.markdown("---")
-
-        # Load Peak Power Demand by Region Data
-        peak_power_data = load_peak_power_data()
-        if not peak_power_data.empty:
-            # Display raw data including "Average" and "Ratio (%)"
-            if st.checkbox("Show raw data for Peak Power Demand by Region"):
-                st.write(peak_power_data)
-            
-            # Filter out "Average" and "Ratio (%)" rows for visualization
-            filtered_peak_power_data = peak_power_data[~peak_power_data["Month"].isin(["Average", "Ratio (%)"])]
-            
-            # Convert Month column to categorical type to maintain proper order
-            filtered_peak_power_data["Month"] = pd.Categorical(
-                filtered_peak_power_data["Month"],
-                categories=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                ordered=True
-            )
-            
-            # Sort by Month to ensure correct order
-            filtered_peak_power_data = filtered_peak_power_data.sort_values(by="Month")
-            
-            # Create a line chart for visualization
-            fig = px.line(
-                filtered_peak_power_data,
-                x="Month",
-                y=[
-                    "Electricity Distribution Directorate (1)",
-                    "Electricity Distribution Directorate (2)",
-                    "Salahaddin",
-                    "Shaqlawa",
-                    "Soran",
-                    "Koya"
-                ],
-                title="Peak Power Demand by Region in Erbil Governorate (2022)",
-                labels={"value": "MW", "Month": "Month"},
-                markers=True
-            )
-            
-            # Customize layout for better readability
-            fig.update_layout(
-                xaxis_title="Month",
-                yaxis_title="Power Demand (MW)",
-                legend_title="Region",
-                title_x=0.5,
-                height=600  # Adjust height for better visualization
-            )
-            
-            # Show the chart
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.error("Peak power demand data is unavailable.")
-
-
 
 
 # Additional analysis options
