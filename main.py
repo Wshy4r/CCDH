@@ -639,10 +639,6 @@ if data_source == "Governmental Data":
             st.write("### Combined Power Demand Forecast for Kurdistan Region (2022-2032)")
             st.write("Source: Ministry of Electricity")
             
-            # Display raw data table
-            if st.checkbox("Show raw data for Power Demand Forecast"):
-                st.write(forecast_data)
-            
             # Melt data for stacked area chart
             melted_data = forecast_data.melt(
                 id_vars="Year",
@@ -674,6 +670,7 @@ if data_source == "Governmental Data":
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Power demand forecast data is unavailable.")
+
 
 
 # Additional analysis options
