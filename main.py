@@ -643,65 +643,34 @@ if data_source == "Governmental Data":
             if st.checkbox("Show raw data for Power Demand Forecast"):
                 st.write(forecast_data)
             
-            # Separate city-level data and KRG total
-            city_data = forecast_data.melt(
+            # Melt data for stacked area chart
+            melted_data = forecast_data.melt(
                 id_vars="Year",
-                value_vars=["Erbil", "Dohuk", "Sulaymaniyah"],
-                var_name="City",
+                value_vars=["Erbil", "Dohuk", "Sulaymaniyah", "KRG"],
+                var_name="Region",
                 value_name="Demand (MW)"
             )
-            krg_data = forecast_data[["Year", "KRG"]].rename(columns={"KRG": "Demand (MW)"})
             
-            # Create a combined figure with subplots
-            from plotly.subplots import make_subplots
-            
-            # Create subplots: 1 row, 2 columns
-            fig = make_subplots(
-                rows=2, cols=1,
-                shared_xaxes=True,
-                vertical_spacing=0.1,
-                subplot_titles=(
-                    "City-Level Power Demand Forecast (2022-2032)",
-                    "KRG Total Power Demand Forecast (2022-2032)"
-                )
+            # Create a stacked area chart
+            fig = px.area(
+                melted_data,
+                x="Year",
+                y="Demand (MW)",
+                color="Region",
+                title="Power Demand Forecast (2022-2032)",
+                labels={"Demand (MW)": "Demand (MW)", "Year": "Year", "Region": "City/KRG"},
             )
             
-            # Add city-level data
-            for city in ["Erbil", "Dohuk", "Sulaymaniyah"]:
-                city_trace = city_data[city_data["City"] == city]
-                fig.add_trace(
-                    go.Scatter(
-                        x=city_trace["Year"],
-                        y=city_trace["Demand (MW)"],
-                        mode="lines+markers",
-                        name=city
-                    ),
-                    row=1, col=1
-                )
-            
-            # Add KRG total data
-            fig.add_trace(
-                go.Scatter(
-                    x=krg_data["Year"],
-                    y=krg_data["Demand (MW)"],
-                    mode="lines+markers",
-                    name="KRG Total",
-                    line=dict(color="red", width=3, dash="dot")
-                ),
-                row=2, col=1
-            )
-            
-            # Update layout
+            # Customize layout
             fig.update_layout(
-                height=600,  # Adjust the height
-                title_text="Power Demand Forecast (2022-2032)",
-                title_x=0.5,  # Center title
                 xaxis_title="Year",
                 yaxis_title="Demand (MW)",
-                showlegend=True
+                legend_title="Region",
+                title_x=0.5,
+                height=600,  # Adjust height for better readability
             )
             
-            # Show the combined chart
+            # Display the chart
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Power demand forecast data is unavailable.")
