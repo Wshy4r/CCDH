@@ -396,6 +396,9 @@ def load_waste_forecast_detailed():
         # Load the data using pandas
         detailed_forecast = pd.read_excel(file_path)
         
+        # Debugging: Print available columns
+        st.write("Columns in the dataset:", detailed_forecast.columns)
+
         # Melt the dataframe to convert it to long format for stacked bar chart
         melted_df = pd.melt(
             detailed_forecast,
@@ -412,6 +415,7 @@ def load_waste_forecast_detailed():
     except Exception as e:
         st.error(f"Error loading detailed waste forecast data: {str(e)}")
         return pd.DataFrame()
+
 
 
 # Load all data
