@@ -602,7 +602,7 @@ if data_source == "Governmental Data":
         else:
             st.error("Waste Generation Forecast data is unavailable.")
 
-            # Add a separator between the forecasts
+        # Add a separator between the forecasts
         st.markdown("---")
         
         # Load and display detailed forecast
@@ -643,6 +643,7 @@ if data_source == "Governmental Data":
                 st.write(detailed_forecast)
         else:
             st.error("Detailed waste generation forecast data is unavailable.")
+
 
 
 # Additional analysis options
