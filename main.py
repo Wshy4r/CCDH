@@ -648,8 +648,10 @@ if data_source == "Governmental Data":
         # Load Peak Power Demand by Region Data
         peak_power_data = load_peak_power_data()
         if not peak_power_data.empty:
-            # Filter out "Average" and "Ratio (%)" rows
-            filtered_peak_power_data = peak_power_data[~peak_power_data["Month"].isin(["Average", "Ratio (%)"])]
+            # Exclude "Average" and "Ratio (%)" from the data
+            filtered_peak_power_data = peak_power_data.loc[
+                ~peak_power_data["Month"].isin(["Average", "Ratio (%)"])
+            ]
             
             # Create a line chart for visualization
             fig = px.line(
@@ -681,6 +683,7 @@ if data_source == "Governmental Data":
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Peak power demand data is unavailable.")
+
 
 
 
