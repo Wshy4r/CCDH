@@ -402,14 +402,14 @@ def load_waste_forecast_detailed():
         # Melt the dataframe to convert it to long format for stacked bar chart
         melted_df = pd.melt(
             detailed_forecast,
-            id_vars=['Item'],  # The category column
+            id_vars=['Category'],  # Use the correct column name here
             value_vars=['2025', '2030', '2040', '2050'],  # The year columns
             var_name='Year',
             value_name='Amount'
         )
         
-        # Filter out the total rows
-        melted_df = melted_df[~melted_df['Item'].str.contains('Total', case=False)]
+        # Filter out the total rows if needed
+        melted_df = melted_df[~melted_df['Category'].str.contains('Total', case=False, na=False)]
         
         return melted_df
     except Exception as e:
