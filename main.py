@@ -594,7 +594,7 @@ if data_source == "Governmental Data":
     # Categories specific to Governmental Data
     category = st.sidebar.selectbox(
         "Select Category (Governmental Data)",
-        ["Waste Management", "Power & Energy", "Category 3"]  # Add other categories as needed
+        ["Waste Management", "Power & Energy", "Water Resources Management"]  # Add other categories as needed
     )
 
     if category == "Waste Management":
