@@ -527,21 +527,10 @@ show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 
 
-if show_dashboard or (not show_research_hub and not show_data_sources):
-    # Main Dashboard Content
-    st.sidebar.header("Dashboard Controls")
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
-    )
-    st.title("Dashboard")
-    st.write("Welcome to the Climate Dashboard.")
-    st.write("Explore climate trends, water resources, economic impact, and more.")
 
   
 
-elif show_research_hub:
+if show_research_hub:
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
