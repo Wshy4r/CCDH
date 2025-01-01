@@ -450,11 +450,7 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
     
-def filter_data(df, cities=None):
-    filtered = df[
-        (df['Year'] >= start_year) & 
-        (df['Year'] <= end_year)
-    ]
+
     
     if cities:  # Apply city filter only if cities are provided
         filtered = filtered[df['City'].isin(cities)]
