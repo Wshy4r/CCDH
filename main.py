@@ -485,26 +485,27 @@ def render_research_hub():
         st.error("No research data is available.")
         return
 
-    # Horizontal Scrolling Layout
+    # Create a grid layout for profiles
+    cols = st.columns(3)  # Display three profiles per row
     num_profiles = len(research_data)
-    start = st.slider("Scroll through profiles", 0, max(0, num_profiles - 3), step=1)
 
-    for i in range(start, min(start + 3, num_profiles)):
-        row = research_data.iloc[i]
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=120)
-        with col2:
-            st.subheader(row.get("Name", "Unknown"))
-            st.write(row.get("Description", "No description provided."))
-            st.write("**Research Papers:**")
-            papers = [row.get("Paper_1", "No paper available"), row.get("Paper_2", "No paper available")]
-            for paper in papers:
-                if paper:
-                    st.markdown(f"- {paper}")
-
-        # Add spacing
-        st.markdown("---")
+    for idx, row in research_data.iterrows():
+        col = cols[idx % 3]
+        with col:
+            # Create profile card
+            with st.container():
+                st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=100)
+                st.subheader(row.get("Name", "Unknown"))
+                st.write(f"**Description:** {row.get('Description', 'No description available.')}")
+                st.write("**Research Papers:**")
+                papers = [
+                    row.get("Paper_1", "No paper available"),
+                    row.get("Paper_2", "No paper available")
+                ]
+                for paper in papers:
+                    if paper:
+                        st.markdown(f"- {paper}")
+            st.markdown("---")
 
 
 # Load all data
