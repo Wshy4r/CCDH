@@ -485,27 +485,32 @@ def render_research_hub():
         st.error("No research data is available.")
         return
 
-    # Create a grid layout for profiles
-    cols = st.columns(3)  # Display three profiles per row
-    num_profiles = len(research_data)
+    # Display profiles in a grid layout
+    num_columns = 2  # Adjust the number of columns per row
+    cols = st.columns(num_columns)
 
     for idx, row in research_data.iterrows():
-        col = cols[idx % 3]
+        col = cols[idx % num_columns]
         with col:
-            # Create profile card
-            with st.container():
-                st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=100)
-                st.subheader(row.get("Name", "Unknown"))
-                st.write(f"**Description:** {row.get('Description', 'No description available.')}")
-                st.write("**Research Papers:**")
-                papers = [
-                    row.get("Paper_1", "No paper available"),
-                    row.get("Paper_2", "No paper available")
-                ]
-                for paper in papers:
-                    if paper:
-                        st.markdown(f"- {paper}")
+            # Display profile information
+            st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+            st.subheader(row.get("Name", "Unknown"))
+            st.write(row.get("Description", "No description provided."))
+            st.write("**Research Papers:**")
+            
+            # Render clickable links for research papers
+            for paper_idx in [1, 2]:  # Handle up to two papers
+                title_key = f"Paper_{paper_idx}_Title"
+                url_key = f"Paper_{paper_idx}_URL"
+                title = row.get(title_key, "No Title")
+                url = row.get(url_key, "#")
+                
+                if title and url:
+                    st.markdown(f"- [{title}]({url}){{:target=\"_blank\"}}")
+                else:
+                    st.markdown("- No research paper available")
             st.markdown("---")
+
 
 
 # Load all data
