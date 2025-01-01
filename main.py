@@ -473,49 +473,38 @@ show_research_hub = st.sidebar.button("Research Hub", key="research_hub_button")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources_button")
 
 # Sidebar controls
-st.sidebar.header("Navigation")
-
-# Sidebar Navigation Buttons
-navigation = st.sidebar.radio(
-    "Choose a Section",
-    options=["Dashboard", "Research Hub", "Data Sources"],
-    index=0,
-    key="navigation_radio"
-)
-
-if navigation == "Dashboard":
+if show_dashboard or (not show_research_hub and not show_data_sources):
     st.sidebar.header("Dashboard Controls")
 
     # Step 1: Select Data Source
     data_source = st.sidebar.selectbox(
         "Select Data Source",
         ["Open Source Data", "Governmental Data"],
-        index=0,
+        index=0,  # Default to "Open Source Data"
         key="data_source"
     )
 
     # Step 2: Select Category
-    category_options = {
-        "Open Source Data": [
-            "Temperature & Precipitation",
-            "Water Resources",
-            "Economic Impact",
-            "Health Impact",
-            "Seasonal Analysis",
-            "Future Projections",
-            "Comparative Analysis"
-        ],
-        "Governmental Data": [
-            "Waste Management",
-            "Power & Energy",
-            "Water Resources Management"
-        ]
-    }
-    category = st.sidebar.selectbox(
-        "Select Category",
-        category_options[data_source],
-        key="category_selectbox"
-    )
+    if data_source == "Open Source Data":
+        category = st.sidebar.selectbox(
+            "Select Category",
+            [
+                "Temperature & Precipitation",
+                "Water Resources",
+                "Economic Impact",
+                "Health Impact",
+                "Seasonal Analysis",
+                "Future Projections",
+                "Comparative Analysis"
+            ],
+            key="open_source_category"
+        )
+    else:  # Governmental Data
+        category = st.sidebar.selectbox(
+            "Select Category",
+            ["Waste Management", "Power & Energy", "Water Resources Management"],
+            key="governmental_category"
+        )
 
     # Step 3: Select Indicator (if applicable)
     indicator_options = {
@@ -532,43 +521,14 @@ if navigation == "Dashboard":
             "Water Stress Index",
             "Combined Water Resources"
         ],
-        "Economic Impact": [
-            "Energy Demand",
-            "Agricultural Production",
-            "Economic Trends",
-            "Combined Economic Impact"
-        ],
-        "Health Impact": [
-            "Heat Stress Index",
-            "Air Health Index",
-            "Health Risk Patterns",
-            "Combined Health Indicators"
-        ],
-        "Seasonal Analysis": [
-            "Temperature Patterns",
-            "Rainfall Distribution",
-            "Seasonal Comparisons",
-            "Year-over-Year Changes"
-        ],
-        "Future Projections": [
-            "Temperature Forecast",
-            "Rainfall Forecast",
-            "Water Resource Outlook",
-            "Combined Projections"
-        ],
-        "Comparative Analysis": [
-            "City Comparisons",
-            "Trend Analysis",
-            "Regional Patterns",
-            "Historical Benchmarks"
-        ]
+        # Add other categories and their options here.
     }
 
     if category in indicator_options:
         chart_type = st.sidebar.selectbox(
             "Select Indicator",
             indicator_options[category],
-            key="indicator_selectbox"
+            key=f"{category}_indicator"
         )
 
     # Step 4: Select Cities
@@ -576,24 +536,21 @@ if navigation == "Dashboard":
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="cities_multiselect"
+        key="cities"
     )
 
-    # Step 5: Select Time Frame
+    # Step 5: Time Frame
     time_frame = st.sidebar.radio(
         "Select Time Frame",
         ["Yearly", "Monthly", "Seasonal"],
-        key="time_frame_radio"
+        key="time_frame"
     )
 
-    # Step 6: Select Year Range
+    # Step 6: Year Range
     start_year, end_year = st.sidebar.slider(
         "Select Year Range",
-        min_value=1950,
-        max_value=2023,
-        value=(1950, 2023),
-        step=1,
-        key="year_range_slider"
+        1950, 2023, (1950, 2023),
+        key="year_range"
     )
 
     # Step 7: Additional Time Filters
@@ -602,19 +559,19 @@ if navigation == "Dashboard":
             "Select Months",
             list(calendar.month_name)[1:],  # Exclude the empty string at index 0
             default=list(calendar.month_name)[1:],
-            key="months_multiselect"
+            key="months"
         )
     elif time_frame == "Seasonal":
         seasons = st.sidebar.multiselect(
             "Select Seasons",
             ["Winter", "Spring", "Summer", "Autumn"],
             default=["Winter", "Spring", "Summer", "Autumn"],
-            key="seasons_multiselect"
+            key="seasons"
         )
 
     # Step 8: Analysis Options
-    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
-    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence_checkbox")
+    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend")
+    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence")
 
 
 # Variables for category and chart type
