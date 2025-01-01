@@ -530,11 +530,7 @@ show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 if show_dashboard or (not show_research_hub):  # Removed show_data_sources logic
     # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
-    )
+    
     st.title("Dashboard")
     st.write("Welcome to the Climate Dashboard.")
     st.write("Explore climate trends, water resources, economic impact, and more.")
@@ -921,6 +917,11 @@ if category == "Water Resources Management":
         else:
             st.error("Planning Dams data is unavailable.")
         
+selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    )
 
 # Time range
 time_frame = st.sidebar.radio(
