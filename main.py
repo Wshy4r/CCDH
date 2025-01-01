@@ -486,13 +486,14 @@ def render_research_hub():
         },
     ]
 
+    # Display expert profiles
+    st.subheader("Expert Profiles")
     if not research_data:
         st.error("No research hub data is available.")
         return
 
-    # Display expert profiles
-    st.subheader("Expert Profiles")
-    num_cols = 3  # Number of columns for the grid
+    # Create a grid layout for expert profiles
+    num_cols = 3
     columns = st.columns(num_cols)
 
     for index, profile in enumerate(research_data):
