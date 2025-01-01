@@ -541,10 +541,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Add your dashboard-specific content here
-    st.title("Dashboard")
-    st.write("This is the dashboard page.")
-    # ... rest of the dashboard code ...
+
 
 
 
