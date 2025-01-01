@@ -468,41 +468,44 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    try:
-        # Debug: Print current working directory
-        import os
-        st.write(f"Current Working Directory: {os.getcwd()}")
+    # Hardcoded data
+    research_data = [
+        {
+            "Name": "Dr. John Doe",
+            "Description": "An expert in climate resilience and mitigation strategies.",
+            "Image_URL": "https://via.placeholder.com/150",
+            "Paper_1": "Impact of Extreme Weather Events",
+            "Paper_2": "Future of Climate Adaptation Policies",
+        },
+        {
+            "Name": "Dr. Jane Doe",
+            "Description": "Specialist in water resource management and optimization.",
+            "Image_URL": "https://via.placeholder.com/150",
+            "Paper_1": "Water Resource Optimization",
+            "Paper_2": "Sustainable Hydrology in Urban Areas",
+        },
+    ]
 
-        # Load the research hub data from an Excel file
-        research_data = pd.read_excel("research_hub_data.xlsx")  # Ensure the file path is correct
+    if not research_data:
+        st.error("No research hub data is available.")
+        return
 
-        # Check if data is empty
-        if research_data.empty:
-            st.warning("No expert profiles available.")
-            return
+    # Display expert profiles
+    st.subheader("Expert Profiles")
+    num_cols = 3  # Number of columns for the grid
+    columns = st.columns(num_cols)
 
-        # Display expert profiles
-        st.subheader("Expert Profiles")
-
-        # Create a grid layout for profiles
-        num_cols = 3  # Number of columns for profile cards
-        columns = st.columns(num_cols)
-
-        for index, row in research_data.iterrows():
-            with columns[index % num_cols]:
-                # Display image, name, description, and research papers
-                st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
-                st.markdown(f"### {row.get('Name', 'Unknown')}")
-                st.write(row.get("Description", "No description provided."))
-                st.markdown("#### Research Papers:")
-                if row.get("Paper_1"):
-                    st.markdown(f"- {row['Paper_1']}")
-                if row.get("Paper_2"):
-                    st.markdown(f"- {row['Paper_2']}")
-    except FileNotFoundError:
-        st.error("The file 'research_hub_data.xlsx' was not found. Please ensure it is available.")
-    except Exception as e:
-        st.error(f"An error occurred while loading the data: {e}")
+    for index, profile in enumerate(research_data):
+        with columns[index % num_cols]:
+            # Display profile information
+            st.image(profile.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+            st.markdown(f"### {profile.get('Name', 'Unknown')}")
+            st.write(profile.get("Description", "No description provided."))
+            st.markdown("#### Research Papers:")
+            if profile.get("Paper_1"):
+                st.markdown(f"- {profile['Paper_1']}")
+            if profile.get("Paper_2"):
+                st.markdown(f"- {profile['Paper_2']}")
 
 
 
