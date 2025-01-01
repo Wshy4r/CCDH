@@ -482,15 +482,16 @@ def render_research_hub():
     st.write("Explore expert profiles and their research papers.")
 
     # Load Research Hub data
-    research_data = load_research_hub_data()
-    if not research_data:
+    research_hub_data = load_research_hub_data()
+    
+    if not research_hub_data:
         st.write("No data available for the Research Hub.")
         return
 
     # Display profiles dynamically
-    if "Profiles" in research_data:
+    if "Profiles" in research_hub_data:
         st.write("### Profiles")
-        profiles_df = research_data["Profiles"]
+        profiles_df = research_hub_data["Profiles"]
         
         if profiles_df.empty:
             st.write("No profiles available at the moment.")
@@ -508,21 +509,22 @@ def render_research_hub():
                             st.markdown(f"- [{paper.strip()}](#)")
 
     # Display additional sheets dynamically (e.g., papers or topics)
-    if "Papers" in research_data:
+    if "Papers" in research_hub_data:
         st.write("### Research Papers")
-        papers_df = research_data["Papers"]
+        papers_df = research_hub_data["Papers"]
         if not papers_df.empty:
             st.dataframe(papers_df)
         else:
             st.write("No research papers available.")
 
-    if "Topics" in research_data:
+    if "Topics" in research_hub_data:
         st.write("### Topics")
-        topics_df = research_data["Topics"]
+        topics_df = research_hub_data["Topics"]
         if not topics_df.empty:
             st.dataframe(topics_df)
         else:
             st.write("No topics available.")
+
 
 
 
