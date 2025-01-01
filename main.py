@@ -468,7 +468,7 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Load the research data
+    # Load research hub data
     research_data = load_research_hub_data()
 
     if not research_data:
@@ -480,47 +480,27 @@ def render_research_hub():
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
 
-        # Display profiles in a card-style grid
-        num_cols = 3  # Set the number of columns for the grid
-        columns = st.columns(num_cols)
+        if profiles_df.empty:
+            st.warning("No expert profiles available.")
+        else:
+            # Create a grid layout for profiles
+            num_cols = 3
+            columns = st.columns(num_cols)
 
-        for index, row in profiles_df.iterrows():
-            with columns[index % num_cols]:
-                # Profile card layout
-                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=150)
-                st.markdown(f"### {row.get('Name', 'Unknown')}")
-                st.markdown(f"**Role:** {row.get('Role', 'N/A')}")
-                st.markdown(f"**Specialization:** {row.get('Specialization', 'N/A')}")
-                st.markdown("#### Research Papers:")
-                for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
-                    paper = row.get(paper_key)
-                    if paper:
-                        st.markdown(f"- {paper}")
-                st.button("View Profile", key=f"profile_{index}")  # Add a profile button
-
-        # Fill the last row with placeholders if necessary
-        if len(profiles_df) % num_cols != 0:
-            for _ in range(num_cols - (len(profiles_df) % num_cols)):
-                st.empty()
+            for index, row in profiles_df.iterrows():
+                with columns[index % num_cols]:
+                    st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+                    st.markdown(f"### {row.get('Name', 'Unknown')}")
+                    st.write(row.get("Description", "No description provided."))
+                    st.markdown("#### Research Papers:")
+                    if row.get("Paper_1"):
+                        st.markdown(f"- {row['Paper_1']}")
+                    if row.get("Paper_2"):
+                        st.markdown(f"- {row['Paper_2']}")
 
     else:
         st.warning("No expert profiles available.")
 
-    # Research papers section
-    st.subheader("Research Papers")
-    if "Papers" in research_data:
-        papers_df = research_data["Papers"]
-        st.dataframe(papers_df)  # Display the research papers in a table
-    else:
-        st.warning("No research papers available.")
-
-    # Research topics section
-    st.subheader("Research Topics")
-    if "Topics" in research_data:
-        topics_df = research_data["Topics"]
-        st.dataframe(topics_df)  # Display the research topics in a table
-    else:
-        st.warning("No research topics available.")
 
 # Call the function to render the Research Hub
 render_research_hub()
