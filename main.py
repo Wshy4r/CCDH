@@ -455,9 +455,9 @@ def load_research_hub_data():
     # Static internal data definition
     research_hub_data = [
         {
-            "Name": "Dr. John Doe",
-            "Description": "Expert in Climate Adaptation.",
-            "Image_URL": "https://via.placeholder.com/150",
+            "Name": "Hawkar Ali Abdulhaq",
+            "Description": "Mineralogy Geochemistry & Petrology.",
+            "Image_URL": "https://i.imgur.com/B6Mvump.jpeg",
             "Paper_1": "Research on Climate Adaptation",
             "Paper_2": "Impact of Extreme Weather Events"
         },
