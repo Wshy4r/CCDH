@@ -1355,6 +1355,7 @@ with col2:
     🟢 Green changes are positive
     """)
 
+
 # Footer with sources
 st.markdown("---")
 st.markdown("""
