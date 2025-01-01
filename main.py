@@ -482,10 +482,10 @@ show_data_sources = st.sidebar.button("Data Sources")
 
 # Default is the Dashboard view if no button is pressed
 if not show_research_hub and not show_data_sources:
-    # Dashboard Content
-    st.title("Main Dashboard")
+    # Main Dashboard Header and Description
+    st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
     st.markdown("""
-    This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region:
+    This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region from 1950 onwards:
     * Hewlêr (Erbil)
     * Dihok (Duhok)
     * Silêmanî (Sulaymaniyah)
@@ -506,16 +506,33 @@ elif show_research_hub:
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
-    # Example Content for Research Hub
-    st.markdown("""
-    ### Featured Experts
-    - **Dr. John Doe**: Expert in Climate Change Adaptation.
-      - [Research Paper 1](#)
-      - [Research Paper 2](#)
-    - **Dr. Jane Smith**: Specialist in Hydrology and Water Resources.
-      - [Research Paper 1](#)
-      - [Research Paper 2](#)
-    """)
+    
+    # Example Profiles
+    profiles = [
+        {
+            "name": "Dr. John Doe",
+            "description": "Expert in Climate Change Adaptation.",
+            "image_url": "https://via.placeholder.com/150",  # Replace with actual image URLs
+            "papers": ["Research Paper 1", "Research Paper 2"]
+        },
+        {
+            "name": "Dr. Jane Smith",
+            "description": "Specialist in Hydrology and Water Resources.",
+            "image_url": "https://via.placeholder.com/150",  # Replace with actual image URLs
+            "papers": ["Research Paper 1", "Research Paper 2"]
+        }
+    ]
+
+    # Display Profiles
+    for profile in profiles:
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            st.image(profile["image_url"], width=120)  # Display profile image
+        with col2:
+            st.subheader(profile["name"])
+            st.write(profile["description"])
+            for paper in profile["papers"]:
+                st.markdown(f"- [{paper}](#)")  # Add links to papers
 
 elif show_data_sources:
     # Data Sources Content
@@ -529,6 +546,7 @@ elif show_data_sources:
     }
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
+
 
 
 # Time range
