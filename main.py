@@ -530,7 +530,7 @@ if st.sidebar.button("Data Sources", key="data_sources"):
 # Render content based on the current page
 # Render content based on the current page
 if st.session_state.current_page == "Dashboard":
-    # Sidebar filters for Dashboard
+    # Dashboard logic
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
@@ -539,62 +539,53 @@ if st.session_state.current_page == "Dashboard":
     )
 
     # Time range selection
-    time_frame = st.sidebar.radio(
-        "Select Time Frame",
-        ["Yearly", "Monthly", "Seasonal"]
-    )
-    start_year, end_year = st.sidebar.slider(
-        "Select Year Range",
-        1950, 2023, (1950, 2023)
-    )
+    time_frame = st.sidebar.radio("Select Time Frame", ["Yearly", "Monthly", "Seasonal"])
+    start_year, end_year = st.sidebar.slider("Select Year Range", 1950, 2023, (1950, 2023))
 
     # Filter data for the Dashboard
     temp_df_filtered = filter_data(temp_df, selected_cities, start_year, end_year)
     rainfall_df_filtered = filter_data(rainfall_df, selected_cities, start_year, end_year)
-    water_df_filtered = filter_data(water_df, selected_cities, start_year, end_year)
-    economic_df_filtered = filter_data(economic_df, selected_cities, start_year, end_year)
-    health_df_filtered = filter_data(health_df, selected_cities, start_year, end_year)
 
-    # Render Dashboard content
     st.title("Kurdistan Cities Climate Dashboard")
     st.write("### Interactive Climate Data")
-    # Add your charts and visualizations here
+    # Dashboard visualizations
+    if category == "Temperature & Precipitation":
+        if chart_type == "Temperature Trends":
+            source = get_data_source('temperature')
+            yearly_temp = temp_df_filtered.groupby(['Year', 'City'])['Temperature'].mean().reset_index()
+            fig = px.line(
+                yearly_temp,
+                x='Year',
+                y='Temperature',
+                color='City',
+                title=f'Average Temperature Trends (Yearly)<br><sup>Source: {source["name"]}</sup>',
+                labels={'Temperature': 'Temperature (°C)'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
 elif st.session_state.current_page == "Research Hub":
-    # Clear filtered data variables to avoid unintended rendering
+    # Explicitly disable any filtered data or visualizations
     temp_df_filtered = None
     rainfall_df_filtered = None
-    water_df_filtered = None
-    economic_df_filtered = None
-    health_df_filtered = None
 
-    # Render Research Hub content
+    # Render Research Hub content only
     render_research_hub()
 
 elif st.session_state.current_page == "Data Sources":
-    # Clear filtered data variables to avoid unintended rendering
+    # Explicitly disable any filtered data or visualizations
     temp_df_filtered = None
     rainfall_df_filtered = None
-    water_df_filtered = None
-    economic_df_filtered = None
-    health_df_filtered = None
 
     # Render Data Sources content
     st.title("Data Sources")
-    st.write("Detailed information about data sources.")
-
-
-
-    # Example Sources
+    st.write("This section provides detailed information about the data sources used.")
     sources = {
         "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
         "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
         "FAO AQUASTAT": "https://www.fao.org/aquastat/en/databases/"
     }
-
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
-
 
 
 
