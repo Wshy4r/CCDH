@@ -465,11 +465,10 @@ logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
 # Sidebar Navigation with Buttons
-# Sidebar Navigation with Buttons
 st.sidebar.header("Navigation")
-show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
-show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
-show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
+show_dashboard = st.sidebar.button("Dashboard", key="dashboard_button")
+show_research_hub = st.sidebar.button("Research Hub", key="research_hub_button")
+show_data_sources = st.sidebar.button("Data Sources", key="data_sources_button")
 
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
@@ -479,10 +478,11 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
     data_source = st.sidebar.selectbox(
         "Select Data Source",
         ["Open Source Data", "Governmental Data"],
-        index=0  # Default to "Open Source Data"
+        index=0,  # Default to "Open Source Data"
+        key="data_source_selectbox"  # Add unique key
     )
 
-    # Step 2: Select Category (specific to the selected Data Source)
+    # Step 2: Select Category
     if data_source == "Open Source Data":
         category = st.sidebar.selectbox(
             "Select Category (Open Source Data)",
@@ -494,10 +494,11 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
                 "Seasonal Analysis",
                 "Future Projections",
                 "Comparative Analysis"
-            ]
+            ],
+            key="category_selectbox"  # Add unique key
         )
-        
-        # Step 3: Select Indicator (based on the selected category)
+
+        # Step 3: Select Indicator
         if category == "Temperature & Precipitation":
             chart_type = st.sidebar.selectbox(
                 "Select Indicator",
@@ -507,38 +508,32 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
                     "Extreme Weather Events",
                     "Drought Analysis",
                     "Combined View"
-                ]
+                ],
+                key="indicator_selectbox"  # Add unique key
             )
-        elif category == "Water Resources":
-            chart_type = st.sidebar.selectbox(
-                "Select Indicator",
-                [
-                    "River Levels",
-                    "Groundwater Levels",
-                    "Water Stress Index",
-                    "Combined Water Resources"
-                ]
-            )
-        # Add other category options here as necessary
 
     # Step 4: Select Cities
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        key="cities_multiselect"  # Add unique key
     )
 
     # Step 5: Select Time Frame
     time_frame = st.sidebar.radio(
         "Select Time Frame",
-        ["Yearly", "Monthly", "Seasonal"]
+        ["Yearly", "Monthly", "Seasonal"],
+        key="time_frame_radio"  # Add unique key
     )
 
     # Step 6: Select Year Range
     start_year, end_year = st.sidebar.slider(
         "Select Year Range",
-        1950, 2023, (1950, 2023)
+        1950, 2023, (1950, 2023),
+        key="year_range_slider"  # Add unique key
     )
+
 
     # Additional conditional filters for time frames
     if time_frame == "Monthly":
