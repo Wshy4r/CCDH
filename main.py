@@ -450,10 +450,12 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
 
-@st.cache_data
+import streamlit as st
+import pandas as pd
+
 def load_research_hub_data():
-    # Static internal data definition
-    research_hub_data = [
+    # Mock data for demonstration; replace this with your actual data loading logic
+    return pd.DataFrame([
         {
             "Name": "Hawkar Ali Abdulhaq",
             "Description": "Mineralogy Geochemistry & Petrology.",
@@ -461,7 +463,7 @@ def load_research_hub_data():
             "Paper_1": "Research on Climate Adaptation",
             "Paper_1_URL": "https://example.com/climate-adaptation",
             "Paper_2": "Impact of Extreme Weather Events",
-            "Paper_2_URL": "https://example.com/optimization"
+            "Paper_2_URL": "https://example.com/weather-events"
         },
         {
             "Name": "Dr. Jane Doe",
@@ -472,11 +474,7 @@ def load_research_hub_data():
             "Paper_2": "Water Resource Optimization",
             "Paper_2_URL": "https://example.com/optimization"
         }
-    ]
-
-    # Convert to DataFrame for consistency
-    return pd.DataFrame(research_hub_data)
-
+    ])
 
 def render_research_hub():
     st.title("Research Hub")
@@ -498,13 +496,15 @@ def render_research_hub():
             paper_title = row.get(f"Paper_{paper_idx}", None)
             paper_url = row.get(f"Paper_{paper_idx}_URL", None)
             if paper_title and paper_url:
-                st.markdown(f'- <a href="{paper_url}" target="_blank">{paper_title}</a>', unsafe_allow_html=True)
+                # Use a markdown link for a clickable research paper title
+                st.markdown(f"[{paper_title}]({paper_url})", unsafe_allow_html=True)
             elif paper_title:
                 st.write(f"- {paper_title} (No URL provided)")
         
         st.markdown("---")
 
-# This function should be called when you want to display the Research Hub
+# Call the function to render the research hub
+
 
 
 # Load all data
