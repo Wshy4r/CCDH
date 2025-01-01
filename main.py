@@ -513,6 +513,19 @@ def render_research_hub():
                 st.markdown(f"- {paper}")
 
 
+# Navigation Logic
+if show_dashboard:
+    st.title("Dashboard")
+    st.write("This is the dashboard page.")
+    # Add dashboard-specific content here...
+
+elif show_data_sources:
+    st.title("Data Sources")
+    st.write("Explore data sources and references.")
+    # Add data sources-specific content here...
+
+elif show_research_hub:
+    render_research_hub()
 
 
 
