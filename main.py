@@ -624,6 +624,11 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
             key="seasonal_filter"
         )
 
+    # Step 6: Optional Analysis Options
+    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
+    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence_checkbox")
+
+
     # Optional: Additional Analysis Options
     show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
     show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence_checkbox")
