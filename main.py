@@ -473,15 +473,14 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-# Sidebar Navigation
+# Sidebar Navigation with Buttons
 st.sidebar.header("Navigation")
-selected_view = st.sidebar.radio(
-    "Choose a view:",
-    ["Dashboard", "Research Hub", "Data Sources"]
-)
+show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
+show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
+show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
-# Conditional Display Based on Selection
-if selected_view == "Dashboard":
+# Control which view is shown based on button clicks
+if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
     st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
     st.markdown("""
@@ -493,20 +492,21 @@ if selected_view == "Dashboard":
     * Kerkûk (Kirkuk)
     """)
 
-    # Add dashboard filters and controls here
+    # Add dashboard-specific content here
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Add dashboard charts and visualizations here
+    # Rest of the dashboard logic (charts, filters, etc.)
 
-elif selected_view == "Research Hub":
+elif show_research_hub:
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
+    # Example Profiles
     profiles = [
         {
             "name": "Dr. John Doe",
@@ -522,6 +522,7 @@ elif selected_view == "Research Hub":
         }
     ]
 
+    # Display Profiles
     for profile in profiles:
         col1, col2 = st.columns([1, 3])
         with col1:
@@ -532,11 +533,12 @@ elif selected_view == "Research Hub":
             for paper in profile["papers"]:
                 st.markdown(f"- [{paper}](#)")
 
-elif selected_view == "Data Sources":
+elif show_data_sources:
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
 
+    # Example Sources
     sources = {
         "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
         "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
