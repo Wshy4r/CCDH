@@ -516,6 +516,8 @@ if st.session_state.current_page == "Dashboard":
     )
 
     # Additional filters for Monthly and Seasonal time frames
+    months = []
+    seasons = []
     if time_frame == "Monthly":
         months = st.sidebar.multiselect(
             "Select Months",
@@ -530,26 +532,28 @@ if st.session_state.current_page == "Dashboard":
         )
 
     # Filter data for the dashboard
-    def filter_data(df):
+    def filter_data(df, cities=None, months=None, seasons=None):
         filtered = df[
             (df['Year'] >= start_year) & 
-            (df['Year'] <= end_year) & 
-            (df['City'].isin(selected_cities))
+            (df['Year'] <= end_year)
         ]
         
-        if time_frame == "Monthly" and 'MonthName' in df.columns:
+        if cities:
+            filtered = filtered[df['City'].isin(cities)]
+        
+        if months and 'MonthName' in df.columns:
             filtered = filtered[filtered['MonthName'].isin(months)]
-        elif time_frame == "Seasonal" and 'Season' in df.columns:
+        elif seasons and 'Season' in df.columns:
             filtered = filtered[filtered['Season'].isin(seasons)]
         
         return filtered
 
     # Apply filtering to dashboard-relevant data
-    temp_df_filtered = filter_data(temp_df)
-    rainfall_df_filtered = filter_data(rainfall_df)
-    water_df_filtered = filter_data(water_df)
-    economic_df_filtered = filter_data(economic_df)
-    health_df_filtered = filter_data(health_df)
+    temp_df_filtered = filter_data(temp_df, selected_cities, months, seasons)
+    rainfall_df_filtered = filter_data(rainfall_df, selected_cities, months, seasons)
+    water_df_filtered = filter_data(water_df, selected_cities, months, seasons)
+    economic_df_filtered = filter_data(economic_df, selected_cities, months, seasons)
+    health_df_filtered = filter_data(health_df, selected_cities, months, seasons)
 
     # Display the dashboard content
     st.write("### Dashboard Page")
@@ -559,6 +563,12 @@ elif st.session_state.current_page == "Research Hub":
     # Research Hub Content
     st.write("### Research Hub")
     st.write("Explore expert profiles and their research papers.")
+
+elif st.session_state.current_page == "Data Sources":
+    # Data Sources Content
+    st.write("### Data Sources")
+    st.write("Provide details about your data sources here.")
+
 
     profiles = [
         {
