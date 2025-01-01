@@ -473,6 +473,9 @@ def render_research_hub():
             "Name": "Dr. John Doe",
             "Description": "An expert in climate resilience and mitigation strategies.",
             "Image_URL": "https://via.placeholder.com/150",
+            "Sector": "Climate Mitigation",
+            "Discipline": "Environmental Science",
+            "Rating": "5.0 (10)",
             "Papers": [
                 "Impact of Extreme Weather Events",
                 "Future of Climate Adaptation Policies",
@@ -482,6 +485,9 @@ def render_research_hub():
             "Name": "Dr. Jane Doe",
             "Description": "Specialist in water resource management and optimization.",
             "Image_URL": "https://via.placeholder.com/150",
+            "Sector": "Water Resources",
+            "Discipline": "Hydrology",
+            "Rating": "4.9 (8)",
             "Papers": [
                 "Water Resource Optimization",
                 "Sustainable Hydrology in Urban Areas",
@@ -491,17 +497,22 @@ def render_research_hub():
 
     # Display expert profiles
     st.subheader("Expert Profiles")
-    num_cols = 2
-    cols = st.columns(num_cols)
+    cols = st.columns(2)  # Two columns for profile layout
 
     for idx, profile in enumerate(research_data):
-        with cols[idx % num_cols]:
+        with cols[idx % 2]:  # Alternate between columns
             st.image(profile["Image_URL"], width=150)
             st.markdown(f"### {profile['Name']}")
+            st.write(f"**Sector:** {profile['Sector']}")
+            st.write(f"**Discipline:** {profile['Discipline']}")
+            st.write(f"**Rating:** {profile['Rating']}")
             st.write(profile["Description"])
             st.markdown("#### Research Papers:")
             for paper in profile["Papers"]:
                 st.markdown(f"- {paper}")
+
+# Call this function where the Research Hub section is supposed to render
+render_research_hub()
 
 
 
