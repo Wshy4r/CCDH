@@ -512,57 +512,28 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-# Move data loading before UI controls
-temp_df = load_temperature_data()
-rainfall_df = load_rainfall_data()
-water_df = load_water_resources_data()
-economic_df = load_economic_impact_data()
-health_df = load_health_impact_data()
-
-# Sidebar controls
-logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
-st.sidebar.image(logo_url, width=140)
-
+# Sidebar Navigation with Buttons
 st.sidebar.header("Navigation")
 show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
-# Initialize selected_cities before filtering
-selected_cities = st.sidebar.multiselect(
-    "Select Cities",
-    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
-)
+if show_dashboard or (not show_research_hub and not show_data_sources):
+    # Main Dashboard Content
+    st.sidebar.header("Dashboard Controls")
+    selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    )
+    # Add your dashboard-specific content here
+    st.title("Dashboard")
+    st.write("This is the dashboard page.")
+    # ... rest of the dashboard code ...
 
-# Define filter_data function
-def filter_data(df):
-    filtered = df[
-        (df['Year'] >= start_year) & 
-        (df['Year'] <= end_year) & 
-        (df['City'].isin(selected_cities))
-    ]
-    
-    if time_frame == "Monthly" and 'Month' in df.columns:
-        filtered = filtered[filtered['MonthName'].isin(months)]
-    elif time_frame == "Seasonal" and 'Season' in df.columns:
-        filtered = filtered[filtered['Season'].isin(seasons)]
-    
-    return filtered
-
-# Rest of your sidebar controls
-time_frame = st.sidebar.radio(
-    "Select Time Frame",
-    ["Yearly", "Monthly", "Seasonal"]
-)
-
-start_year, end_year = st.sidebar.slider(
-    "Select Year Range",
-    1950, 2023, (1950, 2023)
-)
-
-if show_research_hub:
+elif show_research_hub:
     render_research_hub()
+
 elif show_data_sources:
     # Data Sources Content
     st.title("Data Sources")
@@ -577,23 +548,6 @@ elif show_data_sources:
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
-
-else:  # Dashboard is default view
-    # Sidebar controls for dashboard only
-    st.sidebar.header("Dashboard Controls")
-    
-    # Add dashboard-specific content here
-    st.title("Dashboard")
-    st.write("This is the dashboard page.")
-    
-    # Apply filters to all dataframes
-    temp_df_filtered = filter_data(temp_df)
-    rainfall_df_filtered = filter_data(rainfall_df)
-    water_df_filtered = filter_data(water_df)
-    economic_df_filtered = filter_data(economic_df)
-    health_df_filtered = filter_data(health_df)
-    
-    # Add your dashboard-specific content (e.g., visualizations, charts, etc.)
 
 
 # Time range
