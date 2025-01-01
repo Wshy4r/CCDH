@@ -449,6 +449,21 @@ def load_planning_dams_data():
         # Display an error message if the file cannot be loaded
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
+def filter_data(df, cities=None):
+    filtered = df[
+        (df['Year'] >= start_year) & 
+        (df['Year'] <= end_year)
+    ]
+    
+    if cities:  # Apply city filter only if cities are provided
+        filtered = filtered[df['City'].isin(cities)]
+    
+    if time_frame == "Monthly" and 'Month' in df.columns:
+        filtered = filtered[filtered['MonthName'].isin(months)]
+    elif time_frame == "Seasonal" and 'Season' in df.columns:
+        filtered = filtered[filtered['Season'].isin(seasons)]
+    
+    return filtered
 
 
 # Load all data
