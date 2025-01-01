@@ -528,6 +528,8 @@ if st.sidebar.button("Research Hub", key="research_hub"):
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
 
+
+# Render content based on the current page
 if st.session_state.current_page == "Dashboard":
     # Sidebar filters for Dashboard
     st.sidebar.header("Dashboard Controls")
@@ -547,7 +549,6 @@ if st.session_state.current_page == "Dashboard":
         1950, 2023, (1950, 2023)
     )
 
-    months, seasons = None, None
     if time_frame == "Monthly":
         months = st.sidebar.multiselect(
             "Select Months",
@@ -572,12 +573,13 @@ if st.session_state.current_page == "Dashboard":
     st.title("Kurdistan Cities Climate Dashboard")
     # Add your dashboard-specific content here (e.g., charts, tables)
     st.write("Dashboard content goes here.")
+
 elif st.session_state.current_page == "Research Hub":
     render_research_hub()
+
 elif st.session_state.current_page == "Data Sources":
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
-
     # Add your data sources content here
 
 
