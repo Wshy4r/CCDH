@@ -473,16 +473,15 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-# Sidebar Navigation with Buttons
+# Sidebar Navigation
 st.sidebar.header("Navigation")
+selected_view = st.sidebar.radio(
+    "Choose a view:",
+    ["Dashboard", "Research Hub", "Data Sources"]
+)
 
-# Buttons for navigation
-show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
-show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
-show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
-
-# Conditional Display Based on Navigation
-if show_dashboard or (not show_research_hub and not show_data_sources):
+# Conditional Display Based on Selection
+if selected_view == "Dashboard":
     # Main Dashboard Content
     st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
     st.markdown("""
@@ -501,9 +500,9 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Additional dashboard visualizations go here
+    # Add dashboard charts and visualizations here
 
-elif show_research_hub:
+elif selected_view == "Research Hub":
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
@@ -533,7 +532,7 @@ elif show_research_hub:
             for paper in profile["papers"]:
                 st.markdown(f"- [{paper}](#)")
 
-elif show_data_sources:
+elif selected_view == "Data Sources":
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
