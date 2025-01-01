@@ -460,14 +460,17 @@ def load_research_hub_data():
             "Image_URL": "https://via.placeholder.com/150",
             "Paper_1": "Research on Climate Adaptation",
             "Paper_1_URL": "https://example.com/climate-adaptation",
-            "Paper_2": "Impact of Extreme Weather Events"
+            "Paper_2": "Impact of Extreme Weather Events",
+            "Paper_2_URL": "https://example.com/optimization"
         },
         {
-            "Name": "Dr. Janee Doe",
+            "Name": "Dr. Jane Doe",
             "Description": "Specialist in Water Resources.",
             "Image_URL": "https://via.placeholder.com/150",
             "Paper_1": "Hydrology and Water Management",
-            "Paper_2": "Water Resource Optimization"
+            "Paper_1_URL": "https://example.com/hydrology",
+            "Paper_2": "Water Resource Optimization",
+            "Paper_2_URL": "https://example.com/optimization"
         }
     ]
 
