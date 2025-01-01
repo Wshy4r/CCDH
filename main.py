@@ -461,40 +461,39 @@ def load_research_hub_data():
         return {}
 
 def render_research_hub():
-    """
-    Function to render the Research Hub page.
-    This page uses data from the Excel file.
-    """
-    st.write("### Research Hub")
+    st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
+    # Load the research data
     research_data = load_research_hub_data()
+    
     if not research_data:
+        st.error("Research Hub data is unavailable.")
         return
 
-    # Display profiles dynamically
+    # Display expert profiles
+    st.subheader("Expert Profiles")
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
         for _, row in profiles_df.iterrows():
             col1, col2 = st.columns([1, 3])
             with col1:
-                st.image(row["Image URL"], width=120) if pd.notna(row["Image URL"]) else st.empty()
+                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
             with col2:
-                st.subheader(row["Name"])
-                st.write(row["Description"])
-                if pd.notna(row["Papers"]):
-                    papers = row["Papers"].split(";")  # Assuming papers are separated by semicolons
-                    for paper in papers:
-                        st.markdown(f"- [{paper.strip()}](#)")
+                st.subheader(row.get("Name", "Unknown"))
+                st.write(row.get("Description", "No description provided."))
+                papers = row.get("Papers", "").split(";")
+                for paper in papers:
+                    st.markdown(f"- [{paper.strip()}](#)")
 
-    # Display additional sheets dynamically (e.g., papers or topics)
+    # Display additional research-related data (if available)
     if "Papers" in research_data:
-        st.write("### Research Papers")
+        st.subheader("Research Papers")
         papers_df = research_data["Papers"]
         st.dataframe(papers_df)
 
     if "Topics" in research_data:
-        st.write("### Topics")
+        st.subheader("Research Topics")
         topics_df = research_data["Topics"]
         st.dataframe(topics_df)
 
