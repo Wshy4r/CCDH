@@ -535,6 +535,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
     )
 
 
+
     # Additional conditional filters for time frames
     if time_frame == "Monthly":
         months = st.sidebar.multiselect(
