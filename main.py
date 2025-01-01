@@ -465,6 +465,40 @@ def filter_data(df, cities=None):
         filtered = filtered[filtered['Season'].isin(seasons)]
     
     return filtered
+# === RESEARCH HUB RENDER FUNCTION ===
+def render_research_hub():
+    """
+    Function to render the Research Hub page.
+    This page is independent of any global filters or datasets.
+    """
+    st.write("### Research Hub")
+    st.write("Explore expert profiles and their research papers.")
+
+    profiles = [
+        {
+            "name": "Dr. John Doe",
+            "description": "Expert in Climate Change Adaptation.",
+            "image_url": "https://via.placeholder.com/150",
+            "papers": ["Research Paper 1", "Research Paper 2"]
+        },
+        {
+            "name": "Dr. Jane Smith",
+            "description": "Specialist in Hydrology and Water Resources.",
+            "image_url": "https://via.placeholder.com/150",
+            "papers": ["Research Paper 1", "Research Paper 2"]
+        }
+    ]
+
+    for profile in profiles:
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            st.image(profile["image_url"], width=120)
+        with col2:
+            st.subheader(profile["name"])
+            st.write(profile["description"])
+            for paper in profile["papers"]:
+                st.markdown(f"- [{paper}](#)")
+
 
 
 # Load all data
@@ -483,17 +517,17 @@ st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 # Sidebar Navigation with Session State
 st.sidebar.header("Navigation")
 
-# Initialize navigation state
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Dashboard"  # Default page
 
-# Define navigation buttons and update state
+# Navigation Buttons
 if st.sidebar.button("Dashboard", key="dashboard"):
     st.session_state.current_page = "Dashboard"
 if st.sidebar.button("Research Hub", key="research_hub"):
     st.session_state.current_page = "Research Hub"
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
+
 
 
 
@@ -511,6 +545,7 @@ if st.session_state.current_page == "Dashboard":
     st.write("Dashboard content goes here.")
 
 elif st.session_state.current_page == "Research Hub":
+    render_research_hub()
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
