@@ -518,22 +518,8 @@ show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
-if show_dashboard or (not show_research_hub and not show_data_sources):
-    # Main Dashboard Content
-    st.sidebar.header("Dashboard Controls")
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
-    )
-    # Add your dashboard-specific content here
-    st.title("Dashboard")
-    st.write("This is the dashboard page.")
-    # ... rest of the dashboard code ...
-
-elif show_research_hub:
+if show_research_hub:
     render_research_hub()
-
 elif show_data_sources:
     # Data Sources Content
     st.title("Data Sources")
@@ -548,6 +534,20 @@ elif show_data_sources:
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
+
+else:  # Dashboard is default view
+    # Sidebar controls for dashboard only
+    st.sidebar.header("Dashboard Controls")
+    selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    )
+    
+    # Rest of your dashboard code
+    st.title("Dashboard")
+    st.write("This is the dashboard page.")
+    # Add dashboard content here (charts, filters, etc.)
 
 
 # Time range
