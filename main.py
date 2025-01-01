@@ -481,13 +481,13 @@ logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 # Sidebar Navigation with Session State
 # Sidebar Navigation with Session State
-# Sidebar Navigation
 st.sidebar.header("Navigation")
 
 # Initialize navigation state
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Dashboard"  # Default page
 
+# Define navigation buttons and update state
 if st.sidebar.button("Dashboard", key="dashboard"):
     st.session_state.current_page = "Dashboard"
 if st.sidebar.button("Research Hub", key="research_hub"):
@@ -495,32 +495,25 @@ if st.sidebar.button("Research Hub", key="research_hub"):
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
 
-# Page-specific controls
+# Conditional logic based on the current page
 if st.session_state.current_page == "Dashboard":
-    st.sidebar.header("Dashboard Controls")
+    # Dashboard-specific widgets
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         key="dashboard_cities"
     )
+
+    # Time frame and year range filters
     time_frame = st.sidebar.radio(
         "Select Time Frame",
-        ["Yearly", "Monthly", "Seasonal"],
-        key="dashboard_time_frame"
+        ["Yearly", "Monthly", "Seasonal"]
     )
     start_year, end_year = st.sidebar.slider(
         "Select Year Range",
-        1950, 2023, (1950, 2023),
-        key="dashboard_year_range"
+        1950, 2023, (1950, 2023)
     )
-elif st.session_state.current_page == "Research Hub":
-    st.sidebar.header("Research Hub Controls")
-    st.sidebar.text("No additional filters for Research Hub")
-elif st.session_state.current_page == "Data Sources":
-    st.sidebar.header("Data Sources Controls")
-    st.sidebar.text("No additional filters for Data Sources")
-
 
     # Additional filters for Monthly and Seasonal time frames
     months = []
@@ -566,18 +559,10 @@ elif st.session_state.current_page == "Data Sources":
     st.write("### Dashboard Page")
     st.write("Add your dashboard content here.")
 
-if st.session_state.current_page == "Dashboard":
-    # Dashboard-specific widgets
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="dashboard_cities"
-    )
 elif st.session_state.current_page == "Research Hub":
-    # Research Hub-specific widgets
-    st.sidebar.text("No filters for Research Hub")
-
+    # Research Hub Content
+    st.write("### Research Hub")
+    st.write("Explore expert profiles and their research papers.")
 
 elif st.session_state.current_page == "Data Sources":
     # Data Sources Content
