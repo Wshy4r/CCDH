@@ -449,8 +449,6 @@ def load_planning_dams_data():
         # Display an error message if the file cannot be loaded
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
-    
-    
 
 
 # Load all data
@@ -466,37 +464,28 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-# Sidebar Navigation with Session State
+# Sidebar Navigation with Buttons
 st.sidebar.header("Navigation")
+show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
+show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
+show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
-# Initialize navigation state
-if "current_page" not in st.session_state:
-    st.session_state.current_page = "Dashboard"  # Default page
-
-# Define navigation buttons and update state
-if st.sidebar.button("Dashboard", key="dashboard"):
-    st.session_state.current_page = "Dashboard"
-if st.sidebar.button("Research Hub", key="research_hub"):
-    st.session_state.current_page = "Research Hub"
-if st.sidebar.button("Data Sources", key="data_sources"):
-    st.session_state.current_page = "Data Sources"
-
-# Render content based on the current page
-if st.session_state.current_page == "Dashboard":
+if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
+    
+
+    # Add dashboard-specific content heres Climate D
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    st.title("Kurdistan Cities Climate Dashboard")
-    # Add your dashboard-specific content here (charts, filters, etc.)
-    st.write("Dashboard content goes here.")
+    # Rest of the dashboard logic (charts, filters, etc.)
 
-elif st.session_state.current_page == "Research Hub":
+elif show_research_hub:
     # Research Hub Content
-    st.title("Research Hub")
+    st.header("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     # Example Profiles
@@ -526,7 +515,8 @@ elif st.session_state.current_page == "Research Hub":
             for paper in profile["papers"]:
                 st.markdown(f"- [{paper}](#)")
 
-elif st.session_state.current_page == "Data Sources":
+
+elif show_data_sources:
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
