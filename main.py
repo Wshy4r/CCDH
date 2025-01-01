@@ -553,9 +553,7 @@ elif show_research_hub:
     # Load the research data
     research_data = load_research_hub_data()
 
-    # Debug: Print the loaded data
-    st.write("Loaded Research Data:")
-    st.write(research_data)
+
 
     if not research_data:
         st.error("Research Hub data is unavailable.")
