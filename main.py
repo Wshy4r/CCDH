@@ -473,19 +473,39 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-# Sidebar Navigation
+# Sidebar Navigation with Buttons
 st.sidebar.header("Navigation")
-menu_option = st.sidebar.radio(
-    "Navigate to:",
-    ["Research Hub", "Data Sources", "Dashboard"],  # Reordered options
-    index=2  # Default to "Dashboard"
-)
 
-# Navigation Logic
-if menu_option == "Research Hub":
+# Buttons for navigation
+show_research_hub = st.sidebar.button("Research Hub")
+show_data_sources = st.sidebar.button("Data Sources")
+
+# Default is the Dashboard view if no button is pressed
+if not show_research_hub and not show_data_sources:
+    # Dashboard Content
+    st.title("Main Dashboard")
+    st.markdown("""
+    This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region:
+    * Hewlêr (Erbil)
+    * Dihok (Duhok)
+    * Silêmanî (Sulaymaniyah)
+    * Helebce (Halabja)
+    * Kerkûk (Kirkuk)
+    """)
+    # Existing dashboard controls
+    st.sidebar.header("Dashboard Controls")
+    selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        key="selected_cities_open_source"  # Unique key for Open Source
+    )
+    # Keep the rest of your dashboard code here (charts, filters, etc.)
+
+elif show_research_hub:
     # Research Hub Content
     st.title("Research Hub")
-    st.write("Welcome to the Research Hub. Explore expert profiles and their research papers here.")
+    st.write("Explore expert profiles and their research papers.")
     # Example Content for Research Hub
     st.markdown("""
     ### Featured Experts
@@ -497,7 +517,7 @@ if menu_option == "Research Hub":
       - [Research Paper 2](#)
     """)
 
-elif menu_option == "Data Sources":
+elif show_data_sources:
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
@@ -509,27 +529,6 @@ elif menu_option == "Data Sources":
     }
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
-
-elif menu_option == "Dashboard":
-    # Dashboard Content
-    st.title("Main Dashboard")
-    st.markdown("""
-    This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region:
-    * Hewlêr (Erbil)
-    * Dihok (Duhok)
-    * Silêmanî (Sulaymaniyah)
-    * Helebce (Halabja)
-    * Kerkûk (Kirkuk)
-    """)
-    # Include existing dashboard controls here
-    st.sidebar.header("Dashboard Controls")
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="selected_cities_open_source"  # Unique key for Open Source
-    )
-    # Keep the rest of your dashboard code (charts, filters, etc.) here
 
 
 # Time range
