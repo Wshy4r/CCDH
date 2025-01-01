@@ -476,11 +476,11 @@ st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 st.sidebar.header("Dashboard Controls")
 
 
-# City selection
 selected_cities = st.sidebar.multiselect(
     "Select Cities",
     ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+    key="selected_cities_open_source"  # Unique key for Open Source
 )
 
 # Time range
