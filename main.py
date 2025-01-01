@@ -517,7 +517,7 @@ st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 st.sidebar.header("Navigation")
 show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
-show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
+show_data_sources = st.sidebar.button("Governmental Data", key="data_sources")
 
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
