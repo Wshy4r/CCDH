@@ -512,7 +512,7 @@ elif show_research_hub:
         {
             "name": "Dr. John Doe",
             "description": "Expert in Climate Change Adaptation.",
-            "image_url": "https://via.placeholder.com/150",  # Replace with actual image URLs
+            "image_url": "https://i.imgur.com/zLYxLQw.jpeg",  # Replace with actual image URLs
             "papers": ["Research Paper 1", "Research Paper 2"]
         },
         {
