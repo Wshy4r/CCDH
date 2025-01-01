@@ -527,10 +527,21 @@ show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 
 
+if show_dashboard or (not show_research_hub and not show_data_sources):
+    # Main Dashboard Content
+    st.sidebar.header("Dashboard Controls")
+    selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    )
+    st.title("Dashboard")
+    st.write("Welcome to the Climate Dashboard.")
+    st.write("Explore climate trends, water resources, economic impact, and more.")
 
   
 
-if show_research_hub:
+elif show_research_hub:
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
@@ -561,6 +572,22 @@ if show_research_hub:
 
         # Placeholder for additional sections (if required)
         st.markdown("### Add any additional sections for the Research Hub here")
+
+elif show_data_sources:
+    # Data Sources Content
+    st.title("Data Sources")
+    st.write("This section provides detailed information about the data sources used.")
+    st.markdown("---")
+
+    # Example Sources
+    sources = {
+        "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
+        "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
+        "FAO AQUASTAT": "https://www.fao.org/aquastat/en/databases/"
+    }
+
+    for source_name, source_link in sources.items():
+        st.markdown(f"- [{source_name}]({source_link})")
 
 
 # Time range
