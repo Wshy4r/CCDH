@@ -463,92 +463,67 @@ def load_research_hub_data():
         return pd.DataFrame()
 
 def render_research_hub():
-    st.title("Research Hub")
-    st.write("Explore expert profiles and their research papers.")
+    st.markdown(
+        """
+        <style>
+        .main-container {
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .title {
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .subtitle {
+            color: #CCCCCC;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th {
+            background-color: #333333;
+            color: white;
+            text-align: left;
+            padding: 10px;
+        }
+        .data-table td {
+            background-color: #2A2A2A;
+            color: #CCCCCC;
+            padding: 10px;
+            border-top: 1px solid #444444;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
+    st.markdown('<h1 class="title">Research Hub</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Explore expert profiles and their research papers.</p>', unsafe_allow_html=True)
 
     # Load the research data
     research_data = load_research_hub_data()
 
     if research_data.empty:
         st.error("Research Hub data is unavailable.")
-        return
+    else:
+        st.markdown('<h2 style="color: white;">Loaded Research Data:</h2>', unsafe_allow_html=True)
+        
+        # Create a table-like structure
+        table_html = '<table class="data-table"><tr><th>Name</th><th>Description</th><th>Image URL</th><th>Paper 1</th><th>Paper 2</th></tr>'
+        
+        for _, row in research_data.iterrows():
+            table_html += f'<tr><td>{row.get("Name", "Unknown")}</td><td>{row.get("Description", "No description")}</td><td>{row.get("Image_URL", "")}</td><td>{row.get("Paper_1", "")}</td><td>{row.get("Paper_2", "")}</td></tr>'
+        
+        table_html += '</table>'
+        st.markdown(table_html, unsafe_allow_html=True)
 
-    # Apply CSS for card design
-    st.markdown("""
-    <style>
-        .profile-card {
-            display: inline-block;
-            width: 300px;
-            margin: 15px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        .profile-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-        .profile-img {
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-        }
-        .profile-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .profile-desc {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 15px;
-        }
-        .profile-sector, .profile-discipline {
-            font-size: 12px;
-            color: #888;
-            margin: 5px 0;
-        }
-        .profile-btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .profile-btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-    # Render profiles dynamically
-    st.write('<div style="display: flex; flex-wrap: wrap; justify-content: center;">', unsafe_allow_html=True)
-    for _, row in research_data.iterrows():
-        st.markdown(
-            f"""
-            <div class="profile-card">
-                <img src="{row.get('Image URL', 'https://via.placeholder.com/80')}" alt="Profile Image" class="profile-img">
-                <div class="profile-title">{row.get('Name', 'Unknown')}</div>
-                <div class="profile-desc">{row.get('Description', 'No description available.')}</div>
-                <div class="profile-sector"><b>Sector:</b> {row.get('Sector', 'N/A')}</div>
-                <div class="profile-discipline"><b>Discipline:</b> {row.get('Discipline', 'N/A')}</div>
-                <div class="profile-rating"><b>Rating:</b> {row.get('Rating', 'N/A')}</div>
-                <a href="{row.get('Profile Link', '#')}" class="profile-btn">View Profile</a>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    st.write('</div>', unsafe_allow_html=True)
-
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # Load all data
