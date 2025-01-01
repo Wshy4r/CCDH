@@ -474,53 +474,51 @@ st.sidebar.header("Dashboard Controls")
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-
-
-# City selection
-selected_cities = st.sidebar.multiselect(
-    "Select Cities",
-    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-    key="selected_cities"
-)
-
-# Time range
-time_frame = st.sidebar.radio(
-    "Select Time Frame",
-    ["Yearly", "Monthly", "Seasonal"],
-    key="time_frame"
-)
-
-# Year range
-start_year, end_year = st.sidebar.slider(
-    "Select Year Range",
-    1950, 2023, (1950, 2023),
-    key="year_range"
-)
-
-
-if time_frame == "Monthly":
-    months = st.sidebar.multiselect(
-        "Select Months",
-        list(calendar.month_name)[1:],  # Exclude empty month
-        default=list(calendar.month_name)[1:],
-        key="months"
-    )
-elif time_frame == "Seasonal":
-    seasons = st.sidebar.multiselect(
-        "Select Seasons",
-        ["Winter", "Spring", "Summer", "Autumn"],
-        default=["Winter", "Spring", "Summer", "Autumn"],
-        key="seasons"
-    )
-
-
 data_source = st.sidebar.selectbox(
     "Select Data Source",
     ["Open Source Data", "Governmental Data"],
     index=0,  # Default to "Open Source Data"
     key="data_source"
 )
+
+if data_source == "Open Source Data":
+    # Render "Select Cities"
+    selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        key="selected_cities"
+    )
+
+    # Render "Select Time Frame"
+    time_frame = st.sidebar.radio(
+        "Select Time Frame",
+        ["Yearly", "Monthly", "Seasonal"],
+        key="time_frame"
+    )
+
+    # Render "Select Year Range"
+    start_year, end_year = st.sidebar.slider(
+        "Select Year Range",
+        1950, 2023, (1950, 2023),
+        key="year_range"
+    )
+
+    if time_frame == "Monthly":
+        months = st.sidebar.multiselect(
+            "Select Months",
+            list(calendar.month_name)[1:],  # Exclude empty month
+            default=list(calendar.month_name)[1:],
+            key="months"
+        )
+    elif time_frame == "Seasonal":
+        seasons = st.sidebar.multiselect(
+            "Select Seasons",
+            ["Winter", "Spring", "Summer", "Autumn"],
+            default=["Winter", "Spring", "Summer", "Autumn"],
+            key="seasons"
+        )
+
 
 # Variables for category and chart type
 category = None
