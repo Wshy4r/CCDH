@@ -962,7 +962,8 @@ if st.sidebar.button("Download Data"):
 
 # Filter data based on time frame and selection
 def filter_data(df):
-    filtered = df[
+    if df is not None and 'City' in df.columns:
+        filtered = df[
         (df['Year'] >= start_year) & 
         (df['Year'] <= end_year) & 
         (df['City'].isin(selected_cities))
