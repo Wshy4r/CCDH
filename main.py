@@ -888,13 +888,7 @@ if st.sidebar.button("Download Data"):
 # Filter data based on time frame and selection
 
 
-# Apply filters to all dataframes
-temp_df_filtered = filter_data(temp_df)
-rainfall_df_filtered = filter_data(rainfall_df)
-water_df_filtered = filter_data(water_df)
-economic_df_filtered = filter_data(economic_df)
-health_df_filtered = filter_data(health_df)
-# === PART 3 END ===
+
 # === PART 4 START: VISUALIZATION CODE ===
 # Main content area
 col1, col2 = st.columns([2, 1])
