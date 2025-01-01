@@ -479,29 +479,46 @@ def render_research_hub():
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
 
-        # Create columns for displaying profiles
-        num_cols = 3  # Set the number of columns for layout
+        # Display profiles in a card-style grid
+        num_cols = 3  # Set the number of columns for the grid
         columns = st.columns(num_cols)
 
         for index, row in profiles_df.iterrows():
-            with columns[index % num_cols]:  # Cycle through columns
-                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
-                st.subheader(row.get("Name", "Unknown"))
-                st.write(row.get("Description", "No description provided."))
-                
-                # Link papers
+            with columns[index % num_cols]:
+                # Profile card layout
+                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=150, use_column_width="always")
+                st.markdown(f"### {row.get('Name', 'Unknown')}")
+                st.markdown(f"*{row.get('Description', 'No description provided.')}*")
+                st.markdown("#### Research Papers:")
                 for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
                     paper = row.get(paper_key)
                     if paper:
                         st.markdown(f"- {paper}")
+                st.button("View Profile", key=f"profile_{index}")  # Add a profile button
 
-        # If not enough profiles to fill the grid, keep the layout tidy
-        for i in range(len(profiles_df) % num_cols):
-            with columns[num_cols - 1]:
-                st.write("")  # Placeholder to keep the layout neat
+        if len(profiles_df) % num_cols != 0:
+            # Add placeholders to fill the last row if it's not completely filled
+            for _ in range(num_cols - (len(profiles_df) % num_cols)):
+                st.write("")
 
     else:
         st.warning("No expert profiles available.")
+
+    # Add sections for Research Papers and Topics
+    st.subheader("Research Papers")
+    if "Papers" in research_data:
+        papers_df = research_data["Papers"]
+        st.dataframe(papers_df)  # Display the data table
+    else:
+        st.warning("No research papers available.")
+
+    st.subheader("Research Topics")
+    if "Topics" in research_data:
+        topics_df = research_data["Topics"]
+        st.dataframe(topics_df)  # Display the data table
+    else:
+        st.warning("No research topics available.")
+
 
 # Load all data
 temp_df = load_temperature_data()
