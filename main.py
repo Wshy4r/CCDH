@@ -513,7 +513,12 @@ logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
 # Sidebar Navigation with Buttons
+# Sidebar Navigation with a Selectbox
 st.sidebar.header("Navigation")
+page = st.sidebar.selectbox(
+    "Choose a page:",
+    ["Dashboard", "Research Hub", "Data Sources"]  # Ensure these match your page functions
+)
 show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
