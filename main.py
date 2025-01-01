@@ -1173,158 +1173,178 @@ with col1:
 # === PART 5 START: STATISTICS AND FOOTER ===
 with col2:
     st.write("## City Statistics")
-    
-    for city in selected_cities:
-        st.write(f"### {city}")
-        
-        with st.expander("View Detailed Statistics"):
-            # Temperature & Precipitation Stats
-            st.write("🌡️ **Climate Indicators**")
-            
-            # Get city-specific data
-            city_temp = temp_df_filtered[temp_df_filtered['City'] == city]
-            city_rain = rainfall_df_filtered[rainfall_df_filtered['City'] == city]
-            
-            # Calculate seasonal averages
-            seasonal_temp = city_temp.groupby('Season')['Temperature'].mean()
-            seasonal_rain = city_rain.groupby('Season')['Rainfall'].mean()
-            
-            # Temperature Statistics
-            col_temp, col_rain = st.columns(2)
-            with col_temp:
-                current_temp = city_temp['Temperature'].iloc[-1]
-                historical_avg = city_temp['Temperature'].mean()
-                temp_change = current_temp - historical_avg
-                
-                st.metric(
-                    "Temperature",
-                    f"{current_temp:.1f}°C",
-                    f"{temp_change:+.1f}°C vs historical",
-                    delta_color="inverse"
-                )
-                
-                # Show seasonal breakdown
-                st.write("Seasonal Averages:")
-                for season in ['Winter', 'Spring', 'Summer', 'Autumn']:
-                    if season in seasonal_temp:
-                        st.write(f"{season}: {seasonal_temp[season]:.1f}°C")
-            
-            with col_rain:
-                current_rain = city_rain['Rainfall'].iloc[-1]
-                historical_avg_rain = city_rain['Rainfall'].mean()
-                rain_change = current_rain - historical_avg_rain
-                
-                st.metric(
-                    "Rainfall",
-                    f"{current_rain:.0f}mm",
-                    f"{rain_change:+.0f}mm vs historical",
-                    delta_color="normal"
-                )
-                
-                # Show seasonal breakdown
-                st.write("Seasonal Averages:")
-                for season in ['Winter', 'Spring', 'Summer', 'Autumn']:
-                    if season in seasonal_rain:
-                        st.write(f"{season}: {seasonal_rain[season]:.0f}mm")
 
-            # Extreme Weather Stats
-            st.write("🌪️ **Extreme Weather**")
-            extreme_days_count = len(city_temp[city_temp['ExtremeHeatDay']])
-            drought_days_count = len(city_rain[city_rain['DroughtRisk'] > 0.5])
-            
-            col_extreme, col_drought = st.columns(2)
-            with col_extreme:
-                st.metric(
-                    "Heat Wave Days",
-                    f"{extreme_days_count}",
-                    "Above 40°C",
-                    delta_color="inverse"
-                )
-            with col_drought:
-                st.metric(
-                    "Drought Days",
-                    f"{drought_days_count}",
-                    "Risk > 50%",
-                    delta_color="inverse"
-                )
+    # Debugging: Display selected cities
+    st.write("Selected Cities Debug:", selected_cities)
 
-            # Water Resources Stats
-            st.write("💧 **Water Resources**")
-            city_water = water_df_filtered[water_df_filtered['City'] == city]
-            
-            col_river, col_ground = st.columns(2)
-            with col_river:
-                current_river = city_water['RiverLevel'].iloc[-1]
-                river_change = current_river - city_water['RiverLevel'].mean()
-                
-                st.metric(
-                    "River Level",
-                    f"{current_river:.1f}m³/s",
-                    f"{river_change:+.1f}m³/s",
-                    delta_color="normal"
-                )
-            with col_ground:
-                current_ground = city_water['GroundwaterLevel'].iloc[-1]
-                ground_change = current_ground - city_water['GroundwaterLevel'].mean()
-                
-                st.metric(
-                    "Groundwater",
-                    f"{current_ground:.1f}m",
-                    f"{ground_change:+.1f}m",
-                    delta_color="normal"
-                )
+    if not selected_cities:
+        st.warning("Please select at least one city to view statistics.")
+    else:
+        for city in selected_cities:
+            st.write(f"### {city}")
 
-            # Economic Impact Stats
-            st.write("💰 **Economic Impact**")
-            city_econ = economic_df_filtered[economic_df_filtered['City'] == city]
-            
-            col_energy, col_agri = st.columns(2)
-            with col_energy:
-                current_energy = city_econ['EnergyDemand'].iloc[-1]
-                energy_change = current_energy - city_econ['EnergyDemand'].mean()
-                
-                st.metric(
-                    "Energy Demand",
-                    f"{current_energy:.0f}MW",
-                    f"{energy_change:+.0f}MW",
-                    delta_color="inverse"
-                )
-            with col_agri:
-                current_agri = city_econ['AgriculturalProduction'].iloc[-1]
-                agri_change = current_agri - city_econ['AgriculturalProduction'].mean()
-                
-                st.metric(
-                    "Agricultural Output",
-                    f"{current_agri:.0f}tons",
-                    f"{agri_change:+.0f}tons",
-                    delta_color="normal"
-                )
+            with st.expander("View Detailed Statistics"):
+                # Temperature & Precipitation Stats
+                st.write("🌡️ **Climate Indicators**")
 
-            # Health Impact Stats
-            st.write("🏥 **Health Impact**")
-            city_health = health_df_filtered[health_df_filtered['City'] == city]
-            
-            col_heat, col_air = st.columns(2)
-            with col_heat:
-                current_heat = city_health['HeatStressIndex'].iloc[-1]
-                heat_change = current_heat - city_health['HeatStressIndex'].mean()
-                
-                st.metric(
-                    "Heat Stress",
-                    f"{current_heat:.1f}",
-                    f"{heat_change:+.1f}",
-                    delta_color="inverse"
-                )
-            with col_air:
-                current_air = city_health['AirHealthIndex'].iloc[-1]
-                air_change = current_air - city_health['AirHealthIndex'].mean()
-                
-                st.metric(
-                    "Air Quality",
-                    f"{current_air:.1f}",
-                    f"{air_change:+.1f}",
-                    delta_color="normal"
-                )
+                # Get city-specific data
+                city_temp = temp_df_filtered[temp_df_filtered['City'] == city]
+                city_rain = rainfall_df_filtered[rainfall_df_filtered['City'] == city]
+
+                # Check if there is data for the city
+                if city_temp.empty or city_rain.empty:
+                    st.warning(f"No data available for {city}.")
+                    continue
+
+                # Calculate seasonal averages
+                seasonal_temp = city_temp.groupby('Season')['Temperature'].mean()
+                seasonal_rain = city_rain.groupby('Season')['Rainfall'].mean()
+
+                # Temperature Statistics
+                col_temp, col_rain = st.columns(2)
+                with col_temp:
+                    current_temp = city_temp['Temperature'].iloc[-1]
+                    historical_avg = city_temp['Temperature'].mean()
+                    temp_change = current_temp - historical_avg
+
+                    st.metric(
+                        "Temperature",
+                        f"{current_temp:.1f}°C",
+                        f"{temp_change:+.1f}°C vs historical",
+                        delta_color="inverse"
+                    )
+
+                    # Show seasonal breakdown
+                    st.write("Seasonal Averages:")
+                    for season in ['Winter', 'Spring', 'Summer', 'Autumn']:
+                        if season in seasonal_temp:
+                            st.write(f"{season}: {seasonal_temp[season]:.1f}°C")
+
+                with col_rain:
+                    current_rain = city_rain['Rainfall'].iloc[-1]
+                    historical_avg_rain = city_rain['Rainfall'].mean()
+                    rain_change = current_rain - historical_avg_rain
+
+                    st.metric(
+                        "Rainfall",
+                        f"{current_rain:.0f}mm",
+                        f"{rain_change:+.0f}mm vs historical",
+                        delta_color="normal"
+                    )
+
+                    # Show seasonal breakdown
+                    st.write("Seasonal Averages:")
+                    for season in ['Winter', 'Spring', 'Summer', 'Autumn']:
+                        if season in seasonal_rain:
+                            st.write(f"{season}: {seasonal_rain[season]:.0f}mm")
+
+                # Extreme Weather Stats
+                st.write("🌪️ **Extreme Weather**")
+                extreme_days_count = len(city_temp[city_temp['ExtremeHeatDay']])
+                drought_days_count = len(city_rain[city_rain['DroughtRisk'] > 0.5])
+
+                col_extreme, col_drought = st.columns(2)
+                with col_extreme:
+                    st.metric(
+                        "Heat Wave Days",
+                        f"{extreme_days_count}",
+                        "Above 40°C",
+                        delta_color="inverse"
+                    )
+                with col_drought:
+                    st.metric(
+                        "Drought Days",
+                        f"{drought_days_count}",
+                        "Risk > 50%",
+                        delta_color="inverse"
+                    )
+
+                # Water Resources Stats
+                st.write("💧 **Water Resources**")
+                city_water = water_df_filtered[water_df_filtered['City'] == city]
+
+                if not city_water.empty:
+                    col_river, col_ground = st.columns(2)
+                    with col_river:
+                        current_river = city_water['RiverLevel'].iloc[-1]
+                        river_change = current_river - city_water['RiverLevel'].mean()
+
+                        st.metric(
+                            "River Level",
+                            f"{current_river:.1f}m³/s",
+                            f"{river_change:+.1f}m³/s",
+                            delta_color="normal"
+                        )
+                    with col_ground:
+                        current_ground = city_water['GroundwaterLevel'].iloc[-1]
+                        ground_change = current_ground - city_water['GroundwaterLevel'].mean()
+
+                        st.metric(
+                            "Groundwater",
+                            f"{current_ground:.1f}m",
+                            f"{ground_change:+.1f}m",
+                            delta_color="normal"
+                        )
+                else:
+                    st.warning("No water resource data available.")
+
+                # Economic Impact Stats
+                st.write("💰 **Economic Impact**")
+                city_econ = economic_df_filtered[economic_df_filtered['City'] == city]
+
+                if not city_econ.empty:
+                    col_energy, col_agri = st.columns(2)
+                    with col_energy:
+                        current_energy = city_econ['EnergyDemand'].iloc[-1]
+                        energy_change = current_energy - city_econ['EnergyDemand'].mean()
+
+                        st.metric(
+                            "Energy Demand",
+                            f"{current_energy:.0f}MW",
+                            f"{energy_change:+.0f}MW",
+                            delta_color="inverse"
+                        )
+                    with col_agri:
+                        current_agri = city_econ['AgriculturalProduction'].iloc[-1]
+                        agri_change = current_agri - city_econ['AgriculturalProduction'].mean()
+
+                        st.metric(
+                            "Agricultural Output",
+                            f"{current_agri:.0f}tons",
+                            f"{agri_change:+.0f}tons",
+                            delta_color="normal"
+                        )
+                else:
+                    st.warning("No economic data available.")
+
+                # Health Impact Stats
+                st.write("🏥 **Health Impact**")
+                city_health = health_df_filtered[health_df_filtered['City'] == city]
+
+                if not city_health.empty:
+                    col_heat, col_air = st.columns(2)
+                    with col_heat:
+                        current_heat = city_health['HeatStressIndex'].iloc[-1]
+                        heat_change = current_heat - city_health['HeatStressIndex'].mean()
+
+                        st.metric(
+                            "Heat Stress",
+                            f"{current_heat:.1f}",
+                            f"{heat_change:+.1f}",
+                            delta_color="inverse"
+                        )
+                    with col_air:
+                        current_air = city_health['AirHealthIndex'].iloc[-1]
+                        air_change = current_air - city_health['AirHealthIndex'].mean()
+
+                        st.metric(
+                            "Air Quality",
+                            f"{current_air:.1f}",
+                            f"{air_change:+.1f}",
+                            delta_color="normal"
+                        )
+                else:
+                    st.warning("No health impact data available.")
 
     # Information about indicators
     st.info("""
@@ -1354,6 +1374,7 @@ with col2:
     🔴 Red changes are concerning
     🟢 Green changes are positive
     """)
+
 
 
 # Footer with sources
