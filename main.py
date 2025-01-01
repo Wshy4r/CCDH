@@ -522,7 +522,7 @@ show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
     
-
+    
     # Add dashboard-specific content heres Climate D
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
@@ -533,6 +533,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
     # Rest of the dashboard logic (charts, filters, etc.)
 
 elif show_research_hub:
+    render_research_hub()
     # Research Hub Content
     st.header("Research Hub")
     st.write("Explore expert profiles and their research papers.")
