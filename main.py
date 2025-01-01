@@ -450,6 +450,55 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
 
+def load_research_hub_data():
+    """Loads data for the Research Hub from an Excel file."""
+    file_path = "GovData/profiles/research_hub_data.xlsx"  # Update this path to match your directory
+    try:
+        research_data = pd.read_excel(file_path, sheet_name=None)  # Load all sheets as a dictionary
+        return research_data
+    except Exception as e:
+        st.error(f"Error loading Research Hub data: {e}")
+        return {}
+
+def render_research_hub():
+    """
+    Function to render the Research Hub page.
+    This page uses data from the Excel file.
+    """
+    st.write("### Research Hub")
+    st.write("Explore expert profiles and their research papers.")
+
+    research_data = load_research_hub_data()
+    if not research_data:
+        return
+
+    # Display profiles dynamically
+    if "Profiles" in research_data:
+        profiles_df = research_data["Profiles"]
+        for _, row in profiles_df.iterrows():
+            col1, col2 = st.columns([1, 3])
+            with col1:
+                st.image(row["Image URL"], width=120) if pd.notna(row["Image URL"]) else st.empty()
+            with col2:
+                st.subheader(row["Name"])
+                st.write(row["Description"])
+                if pd.notna(row["Papers"]):
+                    papers = row["Papers"].split(";")  # Assuming papers are separated by semicolons
+                    for paper in papers:
+                        st.markdown(f"- [{paper.strip()}](#)")
+
+    # Display additional sheets dynamically (e.g., papers or topics)
+    if "Papers" in research_data:
+        st.write("### Research Papers")
+        papers_df = research_data["Papers"]
+        st.dataframe(papers_df)
+
+    if "Topics" in research_data:
+        st.write("### Topics")
+        topics_df = research_data["Topics"]
+        st.dataframe(topics_df)
+
+
 
 # Load all data
 temp_df = load_temperature_data()
@@ -472,9 +521,6 @@ show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
-    
-
-    # Add dashboard-specific content heres Climate D
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
@@ -488,33 +534,20 @@ elif show_research_hub:
     st.header("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Example Profiles
-    profiles = [
-        {
-            "name": "Dr. John Doe",
-            "description": "Expert in Climate Change Adaptation.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        },
-        {
-            "name": "Dr. Jane Smith",
-            "description": "Specialist in Hydrology and Water Resources.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        }
-    ]
-
-    # Display Profiles
-    for profile in profiles:
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.image(profile["image_url"], width=120)
-        with col2:
-            st.subheader(profile["name"])
-            st.write(profile["description"])
-            for paper in profile["papers"]:
-                st.markdown(f"- [{paper}](#)")
-
+    # Load and display data from research_hub_data.xlsx
+    if not research_hub_data.empty:
+        for _, profile in research_hub_data.iterrows():
+            col1, col2 = st.columns([1, 3])
+            with col1:
+                st.image(profile["ImageURL"], width=120)
+            with col2:
+                st.subheader(profile["Name"])
+                st.write(profile["Description"])
+                papers = profile["Papers"].split(";")  # Assuming papers are semi-colon separated
+                for paper in papers:
+                    st.markdown(f"- [{paper.strip()}](#)")
+    else:
+        st.write("No profiles available at the moment.")
 
 elif show_data_sources:
     # Data Sources Content
@@ -530,6 +563,7 @@ elif show_data_sources:
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
+
 
 
 
