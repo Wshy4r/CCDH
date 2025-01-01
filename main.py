@@ -477,7 +477,7 @@ def load_research_hub_data():
     ])
 
 def render_research_hub():
-    st.title("Research Hub")
+    st.subheader("Explore Expert Profiles")
     st.write("Explore expert profiles and their research papers.")
 
     research_data = load_research_hub_data()
@@ -496,15 +496,23 @@ def render_research_hub():
             paper_title = row.get(f"Paper_{paper_idx}", None)
             paper_url = row.get(f"Paper_{paper_idx}_URL", None)
             if paper_title and paper_url:
-                # Use a markdown link for a clickable research paper title
                 st.markdown(f"[{paper_title}]({paper_url})", unsafe_allow_html=True)
             elif paper_title:
                 st.write(f"- {paper_title} (No URL provided)")
         
         st.markdown("---")
 
-# Call the function to render the research hub
+# Sidebar navigation
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to:", ["Home", "Research Hub"])
 
+# Show content based on the selected page
+if page == "Home":
+    st.title("Welcome to the Climate Dashboard")
+    st.write("Explore climate trends, water resources, economic impacts, and more.")
+elif page == "Research Hub":
+    st.title("Research Hub")
+    render_research_hub()
 
 
 # Load all data
