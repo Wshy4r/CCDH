@@ -464,9 +464,9 @@ def load_research_hub_data():
             "Paper_2_URL": "https://example.com/optimization"
         },
         {
-            "Name": "Dr. Jane Doe",
+            "Name": "Prof. Dr. Dana Mawlood",
             "Description": "Specialist in Water Resources.",
-            "Image_URL": "https://via.placeholder.com/150",
+            "Image_URL": "https://i.imgur.com/eFKieco.jpeg",
             "Paper_1": "Hydrology and Water Management",
             "Paper_1_URL": "https://example.com/hydrology",
             "Paper_2": "Water Resource Optimization",
