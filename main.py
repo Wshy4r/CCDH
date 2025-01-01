@@ -541,14 +541,21 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
+    # Add your dashboard-specific content here
+    st.title("Dashboard")
+    st.write("This is the dashboard page.")
+    # ... rest of the dashboard code ...
 
-
-
+elif show_research_hub:
+    st.title("Research Hub")
+    st.write("Explore expert profiles and their research papers.")
 
     # Load the research data
     research_data = load_research_hub_data()
 
-
+    # Debug: Print the loaded data
+    st.write("Loaded Research Data:")
+    st.write(research_data)
 
     if not research_data:
         st.error("Research Hub data is unavailable.")
