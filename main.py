@@ -464,6 +464,8 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
+# === PART 3: Consolidated Sidebar Controls ===
+
 # Sidebar Navigation with Buttons
 st.sidebar.header("Navigation")
 show_dashboard = st.sidebar.button("Dashboard", key="dashboard_button")
@@ -483,6 +485,9 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
     )
 
     # Step 2: Select Category
+    category = None  # Default value
+    chart_type = None  # Default value
+
     if data_source == "Open Source Data":
         category = st.sidebar.selectbox(
             "Select Category (Open Source Data)",
@@ -495,7 +500,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
                 "Future Projections",
                 "Comparative Analysis"
             ],
-            key="category_selectbox"  # Add unique key
+            key="open_source_category"  # Add unique key
         )
 
         # Step 3: Select Indicator
@@ -511,6 +516,12 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
                 ],
                 key="indicator_selectbox"  # Add unique key
             )
+    elif data_source == "Governmental Data":
+        category = st.sidebar.selectbox(
+            "Select Category (Governmental Data)",
+            ["Waste Management", "Power & Energy", "Water Resources Management"],
+            key="governmental_category"  # Add unique key
+        )
 
     # Step 4: Select Cities
     selected_cities = st.sidebar.multiselect(
@@ -534,29 +545,25 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         key="year_range_slider"  # Add unique key
     )
 
-
-
     # Additional conditional filters for time frames
     if time_frame == "Monthly":
         months = st.sidebar.multiselect(
             "Select Months",
             list(calendar.month_name)[1:],
-            default=list(calendar.month_name)[1:]
+            default=list(calendar.month_name)[1:],
+            key="monthly_filter"  # Add unique key
         )
     elif time_frame == "Seasonal":
         seasons = st.sidebar.multiselect(
             "Select Seasons",
             ["Winter", "Spring", "Summer", "Autumn"],
-            default=["Winter", "Spring", "Summer", "Autumn"]
+            default=["Winter", "Spring", "Summer", "Autumn"],
+            key="seasonal_filter"  # Add unique key
         )
 
-
-# Data source selection
-data_source = st.sidebar.selectbox(
-    "Select Data Source",
-    ["Open Source Data", "Governmental Data"],
-    index=0  # Default to "Open Source Data"
-)
+    # Optional: Additional Analysis Options
+    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
+    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence_checkbox")
 
 # Variables for category and chart type
 category = None
