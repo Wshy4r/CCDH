@@ -696,7 +696,6 @@ elif data_source == "Governmental Data":
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Peak Power Demand data is unavailable.")
-            pass
 
 if category == "Water Resources Management":
         # Load Dams and Ponds Data
@@ -766,7 +765,6 @@ if category == "Water Resources Management":
                 st.write(planning_dams_data)
         else:
             st.error("Planning Dams data is unavailable.")
-            pass
 
 
 # Additional analysis options
