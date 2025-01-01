@@ -449,6 +449,22 @@ def load_planning_dams_data():
         # Display an error message if the file cannot be loaded
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
+    
+def filter_data(df, cities=None):
+    filtered = df[
+        (df['Year'] >= start_year) & 
+        (df['Year'] <= end_year)
+    ]
+    
+    if cities:  # Apply city filter only if cities are provided
+        filtered = filtered[df['City'].isin(cities)]
+    
+    if time_frame == "Monthly" and 'Month' in df.columns:
+        filtered = filtered[filtered['MonthName'].isin(months)]
+    elif time_frame == "Seasonal" and 'Season' in df.columns:
+        filtered = filtered[filtered['Season'].isin(seasons)]
+    
+    return filtered
 
 
 # Load all data
@@ -478,6 +494,17 @@ if st.sidebar.button("Research Hub", key="research_hub"):
     st.session_state.current_page = "Research Hub"
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
+
+if selected_page == "Dashboard":
+    temp_df_filtered = filter_data(temp_df, selected_cities)
+    rainfall_df_filtered = filter_data(rainfall_df, selected_cities)
+    water_df_filtered = filter_data(water_df, selected_cities)
+    economic_df_filtered = filter_data(economic_df, selected_cities)
+    health_df_filtered = filter_data(health_df, selected_cities)
+else:
+    # Skip filtering for other pages
+    temp_df_filtered = rainfall_df_filtered = water_df_filtered = None
+    economic_df_filtered = health_df_filtered = None
 
 # Render content based on the current page
 if st.session_state.current_page == "Dashboard":
