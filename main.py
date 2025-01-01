@@ -512,7 +512,7 @@ def render_research_hub():
                 st.markdown(f"- {paper}")
 
 # Call this function where the Research Hub section is supposed to render
-
+render_research_hub()
 
 
 # Load all data
