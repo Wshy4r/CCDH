@@ -469,6 +469,10 @@ def render_research_hub():
     st.write("Explore expert profiles and their research papers.")
 
     try:
+        # Debug: Print current working directory
+        import os
+        st.write(f"Current Working Directory: {os.getcwd()}")
+
         # Load the research hub data from an Excel file
         research_data = pd.read_excel("research_hub_data.xlsx")  # Ensure the file path is correct
 
