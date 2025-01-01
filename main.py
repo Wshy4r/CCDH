@@ -488,55 +488,23 @@ def render_research_hub():
         st.error("No research data is available.")
         return
 
-    # Custom CSS and JavaScript
-    custom_html = """
-    <style>
-        .expert-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-        .paper-link {
-            color: blue;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-    </style>
-    <script>
-    function openLink(url) {
-        window.open(url, '_blank');
-    }
-    </script>
-    """
-
     for _, row in research_data.iterrows():
-        html_content = f"""
-        <div class="expert-card">
-            <h3>{row['Name']}</h3>
-            <p>{row['Description']}</p>
-            <h4>Research Papers:</h4>
-            <ul>
-        """
-        
+        st.subheader(row.get("Name", "Unknown"))
+        st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+        st.write(row.get("Description", "No description provided."))
+        st.write("**Research Papers:**")
+
         for paper_idx in [1, 2]:
             paper_title = row.get(f"Paper_{paper_idx}", None)
             paper_url = row.get(f"Paper_{paper_idx}_URL", None)
             if paper_title and paper_url:
-                html_content += f'<li><span class="paper-link" onclick="openLink(\'{paper_url}\')">{paper_title}</span></li>'
+                st.markdown(f'- <a href="{paper_url}" target="_blank">{paper_title}</a>', unsafe_allow_html=True)
             elif paper_title:
-                html_content += f'<li>{paper_title} (No URL provided)</li>'
+                st.write(f"- {paper_title} (No URL provided)")
         
-        html_content += """
-            </ul>
-        </div>
-        """
-        
-        # Combine custom HTML with content
-        full_html = custom_html + html_content
-        
-        # Render the HTML content
-        components.html(full_html, height=300)  # Adjust height as needed
+        st.markdown("---")
+
+# This function should be called when you want to display the Research Hub
 
 
 # Load all data
