@@ -463,19 +463,20 @@ def load_research_hub_data():
         st.error(f"An error occurred while loading the research hub data: {e}")
         return {}
     
+# Function to render Research Hub with Profile Cards
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     # Hardcoded data for expert profiles and research papers
-    research_data = [
+    research_profiles = [
         {
             "Name": "Dr. John Doe",
-            "Description": "An expert in climate resilience and mitigation strategies.",
             "Sector": "Climate Mitigation",
             "Discipline": "Environmental Science",
-            "Rating": "5.0 (10)",
+            "Rating": 5.0,
             "Image_URL": "https://via.placeholder.com/150",
+            "Description": "An expert in climate resilience and mitigation strategies.",
             "Papers": [
                 "Impact of Extreme Weather Events",
                 "Future of Climate Adaptation Policies",
@@ -483,11 +484,11 @@ def render_research_hub():
         },
         {
             "Name": "Dr. Jane Doe",
-            "Description": "Specialist in water resource management and optimization.",
             "Sector": "Water Resources",
             "Discipline": "Hydrology",
-            "Rating": "4.9 (8)",
+            "Rating": 4.9,
             "Image_URL": "https://via.placeholder.com/150",
+            "Description": "Specialist in water resource management and optimization.",
             "Papers": [
                 "Water Resource Optimization",
                 "Sustainable Hydrology in Urban Areas",
@@ -497,20 +498,24 @@ def render_research_hub():
 
     # Display expert profiles
     st.subheader("Expert Profiles")
-    num_cols = 2
-    cols = st.columns(num_cols)
+    cols = st.columns(len(research_profiles))
 
-    for idx, profile in enumerate(research_data):
-        with cols[idx % num_cols]:
-            st.image(profile["Image_URL"], width=150)
+    for idx, profile in enumerate(research_profiles):
+        with cols[idx % len(cols)]:
+            st.image(profile["Image_URL"], width=150, use_column_width=True)
             st.markdown(f"### {profile['Name']}")
-            st.write(f"**Sector:** {profile['Sector']}")
-            st.write(f"**Discipline:** {profile['Discipline']}")
-            st.write(f"**Rating:** {profile['Rating']}")
+            st.markdown(f"**Sector:** {profile['Sector']}")
+            st.markdown(f"**Discipline:** {profile['Discipline']}")
+            st.markdown(f"**Rating:** {profile['Rating']} ⭐")
             st.write(profile["Description"])
             st.markdown("#### Research Papers:")
             for paper in profile["Papers"]:
                 st.markdown(f"- {paper}")
+
+
+# Ensure Research Hub content is isolated to its section
+if show_research_hub:
+    render_research_hub()
 
 
 
