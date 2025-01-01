@@ -477,12 +477,12 @@ st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 st.sidebar.header("Navigation")
 
 # Buttons for navigation
-show_research_hub = st.sidebar.button("Research Hub")
-show_data_sources = st.sidebar.button("Data Sources")
+show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
+show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
-# Default is the Dashboard view if no button is pressed
+# Default state is the Dashboard view
 if not show_research_hub and not show_data_sources:
-    # Main Dashboard Header and Description
+    # Main Dashboard Content
     st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
     st.markdown("""
     This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region from 1950 onwards:
@@ -492,21 +492,21 @@ if not show_research_hub and not show_data_sources:
     * Helebce (Halabja)
     * Kerkûk (Kirkuk)
     """)
-    # Existing dashboard controls and content
+
+    # Add your existing dashboard filters, visualizations, and controls here
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="selected_cities_open_source"  # Unique key for Open Source
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Keep the rest of your dashboard code here (charts, filters, etc.)
+    # Rest of the dashboard logic (charts, filters, etc.)
 
 elif show_research_hub:
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
-    
+
     # Example Profiles
     profiles = [
         {
@@ -538,12 +538,14 @@ elif show_data_sources:
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
-    # Example Content for Data Sources
+
+    # Example Sources
     sources = {
         "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
         "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
         "FAO AQUASTAT": "https://www.fao.org/aquastat/en/databases/"
     }
+
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
 
