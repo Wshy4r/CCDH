@@ -497,12 +497,12 @@ if st.sidebar.button("Data Sources", key="data_sources"):
 
 # Conditional logic based on the current page
 if st.session_state.current_page == "Dashboard":
-    # Dashboard-specific widgets
+    # Main Dashboard Content
+    st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="dashboard_cities"
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
 
     # Time frame and year range filters
