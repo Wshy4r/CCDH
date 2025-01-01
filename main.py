@@ -467,24 +467,39 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Check if research data is available
+    # Load the research data
+    research_data = load_research_hub_data()
+
+    if not research_data:
+        st.error("Research Hub data is unavailable.")
+        return
+
+    # Display expert profiles
+    st.subheader("Expert Profiles")
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
-        for _, row in profiles_df.iterrows():
-            col1, col2 = st.columns([1, 3])
-            with col1:
-                if 'Image URL' in row and pd.notna(row["Image URL"]):
-                    st.image(row["Image URL"], width=120)
-                else:
-                    st.image("https://via.placeholder.com/150", width=120)
-            with col2:
+
+        # Create columns for displaying profiles
+        num_cols = 3  # Set the number of columns for layout
+        columns = st.columns(num_cols)
+
+        for index, row in profiles_df.iterrows():
+            with columns[index % num_cols]:  # Cycle through columns
+                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
                 st.subheader(row.get("Name", "Unknown"))
                 st.write(row.get("Description", "No description provided."))
-                # Display linked papers
+                
+                # Link papers
                 for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
                     paper = row.get(paper_key)
                     if paper:
                         st.markdown(f"- {paper}")
+
+        # If not enough profiles to fill the grid, keep the layout tidy
+        for i in range(len(profiles_df) % num_cols):
+            with columns[num_cols - 1]:
+                st.write("")  # Placeholder to keep the layout neat
+
     else:
         st.warning("No expert profiles available.")
 
