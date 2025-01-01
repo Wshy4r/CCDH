@@ -452,15 +452,13 @@ def load_planning_dams_data():
 
 @st.cache_data
 def load_research_hub_data():
-    """Loads data for the Research Hub from an Excel file."""
     try:
-        # Replace with the correct path to your Excel file
         file_path = "GovData/profiles/research_hub_data.xlsx"
         research_hub_data = pd.read_excel(file_path, sheet_name="Profiles")
         return research_hub_data
     except Exception as e:
         st.error(f"Error loading research hub data: {e}")
-        return pd.DataFrame()
+        return pd.DataFrame()  # Return an empty DataFrame if loading fails
 
 def render_research_hub():
     st.markdown(
