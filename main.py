@@ -478,6 +478,9 @@ def load_research_hub_data():
     return pd.DataFrame(research_hub_data)
 
 
+import streamlit as st
+import streamlit.components.v1 as components
+
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
@@ -488,30 +491,63 @@ def render_research_hub():
         st.error("No research data is available.")
         return
 
-    num_columns = 2
-    cols = st.columns(num_columns)
+    # Custom CSS for styling
+    custom_css = """
+    <style>
+        .expert-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .paper-link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+    """
 
-    for idx, row in research_data.iterrows():
-        col = cols[idx % num_columns]
-        with col:
-            st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
-            st.subheader(row.get("Name", "Unknown"))
-            st.write(row.get("Description", "No description provided."))
-            st.write("**Research Papers:**")
+    # JavaScript for handling clicks
+    custom_js = """
+    <script>
+    function openLink(url) {
+        window.open(url, '_blank');
+    }
+    </script>
+    """
 
-            for paper_idx in [1, 2]:
-                paper_title = row.get(f"Paper_{paper_idx}", None)
-                paper_url = row.get(f"Paper_{paper_idx}_URL", None)
-                if paper_title and paper_url:
-                    # Using a button to open the link in a new tab
-                    if st.button(paper_title, key=f"paper_{idx}_{paper_idx}"):
-                        # Opening the link in a new tab
-                        js = f"window.open('{paper_url}', '_blank')"
-                        st.components.v1.html(f"<script>{js}</script>")
+    # Render the custom CSS and JavaScript
+    st.markdown(custom_css, unsafe_allow_html=True)
+    components.html(custom_js)
 
-                elif paper_title:
-                    st.write(f"- {paper_title} (No URL provided)")
-            st.markdown("---")
+    for _, row in research_data.iterrows():
+        html_content = f"""
+        <div class="expert-card">
+            <h3>{row['Name']}</h3>
+            <p>{row['Description']}</p>
+            <h4>Research Papers:</h4>
+            <ul>
+        """
+        
+        for paper_idx in [1, 2]:
+            paper_title = row.get(f"Paper_{paper_idx}", None)
+            paper_url = row.get(f"Paper_{paper_idx}_URL", None)
+            if paper_title and paper_url:
+                html_content += f'<li><span class="paper-link" onclick="openLink(\'{paper_url}\')">{paper_title}</span></li>'
+            elif paper_title:
+                html_content += f'<li>{paper_title} (No URL provided)</li>'
+        
+        html_content += """
+            </ul>
+        </div>
+        """
+        
+        # Render the HTML content
+        st.markdown(html_content, unsafe_allow_html=True)
+
+# Make sure to call this function when you want to display the Research Hub
+render_research_hub()
 
 
 
