@@ -459,6 +459,7 @@ def load_research_hub_data():
             "Description": "Mineralogy Geochemistry & Petrology.",
             "Image_URL": "https://via.placeholder.com/150",
             "Paper_1": "Research on Climate Adaptation",
+            "Paper_1_URL": "https://example.com/climate-adaptation",
             "Paper_2": "Impact of Extreme Weather Events"
         },
         {
