@@ -450,12 +450,10 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
 
-import streamlit as st
-import pandas as pd
-
+@st.cache_data
 def load_research_hub_data():
-    # Mock data for demonstration; replace this with your actual data loading logic
-    return pd.DataFrame([
+    # Static internal data definition
+    research_hub_data = [
         {
             "Name": "Hawkar Ali Abdulhaq",
             "Description": "Mineralogy Geochemistry & Petrology.",
@@ -463,7 +461,7 @@ def load_research_hub_data():
             "Paper_1": "Research on Climate Adaptation",
             "Paper_1_URL": "https://example.com/climate-adaptation",
             "Paper_2": "Impact of Extreme Weather Events",
-            "Paper_2_URL": "https://example.com/weather-events"
+            "Paper_2_URL": "https://example.com/optimization"
         },
         {
             "Name": "Dr. Jane Doe",
@@ -474,10 +472,14 @@ def load_research_hub_data():
             "Paper_2": "Water Resource Optimization",
             "Paper_2_URL": "https://example.com/optimization"
         }
-    ])
+    ]
+
+    # Convert to DataFrame for consistency
+    return pd.DataFrame(research_hub_data)
+
 
 def render_research_hub():
-    st.subheader("Explore Expert Profiles")
+    st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     research_data = load_research_hub_data()
@@ -496,23 +498,13 @@ def render_research_hub():
             paper_title = row.get(f"Paper_{paper_idx}", None)
             paper_url = row.get(f"Paper_{paper_idx}_URL", None)
             if paper_title and paper_url:
-                st.markdown(f"[{paper_title}]({paper_url})", unsafe_allow_html=True)
+                st.markdown(f'- <a href="{paper_url}" target="_blank">{paper_title}</a>', unsafe_allow_html=True)
             elif paper_title:
                 st.write(f"- {paper_title} (No URL provided)")
         
         st.markdown("---")
 
-# Sidebar navigation
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to:", ["Home", "Research Hub"])
-
-# Show content based on the selected page
-if page == "Home":
-    st.title("Welcome to the Climate Dashboard")
-    st.write("Explore climate trends, water resources, economic impacts, and more.")
-elif page == "Research Hub":
-    st.title("Research Hub")
-    render_research_hub()
+# This function should be called when you want to display the Research Hub
 
 
 # Load all data
