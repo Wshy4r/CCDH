@@ -468,46 +468,38 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Hardcoded data for the expert profiles
-    research_data = [
-        {
-            "Name": "Dr. John Doe",
-            "Description": "An expert in climate resilience and mitigation strategies.",
-            "Image_URL": "https://via.placeholder.com/150",
-            "Paper_1": "Impact of Extreme Weather Events",
-            "Paper_2": "Future of Climate Adaptation Policies",
-        },
-        {
-            "Name": "Dr. Jane Doe",
-            "Description": "Specialist in water resource management and optimization.",
-            "Image_URL": "https://via.placeholder.com/150",
-            "Paper_1": "Water Resource Optimization",
-            "Paper_2": "Sustainable Hydrology in Urban Areas",
-        },
-    ]
+    # Load research hub data
+    research_data = load_research_hub_data()
+
+    if not research_data:
+        st.error("Research Hub data is unavailable.")
+        return
 
     # Display expert profiles
     st.subheader("Expert Profiles")
-    if not research_data:
-        st.error("No research hub data is available.")
-        return
+    if "Profiles" in research_data:
+        profiles_df = research_data["Profiles"]
 
-    # Create a grid layout for expert profiles
-    num_cols = 3
-    columns = st.columns(num_cols)
+        if profiles_df.empty:
+            st.warning("No expert profiles available.")
+        else:
+            # Create a grid layout for profiles
+            num_cols = 3
+            columns = st.columns(num_cols)
 
-    for index, profile in enumerate(research_data):
-        with columns[index % num_cols]:
-            # Display profile information
-            st.image(profile.get("Image_URL", "https://via.placeholder.com/150"), width=150)
-            st.markdown(f"### {profile.get('Name', 'Unknown')}")
-            st.write(profile.get("Description", "No description provided."))
-            st.markdown("#### Research Papers:")
-            if profile.get("Paper_1"):
-                st.markdown(f"- {profile['Paper_1']}")
-            if profile.get("Paper_2"):
-                st.markdown(f"- {profile['Paper_2']}")
+            for index, row in profiles_df.iterrows():
+                with columns[index % num_cols]:
+                    st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+                    st.markdown(f"### {row.get('Name', 'Unknown')}")
+                    st.write(row.get("Description", "No description provided."))
+                    st.markdown("#### Research Papers:")
+                    if row.get("Paper_1"):
+                        st.markdown(f"- {row['Paper_1']}")
+                    if row.get("Paper_2"):
+                        st.markdown(f"- {row['Paper_2']}")
 
+    else:
+        st.warning("No expert profiles available.")
 
 
 # Call the function to render the Research Hub
