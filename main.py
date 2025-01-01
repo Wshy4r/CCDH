@@ -467,57 +467,52 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Load the research data
-    research_data = load_research_hub_data()
-
-    if not research_data:
-        st.error("Research Hub data is unavailable.")
-        return
+    # Hardcoded data for expert profiles and research papers
+    research_data = [
+        {
+            "Name": "Dr. John Doe",
+            "Description": "An expert in climate resilience and mitigation strategies.",
+            "Image_URL": "https://via.placeholder.com/150",
+            "Sector": "Climate Mitigation",
+            "Discipline": "Environmental Science",
+            "Rating": "5.0 (10)",
+            "Papers": [
+                "Impact of Extreme Weather Events",
+                "Future of Climate Adaptation Policies",
+            ],
+        },
+        {
+            "Name": "Dr. Jane Doe",
+            "Description": "Specialist in water resource management and optimization.",
+            "Image_URL": "https://via.placeholder.com/150",
+            "Sector": "Water Resources",
+            "Discipline": "Hydrology",
+            "Rating": "4.9 (8)",
+            "Papers": [
+                "Water Resource Optimization",
+                "Sustainable Hydrology in Urban Areas",
+            ],
+        },
+    ]
 
     # Display expert profiles
     st.subheader("Expert Profiles")
-    if "Profiles" in research_data:
-        profiles_df = research_data["Profiles"]
+    cols = st.columns(2)  # Two columns for profile layout
 
-        # Display profiles in a card-style grid
-        num_cols = 3  # Set the number of columns for the grid
-        columns = st.columns(num_cols)
+    for idx, profile in enumerate(research_data):
+        with cols[idx % 2]:  # Alternate between columns
+            st.image(profile["Image_URL"], width=150)
+            st.markdown(f"### {profile['Name']}")
+            st.write(f"**Sector:** {profile['Sector']}")
+            st.write(f"**Discipline:** {profile['Discipline']}")
+            st.write(f"**Rating:** {profile['Rating']}")
+            st.write(profile["Description"])
+            st.markdown("#### Research Papers:")
+            for paper in profile["Papers"]:
+                st.markdown(f"- {paper}")
 
-        for index, row in profiles_df.iterrows():
-            with columns[index % num_cols]:
-                # Profile card layout
-                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=150, use_column_width="always")
-                st.markdown(f"### {row.get('Name', 'Unknown')}")
-                st.markdown(f"*{row.get('Description', 'No description provided.')}*")
-                st.markdown("#### Research Papers:")
-                for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
-                    paper = row.get(paper_key)
-                    if paper:
-                        st.markdown(f"- {paper}")
-                st.button("View Profile", key=f"profile_{index}")  # Add a profile button
+# Call this function where the Research Hub section is supposed to render
 
-        if len(profiles_df) % num_cols != 0:
-            # Add placeholders to fill the last row if it's not completely filled
-            for _ in range(num_cols - (len(profiles_df) % num_cols)):
-                st.write("")
-
-    else:
-        st.warning("No expert profiles available.")
-
-    # Add sections for Research Papers and Topics
-    st.subheader("Research Papers")
-    if "Papers" in research_data:
-        papers_df = research_data["Papers"]
-        st.dataframe(papers_df)  # Display the data table
-    else:
-        st.warning("No research papers available.")
-
-    st.subheader("Research Topics")
-    if "Topics" in research_data:
-        topics_df = research_data["Topics"]
-        st.dataframe(topics_df)  # Display the data table
-    else:
-        st.warning("No research topics available.")
 
 
 # Load all data
@@ -563,7 +558,52 @@ elif show_research_hub:
     st.write("Loaded Research Data:")
     st.write(research_data)
 
-    
+    if not research_data:
+        st.error("Research Hub data is unavailable.")
+    else:
+        # Display expert profiles
+        st.subheader("Expert Profiles")
+        if "Profiles" in research_data:
+            profiles_df = research_data["Profiles"]
+            st.write("Debug: Profiles DataFrame")
+            st.dataframe(profiles_df)  # Show the full DataFrame
+
+            # Display each profile dynamically
+            for _, row in profiles_df.iterrows():
+                col1, col2 = st.columns([1, 3])
+                with col1:
+                    st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
+                with col2:
+                    st.subheader(row.get("Name", "Unknown"))
+                    st.write(row.get("Description", "No description provided."))
+                    
+                    # Display linked papers
+                    for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
+                        paper = row.get(paper_key)
+                        if paper:
+                            st.markdown(f"- {paper}")
+        else:
+            st.warning("No expert profiles available.")
+
+        # Display research papers
+        st.subheader("Research Papers")
+        if "Papers" in research_data:
+            papers_df = research_data["Papers"]
+            st.write("Papers DataFrame:")
+            st.write(papers_df)
+            st.dataframe(papers_df)
+        else:
+            st.warning("No research papers available.")
+
+        # Display research topics
+        st.subheader("Research Topics")
+        if "Topics" in research_data:
+            topics_df = research_data["Topics"]
+            st.write("Topics DataFrame:")
+            st.write(topics_df)
+            st.dataframe(topics_df)
+        else:
+            st.warning("No research topics available.")
 
 elif show_data_sources:
     # Data Sources Content
