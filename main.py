@@ -481,16 +481,17 @@ show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
-    # Title and description
     st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
     st.markdown("""
-    This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region   from 1950 onwards:
+    This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region from 1950 onwards:
     * Hewlêr (Erbil)
     * Dihok (Duhok)
     * Silêmanî (Sulaymaniyah)
     * Helebce (Halabja)
     * Kerkûk (Kirkuk)
     """)
+    # Add dashboard-specific content here...
+
 
     # Add dashboard-specific content here
     st.sidebar.header("Dashboard Controls")
