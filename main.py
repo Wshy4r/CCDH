@@ -560,46 +560,23 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
 
 
     # Research Hub Content
-
     st.header("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Load Research Hub data
-    research_hub_data = load_research_hub_data()
-
-    if not research_hub_data or not isinstance(research_hub_data, dict):
-        st.error("No data available for the Research Hub.")
+    # Load and display data from research_hub_data.xlsx
+    if not research_hub_data.empty:
+        for _, profile in research_hub_data.iterrows():
+            col1, col2 = st.columns([1, 3])
+            with col1:
+                st.image(profile["ImageURL"], width=120)
+            with col2:
+                st.subheader(profile["Name"])
+                st.write(profile["Description"])
+                papers = profile["Papers"].split(";")  # Assuming papers are semi-colon separated
+                for paper in papers:
+                    st.markdown(f"- [{paper.strip()}](#)")
     else:
-        # Display profiles dynamically
-        if "Profiles" in research_hub_data:
-            st.write("### Profiles")
-            profiles_df = research_hub_data["Profiles"]
-
-            if profiles_df.empty:
-                st.write("No profiles available at the moment.")
-            else:
-                for _, profile in profiles_df.iterrows():
-                    col1, col2 = st.columns([1, 3])
-                    with col1:
-                        st.image(profile.get("ImageURL", ""), width=120) if pd.notna(profile.get("ImageURL", "")) else st.empty()
-                    with col2:
-                        st.subheader(profile.get("Name", "Unknown"))
-                        st.write(profile.get("Description", "No description provided."))
-                        if pd.notna(profile.get("Papers", "")):
-                            papers = profile["Papers"].split(";")
-                            for paper in papers:
-                                st.markdown(f"- [{paper.strip()}](#)")
-
-        # Display additional sheets like "Papers" and "Topics"
-        if "Papers" in research_hub_data:
-            st.write("### Research Papers")
-            papers_df = research_hub_data["Papers"]
-            st.dataframe(papers_df if not papers_df.empty else "No research papers available.")
-
-        if "Topics" in research_hub_data:
-            st.write("### Topics")
-            topics_df = research_hub_data["Topics"]
-            st.dataframe(topics_df if not topics_df.empty else "No topics available.")
+        st.write("No profiles available at the moment.")
 
 elif show_data_sources:
     # Data Sources Content
