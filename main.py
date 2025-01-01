@@ -452,37 +452,51 @@ def load_planning_dams_data():
 
 @st.cache_data
 def load_research_hub_data():
-    try:
-        file_path = "GovData/profiles/research_hub_data.xlsx"
-        research_hub_data = pd.read_excel(file_path, sheet_name="Profiles")
-        return research_hub_data
-    except Exception as e:
-        st.error(f"Error loading research hub data: {e}")
-        return pd.DataFrame()  # Return an empty DataFrame if loading fails
+    # Static internal data definition
+    research_hub_data = [
+        {
+            "Name": "Dr. John Doe",
+            "Description": "Expert in Climate Adaptation.",
+            "Image_URL": "https://via.placeholder.com/150",
+            "Paper_1": "Research on Climate Adaptation",
+            "Paper_2": "Impact of Extreme Weather Events"
+        },
+        {
+            "Name": "Dr. Jane Doe",
+            "Description": "Specialist in Water Resources.",
+            "Image_URL": "https://via.placeholder.com/150",
+            "Paper_1": "Hydrology and Water Management",
+            "Paper_2": "Water Resource Optimization"
+        }
+    ]
+
+    # Convert to DataFrame for consistency
+    return pd.DataFrame(research_hub_data)
+
 
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
-    
-    # Step 1: Load data and display raw content
+
+    # Load research data
     research_data = load_research_hub_data()
-    
-    # Debugging: Show raw DataFrame
+
     if research_data.empty:
-        st.error("No research data found.")
+        st.error("No research data is available.")
         return
-    st.write("Debugging: Raw DataFrame:")
-    st.dataframe(research_data)
-    
-    # Step 2: Basic rendering for names and descriptions
-    st.subheader("Expert Profiles")
+
+    # Render each profile as an expander
     for _, row in research_data.iterrows():
-        st.write(f"**{row['Name']}** - {row['Description']}")
-        
-        # Optional: Display papers as a bullet list
-        papers = [row.get('Paper_1', None), row.get('Paper_2', None)]
-        for paper in papers:
-            if paper:
+        with st.expander(row.get('Name', 'Unknown Expert')):
+            st.image(row.get('Image_URL', 'https://via.placeholder.com/100'), width=150, caption=row.get('Name', 'No Name'))
+            st.write(f"**Description:** {row.get('Description', 'No description available.')}")
+            
+            st.write("**Research Papers:**")
+            papers = [
+                row.get('Paper_1', 'No paper available'),
+                row.get('Paper_2', 'No paper available')
+            ]
+            for paper in papers:
                 st.markdown(f"- {paper}")
 
 
