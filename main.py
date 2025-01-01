@@ -528,6 +528,7 @@ if st.sidebar.button("Research Hub", key="research_hub"):
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
 # Render content based on the current page
+# Render content based on the current page
 if st.session_state.current_page == "Dashboard":
     # Sidebar filters for Dashboard
     st.sidebar.header("Dashboard Controls")
@@ -570,19 +571,22 @@ if st.session_state.current_page == "Dashboard":
 
     # Dashboard content
     st.title("Kurdistan Cities Climate Dashboard")
-    # Add your dashboard-specific content here (e.g., charts, tables)
     st.write("Dashboard content goes here.")
+
 elif st.session_state.current_page == "Research Hub":
     render_research_hub()
+    
+    # Explicitly set filtered data to None to avoid accidental rendering
     temp_df_filtered = None
     rainfall_df_filtered = None
     water_df_filtered = None
     economic_df_filtered = None
     health_df_filtered = None
-    # Prevent data visualizations from rendering in this section
+
 elif st.session_state.current_page == "Data Sources":
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
+
 
 
     # Example Sources
