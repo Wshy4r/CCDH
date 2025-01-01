@@ -472,6 +472,7 @@ show_dashboard = st.sidebar.button("Dashboard", key="dashboard_button")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub_button")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources_button")
 
+# Sidebar controls
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
@@ -481,13 +482,10 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         "Select Data Source",
         ["Open Source Data", "Governmental Data"],
         index=0,  # Default to "Open Source Data"
-        key="data_source_selectbox"  # Add unique key
+        key="data_source_selectbox"
     )
 
-    # Step 2: Select Category
-    category = None  # Default value
-    chart_type = None  # Default value
-
+    # Step 2: Select Category and Indicator
     if data_source == "Open Source Data":
         category = st.sidebar.selectbox(
             "Select Category (Open Source Data)",
@@ -500,10 +498,10 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
                 "Future Projections",
                 "Comparative Analysis"
             ],
-            key="open_source_category"  # Add unique key
+            key="open_source_category"
         )
 
-        # Step 3: Select Indicator
+        # Display indicator dropdown based on selected category
         if category == "Temperature & Precipitation":
             chart_type = st.sidebar.selectbox(
                 "Select Indicator",
@@ -514,35 +512,48 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
                     "Drought Analysis",
                     "Combined View"
                 ],
-                key="indicator_selectbox"  # Add unique key
+                key="temperature_precipitation_indicator"
             )
+        elif category == "Water Resources":
+            chart_type = st.sidebar.selectbox(
+                "Select Indicator",
+                [
+                    "River Levels",
+                    "Groundwater Levels",
+                    "Water Stress Index",
+                    "Combined Water Resources"
+                ],
+                key="water_resources_indicator"
+            )
+        # Add other categories here as needed.
+
     elif data_source == "Governmental Data":
         category = st.sidebar.selectbox(
             "Select Category (Governmental Data)",
             ["Waste Management", "Power & Energy", "Water Resources Management"],
-            key="governmental_category"  # Add unique key
+            key="governmental_category"
         )
 
-    # Step 4: Select Cities
+    # Step 3: Select Cities
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="cities_multiselect"  # Add unique key
+        key="cities_multiselect"
     )
 
-    # Step 5: Select Time Frame
+    # Step 4: Select Time Frame
     time_frame = st.sidebar.radio(
         "Select Time Frame",
         ["Yearly", "Monthly", "Seasonal"],
-        key="time_frame_radio"  # Add unique key
+        key="time_frame_radio"
     )
 
-    # Step 6: Select Year Range
+    # Step 5: Select Year Range
     start_year, end_year = st.sidebar.slider(
         "Select Year Range",
         1950, 2023, (1950, 2023),
-        key="year_range_slider"  # Add unique key
+        key="year_range_slider"
     )
 
     # Additional conditional filters for time frames
@@ -551,19 +562,20 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
             "Select Months",
             list(calendar.month_name)[1:],
             default=list(calendar.month_name)[1:],
-            key="monthly_filter"  # Add unique key
+            key="monthly_filter"
         )
     elif time_frame == "Seasonal":
         seasons = st.sidebar.multiselect(
             "Select Seasons",
             ["Winter", "Spring", "Summer", "Autumn"],
             default=["Winter", "Spring", "Summer", "Autumn"],
-            key="seasonal_filter"  # Add unique key
+            key="seasonal_filter"
         )
 
     # Optional: Additional Analysis Options
-    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
-    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence_checkbox")
+    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="unique_show_trend_checkbox")
+    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="unique_show_confidence_checkbox")
+
 
 # Variables for category and chart type
 category = None
