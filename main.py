@@ -466,11 +466,12 @@ st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
 # === PART 3: Consolidated Sidebar Controls ===
 
-# Sidebar Navigation with Buttons
+# Sidebar Navigation with Unique Keys
 st.sidebar.header("Navigation")
-show_dashboard = st.sidebar.button("Dashboard", key="dashboard_button")
-show_research_hub = st.sidebar.button("Research Hub", key="research_hub_button")
-show_data_sources = st.sidebar.button("Data Sources", key="data_sources_button")
+show_dashboard = st.sidebar.button("Dashboard", key="dashboard_btn")
+show_research_hub = st.sidebar.button("Research Hub", key="research_hub_btn")
+show_data_sources = st.sidebar.button("Data Sources", key="data_sources_btn")
+
 
 # Sidebar controls
 st.sidebar.header("Navigation")
