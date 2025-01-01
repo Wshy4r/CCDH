@@ -481,6 +481,14 @@ if st.sidebar.button("Data Sources", key="data_sources"):
 
 # Render content based on the current page
 if st.session_state.current_page == "Dashboard":
+# Sidebar Navigation with Buttons
+    st.sidebar.header("Navigation")
+    selected_page = st.sidebar.radio(
+    "Select Page",
+    ["Dashboard", "Research Hub", "Data Sources"]
+)
+
+if selected_page == "Dashboard":
     # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
@@ -488,13 +496,20 @@ if st.session_state.current_page == "Dashboard":
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    st.title("Kurdistan Cities Climate Dashboard")
-    # Add your dashboard-specific content here (charts, filters, etc.)
-    st.write("Dashboard content goes here.")
 
-elif st.session_state.current_page == "Research Hub":
-    # Research Hub Content
-    st.title("Research Hub")
+    # Filtering logic for the dashboard
+    temp_df_filtered = filter_data(temp_df)
+    rainfall_df_filtered = filter_data(rainfall_df)
+    water_df_filtered = filter_data(water_df)
+    economic_df_filtered = filter_data(economic_df)
+    health_df_filtered = filter_data(health_df)
+
+    # Add the rest of the dashboard content here
+
+elif selected_page == "Research Hub":
+    # Reset sidebar selections for Research Hub
+    st.sidebar.empty()  # Clears sidebar content
+    st.header("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     # Example Profiles
@@ -524,7 +539,7 @@ elif st.session_state.current_page == "Research Hub":
             for paper in profile["papers"]:
                 st.markdown(f"- [{paper}](#)")
 
-elif st.session_state.current_page == "Data Sources":
+elif selected_page == "Data Sources":
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
@@ -538,6 +553,7 @@ elif st.session_state.current_page == "Data Sources":
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
+
 
 
 
