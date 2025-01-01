@@ -489,36 +489,33 @@ def render_research_hub():
         st.error("No research data is available.")
         return
 
-    # Create a grid layout for profiles
-    cols = st.columns(3)  # Display three profiles per row
+    # Display profiles in a grid layout
     num_profiles = len(research_data)
+    cols_per_row = 3  # Number of columns per row
 
-    for idx, row in research_data.iterrows():
-        col = cols[idx % 3]
+    for idx, row in enumerate(research_data.itertuples()):
+        # Create a new row every `cols_per_row` profiles
+        if idx % cols_per_row == 0:
+            cols = st.columns(cols_per_row)
+
+        col = cols[idx % cols_per_row]
         with col:
-            # Create profile card
             with st.container():
-                st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=100)
-                st.subheader(row.get("Name", "Unknown"))
-                st.write(f"**Description:** {row.get('Description', 'No description available.')}")
+                st.image(row.Image_URL, width=150)
+                st.subheader(row.Name)
+                st.write(f"**Description:** {row.Description}")
                 st.write("**Research Papers:**")
-                
-                # Retrieve research papers and their URLs
+
+                # Render research papers with links
                 papers = [
-                    {
-                        "title": row.get("Paper_1_Title", "No title available"),
-                        "url": row.get("Paper_1_URL", "#")
-                    },
-                    {
-                        "title": row.get("Paper_2_Title", "No title available"),
-                        "url": row.get("Paper_2_URL", "#")
-                    }
+                    {"title": getattr(row, "Paper_1_Title", "No title"), "url": getattr(row, "Paper_1_URL", "#")},
+                    {"title": getattr(row, "Paper_2_Title", "No title"), "url": getattr(row, "Paper_2_URL", "#")}
                 ]
-                
                 for paper in papers:
-                    if paper["title"] and paper["url"]:
-                        st.markdown(f"- [{paper['title']}]({paper['url']})")
-            st.markdown("---")
+                    st.markdown(f"- [{paper['title']}]({paper['url']})")
+
+    st.markdown("---")
+
 
 
 
