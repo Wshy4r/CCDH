@@ -469,90 +469,85 @@ def render_research_hub():
     # Load the research data
     research_data = load_research_hub_data()
 
-    if not research_data:
+    if research_data.empty:
         st.error("Research Hub data is unavailable.")
         return
 
-    if "Profiles" in research_data:
-        profiles_df = research_data["Profiles"]
+    # Apply CSS for card design
+    st.markdown("""
+    <style>
+        .profile-card {
+            display: inline-block;
+            width: 300px;
+            margin: 15px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .profile-img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+        .profile-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .profile-desc {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .profile-sector, .profile-discipline {
+            font-size: 12px;
+            color: #888;
+            margin: 5px 0;
+        }
+        .profile-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .profile-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
-        # Inject custom CSS for profile cards
-        st.markdown("""
-        <style>
-            .profile-card {
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                padding: 15px;
-                margin: 10px;
-                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-                background-color: #fff;
-                text-align: center;
-                transition: transform 0.3s ease-in-out;
-            }
-            .profile-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
-            }
-            .profile-img {
-                border-radius: 50%;
-                width: 100px;
-                height: 100px;
-                margin-bottom: 10px;
-            }
-            .profile-title {
-                font-size: 18px;
-                font-weight: bold;
-                margin: 5px 0;
-                color: #333;
-            }
-            .profile-desc {
-                font-size: 14px;
-                color: #666;
-                margin: 10px 0;
-            }
-            .profile-sector,
-            .profile-discipline {
-                font-size: 12px;
-                color: #888;
-                margin: 5px 0;
-            }
-            .profile-btn {
-                display: inline-block;
-                padding: 10px 15px;
-                background-color: #007bff;
-                color: white;
-                border-radius: 5px;
-                text-decoration: none;
-                font-size: 14px;
-                margin-top: 10px;
-            }
-            .profile-btn:hover {
-                background-color: #0056b3;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-
-        # Render profiles in a grid layout
-        num_cols = 3
-        columns = st.columns(num_cols)
-
-        for idx, row in profiles_df.iterrows():
-            with columns[idx % num_cols]:
-                st.markdown(
-                    f"""
-                    <div class="profile-card">
-                        <img src="{row.get('Image URL', 'https://via.placeholder.com/100')}" alt="Profile Image" class="profile-img">
-                        <div class="profile-title">{row.get('Name', 'Unknown')}</div>
-                        <div class="profile-desc">{row.get('Description', 'No description available.')}</div>
-                        <div class="profile-sector"><b>Sector:</b> {row.get('Sector', 'N/A')}</div>
-                        <div class="profile-discipline"><b>Discipline:</b> {row.get('Discipline', 'N/A')}</div>
-                        <div class="profile-discipline"><b>Rating:</b> {row.get('Rating', 'N/A')}</div>
-                        <a href="#" class="profile-btn">View Profile</a>
-                    </div>
-                    """, unsafe_allow_html=True
-                )
-    else:
-        st.warning("No expert profiles available.")
+    # Render profiles dynamically
+    st.write('<div style="display: flex; flex-wrap: wrap; justify-content: center;">', unsafe_allow_html=True)
+    for _, row in research_data.iterrows():
+        st.markdown(
+            f"""
+            <div class="profile-card">
+                <img src="{row.get('Image URL', 'https://via.placeholder.com/80')}" alt="Profile Image" class="profile-img">
+                <div class="profile-title">{row.get('Name', 'Unknown')}</div>
+                <div class="profile-desc">{row.get('Description', 'No description available.')}</div>
+                <div class="profile-sector"><b>Sector:</b> {row.get('Sector', 'N/A')}</div>
+                <div class="profile-discipline"><b>Discipline:</b> {row.get('Discipline', 'N/A')}</div>
+                <div class="profile-rating"><b>Rating:</b> {row.get('Rating', 'N/A')}</div>
+                <a href="{row.get('Profile Link', '#')}" class="profile-btn">View Profile</a>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    st.write('</div>', unsafe_allow_html=True)
 
 
 
