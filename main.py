@@ -490,7 +490,7 @@ def render_research_hub():
         return
 
     # Display profiles in a grid layout
-    num_columns = 3  # Adjust number of columns per row
+    num_columns = 2  # Adjust the number of columns
     cols = st.columns(num_columns)
 
     for idx, row in research_data.iterrows():
@@ -500,19 +500,19 @@ def render_research_hub():
             st.subheader(row.get("Name", "Unknown"))
             st.write(row.get("Description", "No description provided."))
             st.write("**Research Papers:**")
-
-            # Render research papers with titles as clickable links
-            for paper_idx in [1, 2]:  # Iterate over possible paper indices
+            
+            # Render clickable links for research papers
+            for paper_idx in [1, 2]:  # Handle up to two papers
                 title_key = f"Paper_{paper_idx}_Title"
                 url_key = f"Paper_{paper_idx}_URL"
                 title = row.get(title_key)
                 url = row.get(url_key)
                 
-                if title and url:  # Check if both title and URL are available
+                if title and url:
                     st.markdown(f"- [{title}]({url})")
                 else:
                     st.markdown("- No research paper available")
-            st.markdown("---")  # Separator for each card
+            st.markdown("---")
 
 
 
