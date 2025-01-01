@@ -450,16 +450,19 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
 
-@st.cache_data
+@st.cache_data  # Cache the data for performance
 def load_research_hub_data():
-    """Loads data for the Research Hub from an Excel file."""
-    file_path = "GovData/profiles/research_hub_data.xlsx"  # Update this path to match your directory
+    """Loads data for the Research Hub from an Excel file (research_hub.xlsx)."""
     try:
-        research_data = pd.read_excel(file_path, sheet_name=None)  # Load all sheets as a dictionary
-        return research_data
-    except Exception as e:
-        st.error(f"Error loading Research Hub data: {e}")
+        research_hub_data = pd.read_excel("GovData/profiles/research_hub.xlsx", sheet_name=None)
+        return research_hub_data
+    except FileNotFoundError:
+        st.error("The research_hub.xlsx file was not found.")
         return {}
+    except Exception as e:
+        st.error(f"An error occurred while loading the research hub data: {e}")
+        return {}
+    
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
@@ -526,13 +529,29 @@ show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
-# Main content area
-if show_research_hub:
+if show_dashboard or (not show_research_hub and not show_data_sources):
+    # Main Dashboard Content
+    st.sidebar.header("Dashboard Controls")
+    selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    )
+    # Add your dashboard-specific content here
+    st.title("Dashboard")
+    st.write("This is the dashboard page.")
+    # ... rest of the dashboard code ...
+
+elif show_research_hub:
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     # Load the research data
     research_data = load_research_hub_data()
+
+    # Debug: Print the loaded data
+    st.write("Loaded Research Data:")
+    st.write(research_data)
 
     if not research_data:
         st.error("Research Hub data is unavailable.")
@@ -541,6 +560,10 @@ if show_research_hub:
         st.subheader("Expert Profiles")
         if "Profiles" in research_data:
             profiles_df = research_data["Profiles"]
+            st.write("Debug: Profiles DataFrame")
+            st.dataframe(profiles_df)  # Show the full DataFrame
+
+            # Display each profile dynamically
             for _, row in profiles_df.iterrows():
                 col1, col2 = st.columns([1, 3])
                 with col1:
@@ -561,6 +584,8 @@ if show_research_hub:
         st.subheader("Research Papers")
         if "Papers" in research_data:
             papers_df = research_data["Papers"]
+            st.write("Papers DataFrame:")
+            st.write(papers_df)
             st.dataframe(papers_df)
         else:
             st.warning("No research papers available.")
@@ -569,6 +594,8 @@ if show_research_hub:
         st.subheader("Research Topics")
         if "Topics" in research_data:
             topics_df = research_data["Topics"]
+            st.write("Topics DataFrame:")
+            st.write(topics_df)
             st.dataframe(topics_df)
         else:
             st.warning("No research topics available.")
@@ -587,18 +614,6 @@ elif show_data_sources:
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
-
-else:  # Default to dashboard
-    # Main Dashboard Content
-    st.sidebar.header("Dashboard Controls")
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
-    )
-    
-    # ... (rest of your dashboard code, including the data source selection,
-    #      category selection, and visualization code)
 
 # Time range
 time_frame = st.sidebar.radio(
