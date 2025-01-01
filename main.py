@@ -456,21 +456,17 @@ def load_research_hub_data():
     research_hub_data = [
         {
             "Name": "Hawkar Ali Abdulhaq",
-        "Description": "Mineralogy Geochemistry & Petrology.",
-        "Image_URL": "https://via.placeholder.com/150",
-        "Paper_1_Title": "Research on Climate Adaptation",
-        "Paper_1_URL": "https://example.com/research-climate-adaptation",
-        "Paper_2_Title": "Impact of Extreme Weather Events",
-        "Paper_2_URL": "https://example.com/impact-extreme-weather"
-    },
-    {
-        "Name": "Dr. Janee Doe",
-        "Description": "Specialist in Water Resources.",
-        "Image_URL": "https://via.placeholder.com/150",
-        "Paper_1_Title": "Hydrology and Water Management",
-        "Paper_1_URL": "https://example.com/hydrology-water-management",
-        "Paper_2_Title": "Water Resource Optimization",
-        "Paper_2_URL": "https://example.com/water-resource-optimization"
+            "Description": "Mineralogy Geochemistry & Petrology.",
+            "Image_URL": "https://i.imgur.com/B6Mvump.jpeg",
+            "Paper_1": "Research on Climate Adaptation",
+            "Paper_2": "Impact of Extreme Weather Events"
+        },
+        {
+            "Name": "Dr. Janee Doe",
+            "Description": "Specialist in Water Resources.",
+            "Image_URL": "https://via.placeholder.com/150",
+            "Paper_1": "Hydrology and Water Management",
+            "Paper_2": "Water Resource Optimization"
         }
     ]
 
