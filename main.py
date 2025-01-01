@@ -467,38 +467,54 @@ def render_research_hub():
     st.write("Explore expert profiles and their research papers.")
 
     # Load the research data
-    profiles_df = load_research_hub_data()
+    research_data = load_research_hub_data()
 
-    if profiles_df.empty:
-        st.error("No research hub data available.")
+    if not research_data or "Profiles" not in research_data:
+        st.error("Research Hub data is unavailable or missing 'Profiles'.")
         return
 
-    # Display expert profiles in a styled grid
+    profiles_df = research_data["Profiles"]
+
+    # Display profiles in styled cards
     st.subheader("Expert Profiles")
-    num_cols = 3  # Number of columns for the grid
+    num_cols = 4  # Number of cards per row
     columns = st.columns(num_cols)
 
-    for index, row in profiles_df.iterrows():
-        with columns[index % num_cols]:  # Cycle through columns
+    for idx, row in profiles_df.iterrows():
+        with columns[idx % num_cols]:
             st.markdown(
                 f"""
-                <div style="border: 1px solid #ddd; border-radius: 8px; padding: 16px; text-align: center; background-color: #fff; margin-bottom: 16px;">
-                    <img src="{row.get('Image URL', 'https://via.placeholder.com/150')}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 8px;">
-                    <h4 style="margin: 0;">{row.get('Name', 'Unknown')}</h4>
-                    <p style="margin: 8px 0; font-size: 14px; color: #555;">{row.get('Description', 'No description provided.')}</p>
-                    <p style="font-size: 14px; color: #333;"><b>Sector:</b> {row.get('Sector', 'N/A')}</p>
-                    <p style="font-size: 14px; color: #333;"><b>Discipline:</b> {row.get('Discipline', 'N/A')}</p>
-                    <p style="font-size: 14px; color: #333;"><b>Rating:</b> {row.get('Rating', 'N/A')}</p>
-                    <h5 style="margin: 8px 0 4px; font-size: 16px;">Research Papers:</h5>
+                <div style="
+                    border: 1px solid #e0e0e0;
+                    border-radius: 8px;
+                    padding: 10px;
+                    text-align: center;
+                    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+                    margin: 10px;
+                    background-color: #ffffff;
+                ">
+                    <img src="{row.get('Image_URL', 'https://via.placeholder.com/150')}" 
+                         style="border-radius: 50%; width: 100px; height: 100px; margin-bottom: 10px;" alt="Profile Image">
+                    <h4 style="margin-bottom: 5px;">{row.get('Name', 'N/A')}</h4>
+                    <p style="margin-bottom: 5px; font-size: 14px; color: #555;">
+                        <b>Sector:</b> {row.get('Sector', 'N/A')}
+                    </p>
+                    <p style="margin-bottom: 5px; font-size: 14px; color: #555;">
+                        <b>Discipline:</b> {row.get('Discipline', 'N/A')}
+                    </p>
+                    <p style="margin-bottom: 5px; font-size: 14px; color: #555;">
+                        <b>Rating:</b> {row.get('Rating', 'N/A')} ⭐
+                    </p>
+                    <a href="#" style="display: inline-block; margin-top: 10px; padding: 5px 10px; 
+                        background-color: #007bff; color: #ffffff; text-decoration: none; 
+                        border-radius: 4px; font-size: 14px;">
+                        View Profile
+                    </a>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-            # List research papers
-            for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
-                paper = row.get(paper_key)
-                if paper:
-                    st.markdown(f"- {paper}")
+
 
     # Ensure layout alignment if the grid is incomplete
     remaining_cols = len(profiles_df) % num_cols
