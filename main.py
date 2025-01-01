@@ -482,9 +482,9 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
     # Rest of the dashboard logic (charts, filters, etc.)
-
 elif show_research_hub:
-    # Research Hub Content
+    # Reset sidebar selections for Research Hub
+    st.sidebar.empty()  # Clears sidebar content
     st.header("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
