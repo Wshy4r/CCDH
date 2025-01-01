@@ -435,6 +435,7 @@ def load_dams_ponds_data():
         return pd.DataFrame()
 @st.cache_data
 def load_planning_dams_data():
+    """Loads data for planning dams from an Excel file."""
     try:
         # Define the file path for the planning dams Excel file
         file_path = "GovData/water/Planning_Dams_Erbil.xlsx"  # Adjust the file path if needed
@@ -445,19 +446,31 @@ def load_planning_dams_data():
         
         # Return the DataFrame
         return planning_dams_data
+    except FileNotFoundError:
+        st.error("Error: The file for planning dams data could not be found.")
+        return pd.DataFrame()
     except Exception as e:
-        # Display an error message if the file cannot be loaded
-        st.error(f"Error loading planning dams data: {str(e)}")
+        # Display a generic error message if the file cannot be loaded
+        st.error(f"An error occurred while loading planning dams data: {str(e)}")
         return pd.DataFrame()
 
+@st.cache_data
 def load_research_hub_data():
     """Loads data for the Research Hub from an Excel file."""
-    file_path = "GovData/profiles/research_hub_data.xlsx"  # Update this path to match your directory
     try:
+        file_path = "GovData/profiles/research_hub_data.xlsx"  # Update this path to match your directory
         research_data = pd.read_excel(file_path, sheet_name=None)  # Load all sheets as a dictionary
+        
+        # Strip column names for each sheet to avoid whitespace issues
+        for sheet_name, df in research_data.items():
+            research_data[sheet_name].columns = df.columns.str.strip()
+        
         return research_data
+    except FileNotFoundError:
+        st.error("Error: The Research Hub data file could not be found.")
+        return {}
     except Exception as e:
-        st.error(f"Error loading Research Hub data: {e}")
+        st.error(f"An error occurred while loading Research Hub data: {str(e)}")
         return {}
 
 def render_research_hub():
@@ -465,38 +478,51 @@ def render_research_hub():
     Function to render the Research Hub page.
     This page uses data from the Excel file.
     """
-    st.write("### Research Hub")
+    st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
+    # Load Research Hub data
     research_data = load_research_hub_data()
     if not research_data:
+        st.write("No data available for the Research Hub.")
         return
 
     # Display profiles dynamically
     if "Profiles" in research_data:
+        st.write("### Profiles")
         profiles_df = research_data["Profiles"]
-        for _, row in profiles_df.iterrows():
-            col1, col2 = st.columns([1, 3])
-            with col1:
-                st.image(row["Image URL"], width=120) if pd.notna(row["Image URL"]) else st.empty()
-            with col2:
-                st.subheader(row["Name"])
-                st.write(row["Description"])
-                if pd.notna(row["Papers"]):
-                    papers = row["Papers"].split(";")  # Assuming papers are separated by semicolons
-                    for paper in papers:
-                        st.markdown(f"- [{paper.strip()}](#)")
+        
+        if profiles_df.empty:
+            st.write("No profiles available at the moment.")
+        else:
+            for _, row in profiles_df.iterrows():
+                col1, col2 = st.columns([1, 3])
+                with col1:
+                    st.image(row.get("Image URL", ""), width=120) if pd.notna(row.get("Image URL", "")) else st.empty()
+                with col2:
+                    st.subheader(row.get("Name", "Unknown"))
+                    st.write(row.get("Description", "No description available."))
+                    if pd.notna(row.get("Papers", "")):
+                        papers = row["Papers"].split(";")  # Assuming papers are separated by semicolons
+                        for paper in papers:
+                            st.markdown(f"- [{paper.strip()}](#)")
 
     # Display additional sheets dynamically (e.g., papers or topics)
     if "Papers" in research_data:
         st.write("### Research Papers")
         papers_df = research_data["Papers"]
-        st.dataframe(papers_df)
+        if not papers_df.empty:
+            st.dataframe(papers_df)
+        else:
+            st.write("No research papers available.")
 
     if "Topics" in research_data:
         st.write("### Topics")
         topics_df = research_data["Topics"]
-        st.dataframe(topics_df)
+        if not topics_df.empty:
+            st.dataframe(topics_df)
+        else:
+            st.write("No topics available.")
 
 
 
