@@ -464,170 +464,107 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-# === PART 3: Consolidated Sidebar Controls ===
-
 # Sidebar Navigation with Buttons
 st.sidebar.header("Navigation")
-show_dashboard = st.sidebar.button("Dashboard", key="dashboard_button")
-show_research_hub = st.sidebar.button("Research Hub", key="research_hub_button")
-show_data_sources = st.sidebar.button("Data Sources", key="data_sources_button")
+show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
+show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
+show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
+    
+
+    # Add dashboard-specific content heres Climate D
     st.sidebar.header("Dashboard Controls")
-
-    # Step 1: Select Data Source
-    data_source = st.sidebar.selectbox(
-        "Select Data Source",
-        ["Open Source Data", "Governmental Data"],
-        index=0,  # Default to "Open Source Data"
-        key="data_source_selectbox"
-    )
-
-    # Step 2: Select Category and Indicator (Only One Instance)
-    if data_source == "Open Source Data":
-        category = st.sidebar.selectbox(
-            "Select Category (Open Source Data)",
-            [
-                "Temperature & Precipitation",
-                "Water Resources",
-                "Economic Impact",
-                "Health Impact",
-                "Seasonal Analysis",
-                "Future Projections",
-                "Comparative Analysis"
-            ],
-            key="open_source_category"
-        )
-
-        # Display indicator dropdown based on selected category
-        if category == "Temperature & Precipitation":
-            chart_type = st.sidebar.selectbox(
-                "Select Indicator",
-                [
-                    "Temperature Trends",
-                    "Rainfall Patterns",
-                    "Extreme Weather Events",
-                    "Drought Analysis",
-                    "Combined View"
-                ],
-                key="temperature_precipitation_indicator"
-            )
-        elif category == "Water Resources":
-            chart_type = st.sidebar.selectbox(
-                "Select Indicator",
-                [
-                    "River Levels",
-                    "Groundwater Levels",
-                    "Water Stress Index",
-                    "Combined Water Resources"
-                ],
-                key="water_resources_indicator"
-            )
-        elif category == "Economic Impact":
-            chart_type = st.sidebar.selectbox(
-                "Select Indicator",
-                [
-                    "Energy Demand",
-                    "Agricultural Production",
-                    "Economic Trends",
-                    "Combined Economic Impact"
-                ],
-                key="economic_impact_indicator"
-            )
-        elif category == "Health Impact":
-            chart_type = st.sidebar.selectbox(
-                "Select Indicator",
-                [
-                    "Heat Stress Index",
-                    "Air Health Index",
-                    "Health Risk Patterns",
-                    "Combined Health Indicators"
-                ],
-                key="health_impact_indicator"
-            )
-        elif category == "Seasonal Analysis":
-            chart_type = st.sidebar.selectbox(
-                "Select Analysis",
-                [
-                    "Temperature Patterns",
-                    "Rainfall Distribution",
-                    "Seasonal Comparisons",
-                    "Year-over-Year Changes"
-                ],
-                key="seasonal_analysis_indicator"
-            )
-        elif category == "Future Projections":
-            chart_type = st.sidebar.selectbox(
-                "Select Projection",
-                [
-                    "Temperature Forecast",
-                    "Rainfall Forecast",
-                    "Water Resource Outlook",
-                    "Combined Projections"
-                ],
-                key="future_projections_indicator"
-            )
-        elif category == "Comparative Analysis":
-            chart_type = st.sidebar.selectbox(
-                "Select Analysis",
-                [
-                    "City Comparisons",
-                    "Trend Analysis",
-                    "Regional Patterns",
-                    "Historical Benchmarks"
-                ],
-                key="comparative_analysis_indicator"
-            )
-    elif data_source == "Governmental Data":
-        category = st.sidebar.selectbox(
-            "Select Category (Governmental Data)",
-            ["Waste Management", "Power & Energy", "Water Resources Management"],
-            key="governmental_category"
-        )
-
-
-    # Step 4: Select Cities
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="cities_multiselect"  # Add unique key
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    )
+    # Rest of the dashboard logic (charts, filters, etc.)
+
+elif show_research_hub:
+    # Research Hub Content
+    st.header("Research Hub")
+    st.write("Explore expert profiles and their research papers.")
+
+    # Example Profiles
+    profiles = [
+        {
+            "name": "Dr. John Doe",
+            "description": "Expert in Climate Change Adaptation.",
+            "image_url": "https://via.placeholder.com/150",
+            "papers": ["Research Paper 1", "Research Paper 2"]
+        },
+        {
+            "name": "Dr. Jane Smith",
+            "description": "Specialist in Hydrology and Water Resources.",
+            "image_url": "https://via.placeholder.com/150",
+            "papers": ["Research Paper 1", "Research Paper 2"]
+        }
+    ]
+
+    # Display Profiles
+    for profile in profiles:
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            st.image(profile["image_url"], width=120)
+        with col2:
+            st.subheader(profile["name"])
+            st.write(profile["description"])
+            for paper in profile["papers"]:
+                st.markdown(f"- [{paper}](#)")
+
+
+elif show_data_sources:
+    # Data Sources Content
+    st.title("Data Sources")
+    st.write("This section provides detailed information about the data sources used.")
+
+    # Example Sources
+    sources = {
+        "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
+        "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
+        "FAO AQUASTAT": "https://www.fao.org/aquastat/en/databases/"
+    }
+
+    for source_name, source_link in sources.items():
+        st.markdown(f"- [{source_name}]({source_link})")
+
+
+
+
+# Time range
+time_frame = st.sidebar.radio(
+    "Select Time Frame",
+    ["Yearly", "Monthly", "Seasonal"]
+)
+
+# Year range
+start_year, end_year = st.sidebar.slider(
+    "Select Year Range",
+    1950, 2023, (1950, 2023)
+)
+
+if time_frame == "Monthly":
+    months = st.sidebar.multiselect(
+        "Select Months",
+        list(calendar.month_name)[1:],
+        default=list(calendar.month_name)[1:]
+    )
+elif time_frame == "Seasonal":
+    seasons = st.sidebar.multiselect(
+        "Select Seasons",
+        ["Winter", "Spring", "Summer", "Autumn"],
+        default=["Winter", "Spring", "Summer", "Autumn"]
     )
 
-    # Step 5: Select Time Frame
-    time_frame = st.sidebar.radio(
-        "Select Time Frame",
-        ["Yearly", "Monthly", "Seasonal"],
-        key="time_frame_radio"  # Add unique key
-    )
-
-    # Step 6: Select Year Range
-    start_year, end_year = st.sidebar.slider(
-        "Select Year Range",
-        1950, 2023, (1950, 2023),
-        key="year_range_slider"  # Add unique key
-    )
-
-    # Additional conditional filters for time frames
-    if time_frame == "Monthly":
-        months = st.sidebar.multiselect(
-            "Select Months",
-            list(calendar.month_name)[1:],
-            default=list(calendar.month_name)[1:],
-            key="monthly_filter"  # Add unique key
-        )
-    elif time_frame == "Seasonal":
-        seasons = st.sidebar.multiselect(
-            "Select Seasons",
-            ["Winter", "Spring", "Summer", "Autumn"],
-            default=["Winter", "Spring", "Summer", "Autumn"],
-            key="seasonal_filter"  # Add unique key
-        )
-
-    # Optional: Additional Analysis Options
-    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
-    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence_checkbox")
+# Data source selection
+data_source = st.sidebar.selectbox(
+    "Select Data Source",
+    ["Open Source Data", "Governmental Data"],
+    index=0  # Default to "Open Source Data"
+)
 
 # Variables for category and chart type
 category = None
@@ -1270,6 +1207,189 @@ with col1:
             st.plotly_chart(fig, use_container_width=True)
 # === PART 4 END ===
 # === PART 5 START: STATISTICS AND FOOTER ===
+with col2:
+    st.write("## City Statistics")
+    
+    for city in selected_cities:
+        st.write(f"### {city}")
+        
+        with st.expander("View Detailed Statistics"):
+            # Temperature & Precipitation Stats
+            st.write("🌡️ **Climate Indicators**")
+            
+            # Get city-specific data
+            city_temp = temp_df_filtered[temp_df_filtered['City'] == city]
+            city_rain = rainfall_df_filtered[rainfall_df_filtered['City'] == city]
+            
+            # Calculate seasonal averages
+            seasonal_temp = city_temp.groupby('Season')['Temperature'].mean()
+            seasonal_rain = city_rain.groupby('Season')['Rainfall'].mean()
+            
+            # Temperature Statistics
+            col_temp, col_rain = st.columns(2)
+            with col_temp:
+                current_temp = city_temp['Temperature'].iloc[-1]
+                historical_avg = city_temp['Temperature'].mean()
+                temp_change = current_temp - historical_avg
+                
+                st.metric(
+                    "Temperature",
+                    f"{current_temp:.1f}°C",
+                    f"{temp_change:+.1f}°C vs historical",
+                    delta_color="inverse"
+                )
+                
+                # Show seasonal breakdown
+                st.write("Seasonal Averages:")
+                for season in ['Winter', 'Spring', 'Summer', 'Autumn']:
+                    if season in seasonal_temp:
+                        st.write(f"{season}: {seasonal_temp[season]:.1f}°C")
+            
+            with col_rain:
+                current_rain = city_rain['Rainfall'].iloc[-1]
+                historical_avg_rain = city_rain['Rainfall'].mean()
+                rain_change = current_rain - historical_avg_rain
+                
+                st.metric(
+                    "Rainfall",
+                    f"{current_rain:.0f}mm",
+                    f"{rain_change:+.0f}mm vs historical",
+                    delta_color="normal"
+                )
+                
+                # Show seasonal breakdown
+                st.write("Seasonal Averages:")
+                for season in ['Winter', 'Spring', 'Summer', 'Autumn']:
+                    if season in seasonal_rain:
+                        st.write(f"{season}: {seasonal_rain[season]:.0f}mm")
+
+            # Extreme Weather Stats
+            st.write("🌪️ **Extreme Weather**")
+            extreme_days_count = len(city_temp[city_temp['ExtremeHeatDay']])
+            drought_days_count = len(city_rain[city_rain['DroughtRisk'] > 0.5])
+            
+            col_extreme, col_drought = st.columns(2)
+            with col_extreme:
+                st.metric(
+                    "Heat Wave Days",
+                    f"{extreme_days_count}",
+                    "Above 40°C",
+                    delta_color="inverse"
+                )
+            with col_drought:
+                st.metric(
+                    "Drought Days",
+                    f"{drought_days_count}",
+                    "Risk > 50%",
+                    delta_color="inverse"
+                )
+
+            # Water Resources Stats
+            st.write("💧 **Water Resources**")
+            city_water = water_df_filtered[water_df_filtered['City'] == city]
+            
+            col_river, col_ground = st.columns(2)
+            with col_river:
+                current_river = city_water['RiverLevel'].iloc[-1]
+                river_change = current_river - city_water['RiverLevel'].mean()
+                
+                st.metric(
+                    "River Level",
+                    f"{current_river:.1f}m³/s",
+                    f"{river_change:+.1f}m³/s",
+                    delta_color="normal"
+                )
+            with col_ground:
+                current_ground = city_water['GroundwaterLevel'].iloc[-1]
+                ground_change = current_ground - city_water['GroundwaterLevel'].mean()
+                
+                st.metric(
+                    "Groundwater",
+                    f"{current_ground:.1f}m",
+                    f"{ground_change:+.1f}m",
+                    delta_color="normal"
+                )
+
+            # Economic Impact Stats
+            st.write("💰 **Economic Impact**")
+            city_econ = economic_df_filtered[economic_df_filtered['City'] == city]
+            
+            col_energy, col_agri = st.columns(2)
+            with col_energy:
+                current_energy = city_econ['EnergyDemand'].iloc[-1]
+                energy_change = current_energy - city_econ['EnergyDemand'].mean()
+                
+                st.metric(
+                    "Energy Demand",
+                    f"{current_energy:.0f}MW",
+                    f"{energy_change:+.0f}MW",
+                    delta_color="inverse"
+                )
+            with col_agri:
+                current_agri = city_econ['AgriculturalProduction'].iloc[-1]
+                agri_change = current_agri - city_econ['AgriculturalProduction'].mean()
+                
+                st.metric(
+                    "Agricultural Output",
+                    f"{current_agri:.0f}tons",
+                    f"{agri_change:+.0f}tons",
+                    delta_color="normal"
+                )
+
+            # Health Impact Stats
+            st.write("🏥 **Health Impact**")
+            city_health = health_df_filtered[health_df_filtered['City'] == city]
+            
+            col_heat, col_air = st.columns(2)
+            with col_heat:
+                current_heat = city_health['HeatStressIndex'].iloc[-1]
+                heat_change = current_heat - city_health['HeatStressIndex'].mean()
+                
+                st.metric(
+                    "Heat Stress",
+                    f"{current_heat:.1f}",
+                    f"{heat_change:+.1f}",
+                    delta_color="inverse"
+                )
+            with col_air:
+                current_air = city_health['AirHealthIndex'].iloc[-1]
+                air_change = current_air - city_health['AirHealthIndex'].mean()
+                
+                st.metric(
+                    "Air Quality",
+                    f"{current_air:.1f}",
+                    f"{air_change:+.1f}",
+                    delta_color="normal"
+                )
+
+    # Information about indicators
+    st.info("""
+    **Understanding the Indicators**
+    
+    🌡️ **Climate Indicators:**
+    - Temperature increase (🔴) indicates warming
+    - Rainfall decrease (🔴) suggests drought risk
+    
+    🌪️ **Extreme Weather:**
+    - Heat wave days above 40°C (🔴)
+    - Drought risk above 50% (🔴)
+    
+    💧 **Water Resources:**
+    - River level decrease (🔴)
+    - Groundwater depletion (🔴)
+    
+    💰 **Economic Impact:**
+    - Energy demand increase (🔴)
+    - Agricultural output decrease (🔴)
+    
+    🏥 **Health Impact:**
+    - Heat stress increase (🔴)
+    - Air quality decrease (🔴)
+    
+    Color Indicators:
+    🔴 Red changes are concerning
+    🟢 Green changes are positive
+    """)
 
 # Footer with sources
 st.markdown("---")
