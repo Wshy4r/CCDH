@@ -520,50 +520,19 @@ show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
-    
-    
-    # Add dashboard-specific content heres Climate D
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Rest of the dashboard logic (charts, filters, etc.)
+    # Add your dashboard-specific content here
+    st.title("Dashboard")
+    st.write("This is the dashboard page.")
+    # ... rest of the dashboard code ...
 
-elif page == "Research Hub":
+elif show_research_hub:
     render_research_hub()
-    # Research Hub Content
-    st.header("Research Hub")
-    st.write("Explore expert profiles and their research papers.")
-
-    # Example Profiles
-    profiles = [
-        {
-            "name": "Dr. John Doe",
-            "description": "Expert in Climate Change Adaptation.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        },
-        {
-            "name": "Dr. Jane Smith",
-            "description": "Specialist in Hydrology and Water Resources.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        }
-    ]
-
-    # Display Profiles
-    for profile in profiles:
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.image(profile["image_url"], width=120)
-        with col2:
-            st.subheader(profile["name"])
-            st.write(profile["description"])
-            for paper in profile["papers"]:
-                st.markdown(f"- [{paper}](#)")
-
 
 elif show_data_sources:
     # Data Sources Content
@@ -579,8 +548,6 @@ elif show_data_sources:
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
-
-
 
 
 # Time range
