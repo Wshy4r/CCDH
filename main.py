@@ -539,17 +539,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
     st.write("Welcome to the Climate Dashboard.")
     st.write("Explore climate trends, water resources, economic impact, and more.")
 
-    # Remove or comment out this line:
-    # st.write("[Add your dashboard visualizations and content here]")
-
-    # ... rest of the dashboard code ...
-
-
-    # Placeholder for additional dashboard functionality
-    # Add your dashboard-specific visualizations or widgets here
-    st.markdown("---")
-    st.write("### [Add your dashboard visualizations and content here]")
-    st.markdown("---")
+  
 
 elif show_research_hub:
     # Research Hub Content
