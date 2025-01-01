@@ -502,24 +502,14 @@ def render_research_hub():
                 st.subheader(row.get("Name", "Unknown"))
                 st.write(f"**Description:** {row.get('Description', 'No description available.')}")
                 st.write("**Research Papers:**")
-                
-                # Retrieve research papers and their URLs
                 papers = [
-                    {
-                        "title": row.get("Paper_1_Title", "No title available"),
-                        "url": row.get("Paper_1_URL", "#")
-                    },
-                    {
-                        "title": row.get("Paper_2_Title", "No title available"),
-                        "url": row.get("Paper_2_URL", "#")
-                    }
+                    row.get("Paper_1", "No paper available"),
+                    row.get("Paper_2", "No paper available")
                 ]
-                
                 for paper in papers:
-                    if paper["title"] and paper["url"]:
-                        st.markdown(f"- [{paper['title']}]({paper['url']})")
+                    if paper:
+                        st.markdown(f"- {paper}")
             st.markdown("---")
-
 
 
 # Load all data
