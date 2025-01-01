@@ -529,58 +529,59 @@ if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
 
 
-
-
 # Render content based on the current page
 if st.session_state.current_page == "Dashboard":
-    # Main Dashboard Content
+    # Sidebar filters for Dashboard
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
+
+    # Time range selection
+    time_frame = st.sidebar.radio(
+        "Select Time Frame",
+        ["Yearly", "Monthly", "Seasonal"]
+    )
+    start_year, end_year = st.sidebar.slider(
+        "Select Year Range",
+        1950, 2023, (1950, 2023)
+    )
+
+    if time_frame == "Monthly":
+        months = st.sidebar.multiselect(
+            "Select Months",
+            list(calendar.month_name)[1:],  # All months
+            default=list(calendar.month_name)[1:]
+        )
+    elif time_frame == "Seasonal":
+        seasons = st.sidebar.multiselect(
+            "Select Seasons",
+            ["Winter", "Spring", "Summer", "Autumn"],
+            default=["Winter", "Spring", "Summer", "Autumn"]
+        )
+
+    # Filter data for the Dashboard
+    temp_df_filtered = filter_data(temp_df, selected_cities, start_year, end_year, time_frame, months, seasons)
+    rainfall_df_filtered = filter_data(rainfall_df, selected_cities, start_year, end_year, time_frame, months, seasons)
+    water_df_filtered = filter_data(water_df, selected_cities, start_year, end_year, time_frame, months, seasons)
+    economic_df_filtered = filter_data(economic_df, selected_cities, start_year, end_year)
+    health_df_filtered = filter_data(health_df, selected_cities, start_year, end_year, time_frame, months, seasons)
+
+    # Dashboard content
     st.title("Kurdistan Cities Climate Dashboard")
-    # Add your dashboard-specific content here (charts, filters, etc.)
+    # Add your dashboard-specific content here (e.g., charts, tables)
     st.write("Dashboard content goes here.")
 
 elif st.session_state.current_page == "Research Hub":
     render_research_hub()
-    # Research Hub Content
-    st.title("Research Hub")
-    st.write("Explore expert profiles and their research papers.")
-
-    # Example Profiles
-    profiles = [
-        {
-            "name": "Dr. John Doe",
-            "description": "Expert in Climate Change Adaptation.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        },
-        {
-            "name": "Dr. Jane Smith",
-            "description": "Specialist in Hydrology and Water Resources.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        }
-    ]
-
-    # Display Profiles
-    for profile in profiles:
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.image(profile["image_url"], width=120)
-        with col2:
-            st.subheader(profile["name"])
-            st.write(profile["description"])
-            for paper in profile["papers"]:
-                st.markdown(f"- [{paper}](#)")
 
 elif st.session_state.current_page == "Data Sources":
-    # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
+    # Add your data sources content here
+
 
     # Example Sources
     sources = {
