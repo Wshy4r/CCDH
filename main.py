@@ -485,17 +485,24 @@ def render_research_hub():
                 papers = row.get("Papers", "").split(";")
                 for paper in papers:
                     st.markdown(f"- [{paper.strip()}](#)")
+    else:
+        st.warning("No expert profiles available.")
 
-    # Display additional research-related data (if available)
+    # Display research papers
     if "Papers" in research_data:
         st.subheader("Research Papers")
         papers_df = research_data["Papers"]
         st.dataframe(papers_df)
+    else:
+        st.warning("No research papers available.")
 
+    # Display research topics
     if "Topics" in research_data:
         st.subheader("Research Topics")
         topics_df = research_data["Topics"]
         st.dataframe(topics_df)
+    else:
+        st.warning("No research topics available.")
 
 
 
