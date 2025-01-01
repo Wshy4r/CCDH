@@ -546,6 +546,10 @@ elif show_research_hub:
     # Load the research data
     research_data = load_research_hub_data()
 
+    # Debug: Print the loaded data
+    st.write("Loaded Research Data:")
+    st.write(research_data)
+
     if not research_data:
         st.error("Research Hub data is unavailable.")
     else:
@@ -553,6 +557,10 @@ elif show_research_hub:
         st.subheader("Expert Profiles")
         if "Profiles" in research_data:
             profiles_df = research_data["Profiles"]
+            st.write("Debug: Profiles DataFrame")
+            st.dataframe(profiles_df)  # Show the full DataFrame
+
+            # Display each profile dynamically
             for _, row in profiles_df.iterrows():
                 col1, col2 = st.columns([1, 3])
                 with col1:
@@ -573,6 +581,8 @@ elif show_research_hub:
         st.subheader("Research Papers")
         if "Papers" in research_data:
             papers_df = research_data["Papers"]
+            st.write("Papers DataFrame:")
+            st.write(papers_df)
             st.dataframe(papers_df)
         else:
             st.warning("No research papers available.")
@@ -581,6 +591,8 @@ elif show_research_hub:
         st.subheader("Research Topics")
         if "Topics" in research_data:
             topics_df = research_data["Topics"]
+            st.write("Topics DataFrame:")
+            st.write(topics_df)
             st.dataframe(topics_df)
         else:
             st.warning("No research topics available.")
