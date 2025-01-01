@@ -463,26 +463,26 @@ def load_research_hub_data():
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
-
-    # Load research data
+    
+    # Step 1: Load data and display raw content
     research_data = load_research_hub_data()
-
+    
+    # Debugging: Show raw DataFrame
     if research_data.empty:
-        st.error("No research data is available.")
+        st.error("No research data found.")
         return
-
-    # Render each profile as an expander
+    st.write("Debugging: Raw DataFrame:")
+    st.dataframe(research_data)
+    
+    # Step 2: Basic rendering for names and descriptions
+    st.subheader("Expert Profiles")
     for _, row in research_data.iterrows():
-        with st.expander(row.get('Name', 'Unknown Expert')):
-            st.image(row.get('Image_URL', 'https://via.placeholder.com/100'), width=150, caption=row.get('Name', 'No Name'))
-            st.write(f"**Description:** {row.get('Description', 'No description available.')}")
-            
-            st.write("**Research Papers:**")
-            papers = [
-                row.get('Paper_1', 'No paper available'),
-                row.get('Paper_2', 'No paper available')
-            ]
-            for paper in papers:
+        st.write(f"**{row['Name']}** - {row['Description']}")
+        
+        # Optional: Display papers as a bullet list
+        papers = [row.get('Paper_1', None), row.get('Paper_2', None)]
+        for paper in papers:
+            if paper:
                 st.markdown(f"- {paper}")
 
 
