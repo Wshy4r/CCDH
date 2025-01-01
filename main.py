@@ -535,73 +535,55 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Add your dashboard-specific content here
+    
+    # Main content for the dashboard
     st.title("Dashboard")
-    st.write("This is the dashboard page.")
-    # ... rest of the dashboard code ...
+    st.write("Welcome to the Climate Dashboard.")
+    st.write("Explore climate trends, water resources, economic impact, and more.")
+
+    # Placeholder for additional dashboard functionality
+    # Add your dashboard-specific visualizations or widgets here
+    st.markdown("---")
+    st.write("### [Add your dashboard visualizations and content here]")
+    st.markdown("---")
 
 elif show_research_hub:
+    # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     # Load the research data
     research_data = load_research_hub_data()
 
-    # Debug: Print the loaded data
-    st.write("Loaded Research Data:")
-    st.write(research_data)
-
-    if not research_data:
+    if research_data.empty:
         st.error("Research Hub data is unavailable.")
     else:
-        # Display expert profiles
+        # Display expert profiles dynamically as cards
         st.subheader("Expert Profiles")
-        if "Profiles" in research_data:
-            profiles_df = research_data["Profiles"]
-            st.write("Debug: Profiles DataFrame")
-            st.dataframe(profiles_df)  # Show the full DataFrame
+        num_columns = 3  # Adjust number of columns per row
+        cols = st.columns(num_columns)
 
-            # Display each profile dynamically
-            for _, row in profiles_df.iterrows():
-                col1, col2 = st.columns([1, 3])
-                with col1:
-                    st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
-                with col2:
-                    st.subheader(row.get("Name", "Unknown"))
-                    st.write(row.get("Description", "No description provided."))
-                    
-                    # Display linked papers
-                    for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
-                        paper = row.get(paper_key)
-                        if paper:
-                            st.markdown(f"- {paper}")
-        else:
-            st.warning("No expert profiles available.")
+        for idx, row in research_data.iterrows():
+            col = cols[idx % num_columns]
+            with col:
+                st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+                st.subheader(row.get("Name", "Unknown"))
+                st.write(row.get("Description", "No description provided."))
+                st.write("**Research Papers:**")
+                for paper_key in ["Paper_1", "Paper_2"]:  # Adjust keys if more papers exist
+                    paper = row.get(paper_key)
+                    if paper:
+                        st.markdown(f"- {paper}")
+                st.markdown("---")  # Separator for each card
 
-        # Display research papers
-        st.subheader("Research Papers")
-        if "Papers" in research_data:
-            papers_df = research_data["Papers"]
-            st.write("Papers DataFrame:")
-            st.write(papers_df)
-            st.dataframe(papers_df)
-        else:
-            st.warning("No research papers available.")
-
-        # Display research topics
-        st.subheader("Research Topics")
-        if "Topics" in research_data:
-            topics_df = research_data["Topics"]
-            st.write("Topics DataFrame:")
-            st.write(topics_df)
-            st.dataframe(topics_df)
-        else:
-            st.warning("No research topics available.")
+        # Placeholder for additional sections (if required)
+        st.markdown("### Add any additional sections for the Research Hub here")
 
 elif show_data_sources:
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
+    st.markdown("---")
 
     # Example Sources
     sources = {
@@ -612,6 +594,7 @@ elif show_data_sources:
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
+
 
 # Time range
 time_frame = st.sidebar.radio(
