@@ -485,48 +485,46 @@ def render_research_hub():
     # Load Research Hub data
     research_hub_data = load_research_hub_data()
     
+    # Validate data loading
     if not research_hub_data:
         st.write("No data available for the Research Hub.")
         return
 
     # Display profiles dynamically
     if "Profiles" in research_hub_data:
-        st.write("### Profiles")
         profiles_df = research_hub_data["Profiles"]
         
-        if profiles_df.empty:
-            st.write("No profiles available at the moment.")
-        else:
-            for _, row in profiles_df.iterrows():
+        if not profiles_df.empty:
+            st.write("### Profiles")
+            for _, profile in profiles_df.iterrows():
                 col1, col2 = st.columns([1, 3])
                 with col1:
-                    st.image(row.get("Image URL", ""), width=120) if pd.notna(row.get("Image URL", "")) else st.empty()
+                    st.image(profile["ImageURL"], width=120)
                 with col2:
-                    st.subheader(row.get("Name", "Unknown"))
-                    st.write(row.get("Description", "No description available."))
-                    if pd.notna(row.get("Papers", "")):
-                        papers = row["Papers"].split(";")  # Assuming papers are separated by semicolons
-                        for paper in papers:
-                            st.markdown(f"- [{paper.strip()}](#)")
+                    st.subheader(profile["Name"])
+                    st.write(profile["Description"])
+                    papers = profile["Papers"].split(";")  # Assuming papers are semi-colon separated
+                    for paper in papers:
+                        st.markdown(f"- [{paper.strip()}](#)")
+        else:
+            st.write("No profiles available at the moment.")
 
-    # Display additional sheets dynamically (e.g., papers or topics)
+    # Additional sheets: Papers and Topics
     if "Papers" in research_hub_data:
-        st.write("### Research Papers")
         papers_df = research_hub_data["Papers"]
         if not papers_df.empty:
+            st.write("### Research Papers")
             st.dataframe(papers_df)
         else:
             st.write("No research papers available.")
 
     if "Topics" in research_hub_data:
-        st.write("### Topics")
         topics_df = research_hub_data["Topics"]
         if not topics_df.empty:
+            st.write("### Topics")
             st.dataframe(topics_df)
         else:
             st.write("No topics available.")
-
-
 
 
 
