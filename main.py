@@ -464,91 +464,26 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Load the research data
+    # Load research data
     research_data = load_research_hub_data()
 
     if research_data.empty:
-        st.error("Research Hub data is unavailable.")
+        st.error("No research data is available.")
         return
 
-    # CSS for the card layout
-    st.markdown("""
-    <style>
-    .card-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-    }
-    .profile-card {
-        width: 300px;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        text-align: center;
-    }
-    .profile-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-    }
-    .profile-img {
-        border-radius: 50%;
-        width: 100px;
-        height: 100px;
-        margin-bottom: 15px;
-    }
-    .profile-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin: 10px 0;
-    }
-    .profile-desc {
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 15px;
-    }
-    .profile-btn {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        font-size: 14px;
-    }
-    .profile-btn:hover {
-        background-color: #0056b3;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    # Card container to organize profiles in a grid
-    st.markdown('<div class="card-container">', unsafe_allow_html=True)
-
-    # Iterate over each profile and render a card
+    # Render each profile as an expander
     for _, row in research_data.iterrows():
-        st.markdown(f"""
-        <div class="profile-card">
-            <img src="{row.get('Image_URL', 'https://via.placeholder.com/100')}" class="profile-img" alt="Profile Image">
-            <div class="profile-title">{row.get('Name', 'Unknown')}</div>
-            <div class="profile-desc">{row.get('Description', 'No description available.')}</div>
-            <div>
-                <strong>Research Papers:</strong>
-                <ul>
-                    <li>{row.get('Paper_1', 'N/A')}</li>
-                    <li>{row.get('Paper_2', 'N/A')}</li>
-                </ul>
-            </div>
-            <a href="#" class="profile-btn">View Profile</a>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # Close the container
-    st.markdown('</div>', unsafe_allow_html=True)
+        with st.expander(row.get('Name', 'Unknown Expert')):
+            st.image(row.get('Image_URL', 'https://via.placeholder.com/100'), width=150, caption=row.get('Name', 'No Name'))
+            st.write(f"**Description:** {row.get('Description', 'No description available.')}")
+            
+            st.write("**Research Papers:**")
+            papers = [
+                row.get('Paper_1', 'No paper available'),
+                row.get('Paper_2', 'No paper available')
+            ]
+            for paper in papers:
+                st.markdown(f"- {paper}")
 
 
 # Load all data
