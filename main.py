@@ -469,7 +469,7 @@ def render_research_hub():
 
     # Debug: Print the loaded data
     st.write("Loaded Research Data:")
-    st.write(research_data)  # This will display the structure of the loaded data
+    st.write(research_data)
 
     if not research_data:
         st.error("Research Hub data is unavailable.")
@@ -481,6 +481,8 @@ def render_research_hub():
         profiles_df = research_data["Profiles"]
         st.write("Profiles DataFrame:")
         st.write(profiles_df)  # Debug the Profiles DataFrame structure
+
+        # Display each profile dynamically
         for _, row in profiles_df.iterrows():
             col1, col2 = st.columns([1, 3])
             with col1:
@@ -488,28 +490,31 @@ def render_research_hub():
             with col2:
                 st.subheader(row.get("Name", "Unknown"))
                 st.write(row.get("Description", "No description provided."))
-                papers = row.get("Papers", "").split(";")
-                for paper in papers:
-                    st.markdown(f"- [{paper.strip()}](#)")
+                
+                # Display linked papers
+                for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
+                    paper = row.get(paper_key)
+                    if paper:
+                        st.markdown(f"- {paper}")
     else:
         st.warning("No expert profiles available.")
 
     # Display research papers
+    st.subheader("Research Papers")
     if "Papers" in research_data:
-        st.subheader("Research Papers")
         papers_df = research_data["Papers"]
         st.write("Papers DataFrame:")
-        st.write(papers_df)  # Debug the Papers DataFrame structure
+        st.write(papers_df)
         st.dataframe(papers_df)
     else:
         st.warning("No research papers available.")
 
     # Display research topics
+    st.subheader("Research Topics")
     if "Topics" in research_data:
-        st.subheader("Research Topics")
         topics_df = research_data["Topics"]
         st.write("Topics DataFrame:")
-        st.write(topics_df)  # Debug the Topics DataFrame structure
+        st.write(topics_df)
         st.dataframe(topics_df)
     else:
         st.warning("No research topics available.")
