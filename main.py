@@ -477,11 +477,12 @@ st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 st.sidebar.header("Navigation")
 
 # Buttons for navigation
+show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
-# Default state is the Dashboard view
-if not show_research_hub and not show_data_sources:
+# Conditional Display Based on Navigation
+if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
     st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
     st.markdown("""
@@ -493,53 +494,50 @@ if not show_research_hub and not show_data_sources:
     * Kerkûk (Kirkuk)
     """)
 
-    # Add your existing dashboard filters, visualizations, and controls here
+    # Add dashboard filters and controls here
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Rest of the dashboard logic (charts, filters, etc.)
+    # Additional dashboard visualizations go here
 
 elif show_research_hub:
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Example Profiles
     profiles = [
         {
             "name": "Dr. John Doe",
             "description": "Expert in Climate Change Adaptation.",
-            "image_url": "https://via.placeholder.com/150",  # Replace with actual image URLs
+            "image_url": "https://via.placeholder.com/150",
             "papers": ["Research Paper 1", "Research Paper 2"]
         },
         {
             "name": "Dr. Jane Smith",
             "description": "Specialist in Hydrology and Water Resources.",
-            "image_url": "https://via.placeholder.com/150",  # Replace with actual image URLs
+            "image_url": "https://via.placeholder.com/150",
             "papers": ["Research Paper 1", "Research Paper 2"]
         }
     ]
 
-    # Display Profiles
     for profile in profiles:
         col1, col2 = st.columns([1, 3])
         with col1:
-            st.image(profile["image_url"], width=120)  # Display profile image
+            st.image(profile["image_url"], width=120)
         with col2:
             st.subheader(profile["name"])
             st.write(profile["description"])
             for paper in profile["papers"]:
-                st.markdown(f"- [{paper}](#)")  # Add links to papers
+                st.markdown(f"- [{paper}](#)")
 
 elif show_data_sources:
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
 
-    # Example Sources
     sources = {
         "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
         "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
