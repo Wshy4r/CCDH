@@ -475,46 +475,30 @@ def render_research_hub():
             color: white;
             font-size: 36px;
             font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .profile-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-        .profile-card {
-            background-color: #2A2A2A;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .profile-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 10px;
-            display: block;
-        }
-        .profile-name {
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-        .profile-description {
-            color: #CCCCCC;
-            font-size: 14px;
-            text-align: center;
             margin-bottom: 10px;
         }
-        .profile-details {
-            color: #AAAAAA;
-            font-size: 12px;
-            text-align: center;
+        .subtitle {
+            color: #CCCCCC;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .data-table th, .data-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #333;
+        }
+        .data-table th {
+            background-color: #2A2A2A;
+            color: white;
+        }
+        .data-table td {
+            background-color: #1E1E1E;
+            color: #CCCCCC;
         }
         </style>
         """,
@@ -523,6 +507,7 @@ def render_research_hub():
 
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<h1 class="title">Research Hub</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Explore expert profiles and their research papers.</p>', unsafe_allow_html=True)
 
     # Load the research data
     research_data = load_research_hub_data()
@@ -530,24 +515,33 @@ def render_research_hub():
     if research_data.empty:
         st.error("Research Hub data is unavailable.")
     else:
-        st.markdown('<div class="profile-grid">', unsafe_allow_html=True)
+        st.markdown('<h3 style="color: white;">Loaded Research Data:</h3>', unsafe_allow_html=True)
+        
+        # Create a table-like structure
+        table_html = '''
+        <table class="data-table">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Image_URL</th>
+                <th>Paper_1</th>
+                <th>Paper_2</th>
+            </tr>
+        '''
         
         for _, row in research_data.iterrows():
-            profile_html = f"""
-            <div class="profile-card">
-                <img src="{row.get('Image_URL', 'https://via.placeholder.com/100')}" alt="{row.get('Name', 'Profile')}" class="profile-image">
-                <div class="profile-name">{row.get('Name', 'Unknown')}</div>
-                <div class="profile-description">{row.get('Description', 'No description available.')}</div>
-                <div class="profile-details">
-                    <div>Sector: {row.get('Sector', 'N/A')}</div>
-                    <div>Discipline: {row.get('Discipline', 'N/A')}</div>
-                    <div>Rating: {row.get('Rating', 'N/A')}</div>
-                </div>
-            </div>
-            """
-            st.markdown(profile_html, unsafe_allow_html=True)
+            table_html += f'''
+            <tr>
+                <td>{row.get("Name", "Unknown")}</td>
+                <td>{row.get("Description", "No description")}</td>
+                <td>{row.get("Image_URL", "")}</td>
+                <td>{row.get("Paper_1", "")}</td>
+                <td>{row.get("Paper_2", "")}</td>
+            </tr>
+            '''
         
-        st.markdown('</div>', unsafe_allow_html=True)
+        table_html += '</table>'
+        st.markdown(table_html, unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
