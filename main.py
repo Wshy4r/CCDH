@@ -591,30 +591,6 @@ elif show_data_sources:
         st.markdown(f"- [{source_name}]({source_link})")
 
 
-# Time range
-time_frame = st.sidebar.radio(
-    "Select Time Frame",
-    ["Yearly", "Monthly", "Seasonal"]
-)
-
-# Year range
-start_year, end_year = st.sidebar.slider(
-    "Select Year Range",
-    1950, 2023, (1950, 2023)
-)
-
-if time_frame == "Monthly":
-    months = st.sidebar.multiselect(
-        "Select Months",
-        list(calendar.month_name)[1:],
-        default=list(calendar.month_name)[1:]
-    )
-elif time_frame == "Seasonal":
-    seasons = st.sidebar.multiselect(
-        "Select Seasons",
-        ["Winter", "Spring", "Summer", "Autumn"],
-        default=["Winter", "Spring", "Summer", "Autumn"]
-    )
 
 # Data source selection
 data_source = st.sidebar.selectbox(
@@ -944,7 +920,32 @@ if category == "Water Resources Management":
                 st.write(planning_dams_data)
         else:
             st.error("Planning Dams data is unavailable.")
+        
 
+# Time range
+time_frame = st.sidebar.radio(
+    "Select Time Frame",
+    ["Yearly", "Monthly", "Seasonal"]
+)
+
+# Year range
+start_year, end_year = st.sidebar.slider(
+    "Select Year Range",
+    1950, 2023, (1950, 2023)
+)
+
+if time_frame == "Monthly":
+    months = st.sidebar.multiselect(
+        "Select Months",
+        list(calendar.month_name)[1:],
+        default=list(calendar.month_name)[1:]
+    )
+elif time_frame == "Seasonal":
+    seasons = st.sidebar.multiselect(
+        "Select Seasons",
+        ["Winter", "Spring", "Summer", "Autumn"],
+        default=["Winter", "Spring", "Summer", "Autumn"]
+    )
 
 # Additional analysis options
 show_trend = st.sidebar.checkbox("Show Trend Lines", value=True)
