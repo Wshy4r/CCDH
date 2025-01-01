@@ -479,7 +479,6 @@ show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
-# Control which view is shown based on button clicks
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
     st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
