@@ -450,55 +450,7 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
     
-def filter_data(df, cities=None):
-    filtered = df[
-        (df['Year'] >= start_year) & 
-        (df['Year'] <= end_year)
-    ]
     
-    if cities:  # Apply city filter only if cities are provided
-        filtered = filtered[df['City'].isin(cities)]
-    
-    if time_frame == "Monthly" and 'Month' in df.columns:
-        filtered = filtered[filtered['MonthName'].isin(months)]
-    elif time_frame == "Seasonal" and 'Season' in df.columns:
-        filtered = filtered[filtered['Season'].isin(seasons)]
-    
-    return filtered
-# === RESEARCH HUB RENDER FUNCTION ===
-def render_research_hub():
-    """
-    Function to render the Research Hub page.
-    This page is independent of any global filters or datasets.
-    """
-    st.write("### Research Hub")
-    st.write("Explore expert profiles and their research papers.")
-
-    profiles = [
-        {
-            "name": "Dr. John Doe",
-            "description": "Expert in Climate Change Adaptation.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        },
-        {
-            "name": "Dr. Jane Smith",
-            "description": "Specialist in Hydrology and Water Resources.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        }
-    ]
-
-    for profile in profiles:
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.image(profile["image_url"], width=120)
-        with col2:
-            st.subheader(profile["name"])
-            st.write(profile["description"])
-            for paper in profile["papers"]:
-                st.markdown(f"- [{paper}](#)")
-
 
 
 # Load all data
@@ -517,10 +469,11 @@ st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 # Sidebar Navigation with Session State
 st.sidebar.header("Navigation")
 
+# Initialize navigation state
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Dashboard"  # Default page
 
-# Navigation Buttons
+# Define navigation buttons and update state
 if st.sidebar.button("Dashboard", key="dashboard"):
     st.session_state.current_page = "Dashboard"
 if st.sidebar.button("Research Hub", key="research_hub"):
@@ -528,60 +481,55 @@ if st.sidebar.button("Research Hub", key="research_hub"):
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
 
-
 # Render content based on the current page
 if st.session_state.current_page == "Dashboard":
-    # Sidebar filters for Dashboard
+    # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-
-    # Time range selection
-    time_frame = st.sidebar.radio(
-        "Select Time Frame",
-        ["Yearly", "Monthly", "Seasonal"]
-    )
-    start_year, end_year = st.sidebar.slider(
-        "Select Year Range",
-        1950, 2023, (1950, 2023)
-    )
-
-    if time_frame == "Monthly":
-        months = st.sidebar.multiselect(
-            "Select Months",
-            list(calendar.month_name)[1:],  # All months
-            default=list(calendar.month_name)[1:]
-        )
-    elif time_frame == "Seasonal":
-        seasons = st.sidebar.multiselect(
-            "Select Seasons",
-            ["Winter", "Spring", "Summer", "Autumn"],
-            default=["Winter", "Spring", "Summer", "Autumn"]
-        )
-
-    # Filter data for the Dashboard
-    temp_df_filtered = filter_data(temp_df, selected_cities, start_year, end_year, time_frame, months, seasons)
-    rainfall_df_filtered = filter_data(rainfall_df, selected_cities, start_year, end_year, time_frame, months, seasons)
-    water_df_filtered = filter_data(water_df, selected_cities, start_year, end_year, time_frame, months, seasons)
-    economic_df_filtered = filter_data(economic_df, selected_cities, start_year, end_year)
-    health_df_filtered = filter_data(health_df, selected_cities, start_year, end_year, time_frame, months, seasons)
-
-    # Dashboard content
     st.title("Kurdistan Cities Climate Dashboard")
-    # Add your dashboard-specific content here (e.g., charts, tables)
+    # Add your dashboard-specific content here (charts, filters, etc.)
     st.write("Dashboard content goes here.")
 
 elif st.session_state.current_page == "Research Hub":
-    render_research_hub()
+    # Research Hub Content
+    st.title("Research Hub")
+    st.write("Explore expert profiles and their research papers.")
+
+    # Example Profiles
+    profiles = [
+        {
+            "name": "Dr. John Doe",
+            "description": "Expert in Climate Change Adaptation.",
+            "image_url": "https://via.placeholder.com/150",
+            "papers": ["Research Paper 1", "Research Paper 2"]
+        },
+        {
+            "name": "Dr. Jane Smith",
+            "description": "Specialist in Hydrology and Water Resources.",
+            "image_url": "https://via.placeholder.com/150",
+            "papers": ["Research Paper 1", "Research Paper 2"]
+        }
+    ]
+
+    # Display Profiles
+    for profile in profiles:
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            st.image(profile["image_url"], width=120)
+        with col2:
+            st.subheader(profile["name"])
+            st.write(profile["description"])
+            for paper in profile["papers"]:
+                st.markdown(f"- [{paper}](#)")
 
 elif st.session_state.current_page == "Data Sources":
+    # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
-    # Add your data sources content here
-
 
     # Example Sources
     sources = {
@@ -963,8 +911,7 @@ if st.sidebar.button("Download Data"):
 
 # Filter data based on time frame and selection
 def filter_data(df):
-    if df is not None and 'City' in df.columns:
-        filtered = df[
+    filtered = df[
         (df['Year'] >= start_year) & 
         (df['Year'] <= end_year) & 
         (df['City'].isin(selected_cities))
