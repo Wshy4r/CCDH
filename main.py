@@ -480,13 +480,13 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 # Sidebar Navigation with Session State
-# Sidebar Navigation
 st.sidebar.header("Navigation")
 
 # Initialize navigation state
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Dashboard"  # Default page
 
+# Define navigation buttons and update state
 if st.sidebar.button("Dashboard", key="dashboard"):
     st.session_state.current_page = "Dashboard"
 if st.sidebar.button("Research Hub", key="research_hub"):
@@ -494,26 +494,11 @@ if st.sidebar.button("Research Hub", key="research_hub"):
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
 
-# Page-specific sidebar controls
-if st.session_state.current_page == "Dashboard":
-    st.sidebar.header("Dashboard Controls")
-    st.sidebar.text("No additional filters available for the Dashboard.")
-elif st.session_state.current_page == "Research Hub":
-    st.sidebar.header("Research Hub Controls")
-    st.sidebar.text("No additional filters available for the Research Hub.")
-elif st.session_state.current_page == "Data Sources":
-    st.sidebar.header("Data Sources Controls")
-    st.sidebar.text("No additional filters available for the Data Sources.")
-
 # Conditional logic based on the current page
 if st.session_state.current_page == "Dashboard":
     # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
-    )
+   
     st.write("### Dashboard Page")
     st.write("Add your dashboard content here.")
 
@@ -563,31 +548,6 @@ elif st.session_state.current_page == "Data Sources":
 
 
 
-
-# Time range
-time_frame = st.sidebar.radio(
-    "Select Time Frame",
-    ["Yearly", "Monthly", "Seasonal"]
-)
-
-# Year range
-start_year, end_year = st.sidebar.slider(
-    "Select Year Range",
-    1950, 2023, (1950, 2023)
-)
-
-if time_frame == "Monthly":
-    months = st.sidebar.multiselect(
-        "Select Months",
-        list(calendar.month_name)[1:],
-        default=list(calendar.month_name)[1:]
-    )
-elif time_frame == "Seasonal":
-    seasons = st.sidebar.multiselect(
-        "Select Seasons",
-        ["Winter", "Spring", "Summer", "Autumn"],
-        default=["Winter", "Spring", "Summer", "Autumn"]
-    )
 
 # Data source selection
 data_source = st.sidebar.selectbox(
