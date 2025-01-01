@@ -535,11 +535,15 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    
-    # Main content for the dashboard
     st.title("Dashboard")
     st.write("Welcome to the Climate Dashboard.")
     st.write("Explore climate trends, water resources, economic impact, and more.")
+
+    # Remove or comment out this line:
+    # st.write("[Add your dashboard visualizations and content here]")
+
+    # ... rest of the dashboard code ...
+
 
     # Placeholder for additional dashboard functionality
     # Add your dashboard-specific visualizations or widgets here
