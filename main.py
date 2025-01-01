@@ -531,7 +531,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
     )
     # Rest of the dashboard logic (charts, filters, etc.)
 
-elif show_research_hub:
+elif page == "Research Hub":
     render_research_hub()
     # Research Hub Content
     st.header("Research Hub")
