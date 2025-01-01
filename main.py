@@ -463,31 +463,14 @@ health_df = load_health_impact_data()
 # Display logo in the sidebar
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
-
-# Sidebar Navigation with Session State
+# Sidebar Navigation with Radio Buttons
 st.sidebar.header("Navigation")
-
-# Initialize navigation state
-if "current_page" not in st.session_state:
-    st.session_state.current_page = "Dashboard"  # Default page
-
-# Define navigation buttons and update state
-if st.sidebar.button("Dashboard", key="dashboard"):
-    st.session_state.current_page = "Dashboard"
-if st.sidebar.button("Research Hub", key="research_hub"):
-    st.session_state.current_page = "Research Hub"
-if st.sidebar.button("Data Sources", key="data_sources"):
-    st.session_state.current_page = "Data Sources"
-
-# Render content based on the current page
-if st.session_state.current_page == "Dashboard":
-# Sidebar Navigation with Buttons
-    st.sidebar.header("Navigation")
-    selected_page = st.sidebar.radio(
+selected_page = st.sidebar.radio(
     "Select Page",
     ["Dashboard", "Research Hub", "Data Sources"]
 )
 
+# Conditional logic based on the selected page
 if selected_page == "Dashboard":
     # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
@@ -496,23 +479,14 @@ if selected_page == "Dashboard":
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-
-    # Filtering logic for the dashboard
-    temp_df_filtered = filter_data(temp_df)
-    rainfall_df_filtered = filter_data(rainfall_df)
-    water_df_filtered = filter_data(water_df)
-    economic_df_filtered = filter_data(economic_df)
-    health_df_filtered = filter_data(health_df)
-
-    # Add the rest of the dashboard content here
+    st.write("### Dashboard Page")
+    st.write("Add your dashboard content here.")
 
 elif selected_page == "Research Hub":
-    # Reset sidebar selections for Research Hub
-    st.sidebar.empty()  # Clears sidebar content
-    st.header("Research Hub")
+    # Research Hub Content
+    st.write("### Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Example Profiles
     profiles = [
         {
             "name": "Dr. John Doe",
@@ -528,7 +502,6 @@ elif selected_page == "Research Hub":
         }
     ]
 
-    # Display Profiles
     for profile in profiles:
         col1, col2 = st.columns([1, 3])
         with col1:
@@ -541,10 +514,9 @@ elif selected_page == "Research Hub":
 
 elif selected_page == "Data Sources":
     # Data Sources Content
-    st.title("Data Sources")
-    st.write("This section provides detailed information about the data sources used.")
+    st.write("### Data Sources")
+    st.write("Provide details about your data sources here.")
 
-    # Example Sources
     sources = {
         "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
         "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
@@ -553,7 +525,6 @@ elif selected_page == "Data Sources":
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
-
 
 
 
