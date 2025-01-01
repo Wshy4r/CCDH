@@ -457,7 +457,7 @@ def load_research_hub_data():
         {
             "Name": "Hawkar Ali Abdulhaq",
             "Description": "Mineralogy Geochemistry & Petrology.",
-            "Image_URL": "https://via.placeholder.com/150",
+            "Image_URL": "https://i.imgur.com/ewXfYUz.jpeg",
             "Paper_1": "Research on Climate Adaptation",
             "Paper_1_URL": "https://example.com/climate-adaptation",
             "Paper_2": "Impact of Extreme Weather Events",
