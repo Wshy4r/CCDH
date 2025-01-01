@@ -468,48 +468,37 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Load research hub data
-    research_data = load_research_hub_data()
+    try:
+        # Load the research hub data from an Excel file
+        research_data = pd.read_excel("research_hub_data.xlsx")  # Ensure the file path is correct
 
-    if not research_data:
-        st.error("Research Hub data is unavailable.")
-        return
-
-    # Debug: Display the keys and preview the data
-    st.write("### Debug: Loaded Research Data")
-    st.write(research_data)
-
-    # Ensure 'Profiles' sheet exists and has required columns
-    if "Profiles" in research_data:
-        profiles_df = research_data["Profiles"]
-        st.write("### Debug: Profiles Data")
-        st.write(profiles_df)  # Preview the raw data
-
-        # Validate the necessary columns
-        required_columns = {"Name", "Description", "Image_URL", "Paper_1", "Paper_2"}
-        if not required_columns.issubset(profiles_df.columns):
-            st.error(f"Profiles data is missing one or more required columns: {required_columns}")
+        # Check if data is empty
+        if research_data.empty:
+            st.warning("No expert profiles available.")
             return
 
-        if profiles_df.empty:
-            st.warning("No expert profiles available.")
-        else:
-            # Display profiles in a card-style layout
-            num_cols = 3
-            columns = st.columns(num_cols)
+        # Display expert profiles
+        st.subheader("Expert Profiles")
 
-            for index, row in profiles_df.iterrows():
-                with columns[index % num_cols]:
-                    st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
-                    st.markdown(f"### {row.get('Name', 'Unknown')}")
-                    st.write(row.get("Description", "No description available."))
-                    st.markdown("#### Research Papers:")
-                    if row.get("Paper_1"):
-                        st.markdown(f"- {row['Paper_1']}")
-                    if row.get("Paper_2"):
-                        st.markdown(f"- {row['Paper_2']}")
-    else:
-        st.error("The 'Profiles' sheet is missing in the data.")
+        # Create a grid layout for profiles
+        num_cols = 3  # Number of columns for profile cards
+        columns = st.columns(num_cols)
+
+        for index, row in research_data.iterrows():
+            with columns[index % num_cols]:
+                # Display image, name, description, and research papers
+                st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+                st.markdown(f"### {row.get('Name', 'Unknown')}")
+                st.write(row.get("Description", "No description provided."))
+                st.markdown("#### Research Papers:")
+                if row.get("Paper_1"):
+                    st.markdown(f"- {row['Paper_1']}")
+                if row.get("Paper_2"):
+                    st.markdown(f"- {row['Paper_2']}")
+    except FileNotFoundError:
+        st.error("The file 'research_hub_data.xlsx' was not found. Please ensure it is available.")
+    except Exception as e:
+        st.error(f"An error occurred while loading the data: {e}")
 
 
 
