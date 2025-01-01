@@ -469,8 +469,9 @@ def render_research_hub():
     # Load the research data
     research_data = load_research_hub_data()
 
-    if not research_data or "Profiles" not in research_data:
-        st.error("Research Hub data is unavailable or missing 'Profiles'.")
+    # Add detailed checks for research data
+    if not research_data or not isinstance(research_data, dict) or "Profiles" not in research_data or research_data["Profiles"].empty:
+        st.error("Research Hub data is unavailable or 'Profiles' sheet is missing/empty.")
         return
 
     profiles_df = research_data["Profiles"]
@@ -515,11 +516,6 @@ def render_research_hub():
                 unsafe_allow_html=True,
             )
 
-
-    # Ensure layout alignment if the grid is incomplete
-    remaining_cols = len(profiles_df) % num_cols
-    for _ in range(num_cols - remaining_cols):
-        st.empty()  # Placeholder to fill the grid
 
 # Load all data
 temp_df = load_temperature_data()
