@@ -450,9 +450,6 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
 
-import streamlit as st
-import pandas as pd
-
 @st.cache_data
 def load_research_hub_data():
     """Loads data for the Research Hub from an Excel file."""
@@ -507,20 +504,6 @@ def render_research_hub():
     remaining_cols = len(profiles_df) % num_cols
     for _ in range(num_cols - remaining_cols):
         st.empty()  # Placeholder to fill the grid
-
-# Navigation
-st.sidebar.header("Navigation")
-menu = st.sidebar.radio("Go to", ["Dashboard", "Research Hub", "Data Sources"])
-
-if menu == "Dashboard":
-    st.title("Dashboard")
-    st.write("This is the dashboard page.")
-elif menu == "Research Hub":
-    render_research_hub()
-elif menu == "Data Sources":
-    st.title("Data Sources")
-    st.write("This is the data sources page.")
-
 
 # Load all data
 temp_df = load_temperature_data()
