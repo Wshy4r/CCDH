@@ -467,25 +467,19 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Load the research data
-    research_data = load_research_hub_data()
-
-    if not research_data:
-        st.error("Research Hub data is unavailable.")
-        return
-
-    # Display only expert profiles
-    st.subheader("Expert Profiles")
+    # Check if research data is available
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
         for _, row in profiles_df.iterrows():
             col1, col2 = st.columns([1, 3])
             with col1:
-                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
+                if 'Image URL' in row and pd.notna(row["Image URL"]):
+                    st.image(row["Image URL"], width=120)
+                else:
+                    st.image("https://via.placeholder.com/150", width=120)
             with col2:
                 st.subheader(row.get("Name", "Unknown"))
                 st.write(row.get("Description", "No description provided."))
-
                 # Display linked papers
                 for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
                     paper = row.get(paper_key)
