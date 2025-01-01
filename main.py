@@ -469,13 +469,17 @@ st.sidebar.header("Navigation")
 show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
+
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
+    
+
+    # Add dashboard-specific content heres Climate D
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
-        ['Hewlér', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlér', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
     # Rest of the dashboard logic (charts, filters, etc.)
 
@@ -510,6 +514,7 @@ elif show_research_hub:
             st.write(profile["description"])
             for paper in profile["papers"]:
                 st.markdown(f"- [{paper}](#)")
+
 
 elif show_data_sources:
     # Data Sources Content
