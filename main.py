@@ -450,70 +450,76 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
 
-@st.cache_data  # Cache the data for performance
+import streamlit as st
+import pandas as pd
+
+@st.cache_data
 def load_research_hub_data():
-    """Loads data for the Research Hub from an Excel file (research_hub_data.xlsx)."""
+    """Loads data for the Research Hub from an Excel file."""
     try:
-        research_hub_data = pd.read_excel("GovData/profiles/research_hub_data.xlsx", sheet_name=None)
+        # Replace with the correct path to your Excel file
+        file_path = "GovData/profiles/research_hub_data.xlsx"
+        research_hub_data = pd.read_excel(file_path, sheet_name="Profiles")
         return research_hub_data
-    except FileNotFoundError:
-        st.error("The research_hub.xlsx file was not found.")
-        return {}
     except Exception as e:
-        st.error(f"An error occurred while loading the research hub data: {e}")
-        return {}
+        st.error(f"Error loading research hub data: {e}")
+        return pd.DataFrame()
 
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     # Load the research data
-    research_data = load_research_hub_data()
+    profiles_df = load_research_hub_data()
 
-    if not research_data:
-        st.error("Research Hub data is unavailable.")
+    if profiles_df.empty:
+        st.error("No research hub data available.")
         return
 
-    # Display expert profiles
+    # Display expert profiles in a styled grid
     st.subheader("Expert Profiles")
-    if "Profiles" in research_data:
-        profiles_df = research_data["Profiles"]
+    num_cols = 3  # Number of columns for the grid
+    columns = st.columns(num_cols)
 
-        # Create a styled grid layout for profiles
-        num_cols = 3  # Set the number of columns for layout
-        columns = st.columns(num_cols)
+    for index, row in profiles_df.iterrows():
+        with columns[index % num_cols]:  # Cycle through columns
+            st.markdown(
+                f"""
+                <div style="border: 1px solid #ddd; border-radius: 8px; padding: 16px; text-align: center; background-color: #fff; margin-bottom: 16px;">
+                    <img src="{row.get('Image URL', 'https://via.placeholder.com/150')}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 8px;">
+                    <h4 style="margin: 0;">{row.get('Name', 'Unknown')}</h4>
+                    <p style="margin: 8px 0; font-size: 14px; color: #555;">{row.get('Description', 'No description provided.')}</p>
+                    <p style="font-size: 14px; color: #333;"><b>Sector:</b> {row.get('Sector', 'N/A')}</p>
+                    <p style="font-size: 14px; color: #333;"><b>Discipline:</b> {row.get('Discipline', 'N/A')}</p>
+                    <p style="font-size: 14px; color: #333;"><b>Rating:</b> {row.get('Rating', 'N/A')}</p>
+                    <h5 style="margin: 8px 0 4px; font-size: 16px;">Research Papers:</h5>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            # List research papers
+            for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
+                paper = row.get(paper_key)
+                if paper:
+                    st.markdown(f"- {paper}")
 
-        for index, row in profiles_df.iterrows():
-            with columns[index % num_cols]:  # Cycle through columns
-                # Profile card styling
-                st.markdown(
-                    f"""
-                    <div style="border: 1px solid #ccc; border-radius: 8px; padding: 16px; text-align: center; background-color: #f9f9f9; margin-bottom: 16px;">
-                        <img src="{row.get("Image URL", "https://via.placeholder.com/150")}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 8px;">
-                        <h4 style="margin: 0;">{row.get("Name", "Unknown")}</h4>
-                        <p style="margin: 8px 0; font-size: 14px; color: #555;">{row.get("Description", "No description provided.")}</p>
-                        <p style="font-size: 14px; color: #333;"><b>Sector:</b> {row.get("Sector", "N/A")}</p>
-                        <p style="font-size: 14px; color: #333;"><b>Discipline:</b> {row.get("Discipline", "N/A")}</p>
-                        <p style="font-size: 14px; color: #333;"><b>Rating:</b> {row.get("Rating", "N/A")}</p>
-                        <h5 style="margin: 8px 0 4px; font-size: 16px;">Research Papers:</h5>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
+    # Ensure layout alignment if the grid is incomplete
+    remaining_cols = len(profiles_df) % num_cols
+    for _ in range(num_cols - remaining_cols):
+        st.empty()  # Placeholder to fill the grid
 
-                # List research papers
-                for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
-                    paper = row.get(paper_key)
-                    if paper:
-                        st.markdown(f"- {paper}")
+# Navigation
+st.sidebar.header("Navigation")
+menu = st.sidebar.radio("Go to", ["Dashboard", "Research Hub", "Data Sources"])
 
-        # If not enough profiles to fill the grid, keep the layout tidy
-        for i in range(len(profiles_df) % num_cols):
-            with columns[num_cols - 1]:
-                st.write("")  # Placeholder to keep the layout neat
-
-    else:
-        st.warning("No expert profiles available.")
+if menu == "Dashboard":
+    st.title("Dashboard")
+    st.write("This is the dashboard page.")
+elif menu == "Research Hub":
+    render_research_hub()
+elif menu == "Data Sources":
+    st.title("Data Sources")
+    st.write("This is the data sources page.")
 
 
 # Load all data
