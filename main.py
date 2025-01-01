@@ -480,7 +480,6 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 # Sidebar Navigation with Session State
-# Sidebar Navigation with Session State
 st.sidebar.header("Navigation")
 
 # Initialize navigation state
@@ -504,58 +503,6 @@ if st.session_state.current_page == "Dashboard":
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-
-    # Time frame and year range filters
-    time_frame = st.sidebar.radio(
-        "Select Time Frame",
-        ["Yearly", "Monthly", "Seasonal"]
-    )
-    start_year, end_year = st.sidebar.slider(
-        "Select Year Range",
-        1950, 2023, (1950, 2023)
-    )
-
-    # Additional filters for Monthly and Seasonal time frames
-    months = []
-    seasons = []
-    if time_frame == "Monthly":
-        months = st.sidebar.multiselect(
-            "Select Months",
-            list(calendar.month_name)[1:],
-            default=list(calendar.month_name)[1:]
-        )
-    elif time_frame == "Seasonal":
-        seasons = st.sidebar.multiselect(
-            "Select Seasons",
-            ["Winter", "Spring", "Summer", "Autumn"],
-            default=["Winter", "Spring", "Summer", "Autumn"]
-        )
-
-    # Filter data for the dashboard
-    def filter_data(df, cities=None, months=None, seasons=None):
-        filtered = df[
-            (df['Year'] >= start_year) & 
-            (df['Year'] <= end_year)
-        ]
-        
-        if cities:
-            filtered = filtered[df['City'].isin(cities)]
-        
-        if months and 'MonthName' in df.columns:
-            filtered = filtered[filtered['MonthName'].isin(months)]
-        elif seasons and 'Season' in df.columns:
-            filtered = filtered[filtered['Season'].isin(seasons)]
-        
-        return filtered
-
-    # Apply filtering to dashboard-relevant data
-    temp_df_filtered = filter_data(temp_df, selected_cities, months, seasons)
-    rainfall_df_filtered = filter_data(rainfall_df, selected_cities, months, seasons)
-    water_df_filtered = filter_data(water_df, selected_cities, months, seasons)
-    economic_df_filtered = filter_data(economic_df, selected_cities, months, seasons)
-    health_df_filtered = filter_data(health_df, selected_cities, months, seasons)
-
-    # Display the dashboard content
     st.write("### Dashboard Page")
     st.write("Add your dashboard content here.")
 
@@ -563,12 +510,6 @@ elif st.session_state.current_page == "Research Hub":
     # Research Hub Content
     st.write("### Research Hub")
     st.write("Explore expert profiles and their research papers.")
-
-elif st.session_state.current_page == "Data Sources":
-    # Data Sources Content
-    st.write("### Data Sources")
-    st.write("Provide details about your data sources here.")
-
 
     profiles = [
         {
@@ -608,6 +549,7 @@ elif st.session_state.current_page == "Data Sources":
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
+
 
 
 
