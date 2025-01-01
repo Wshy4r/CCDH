@@ -507,7 +507,6 @@ def render_research_hub():
                 paper_title = row.get(f"Paper_{paper_idx}", None)
                 paper_url = row.get(f"Paper_{paper_idx}_URL", None)
                 if paper_title and paper_url:
-                    # Ensure correct URL format and HTML rendering
                     st.markdown(
                         f'<a href="{paper_url}" target="_blank" style="color:blue; text-decoration:underline;">{paper_title}</a>',
                         unsafe_allow_html=True
