@@ -478,24 +478,36 @@ def render_research_hub():
     # Display expert profiles
     st.subheader("Expert Profiles")
     if "Profiles" in research_data:
-    profiles_df = research_data["Profiles"]
-    st.write("Profiles Data Debug:")
-    st.dataframe(profiles_df)  # Display the raw data to check its structure
+        profiles_df = research_data["Profiles"]
 
-    if profiles_df.empty:
-        st.warning("No expert profiles available in the Profiles sheet.")
-    else:
-        # Display profiles as cards
-        for index, row in profiles_df.iterrows():
-            st.write(f"Name: {row.get('Name', 'Unknown')}")
-            st.write(f"Description: {row.get('Description', 'No description provided.')}")
-            st.write(f"Image URL: {row.get('Image_URL', 'No URL provided')}")
-            st.write(f"Paper 1: {row.get('Paper_1', 'N/A')}")
-            st.write(f"Paper 2: {row.get('Paper_2', 'N/A')}")
-
-
-        else:
+        if profiles_df.empty:
             st.warning("No expert profiles available.")
+        else:
+            # Create a grid layout for profiles
+            num_cols = 3  # Number of columns in the grid
+            columns = st.columns(num_cols)
+
+            for index, row in profiles_df.iterrows():
+                with columns[index % num_cols]:
+                    # Display profile image
+                    st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+
+                    # Display profile name
+                    st.markdown(f"### {row.get('Name', 'Unknown')}")
+
+                    # Display description (if available)
+                    st.write(row.get("Description", "No description provided."))
+
+                    # Display linked research papers
+                    st.markdown("#### Research Papers:")
+                    if row.get("Paper_1"):
+                        st.markdown(f"- {row['Paper_1']}")
+                    if row.get("Paper_2"):
+                        st.markdown(f"- {row['Paper_2']}")
+
+    else:
+        st.warning("No expert profiles available.")
+
 
 
 # Call the function to render the Research Hub
