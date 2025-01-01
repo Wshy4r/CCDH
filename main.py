@@ -869,11 +869,21 @@ def filter_data(df):
     return filtered
 
 # Apply filters to all dataframes
-temp_df_filtered = filter_data(temp_df)
-rainfall_df_filtered = filter_data(rainfall_df)
-water_df_filtered = filter_data(water_df)
-economic_df_filtered = filter_data(economic_df)
-health_df_filtered = filter_data(health_df)
+if data_source == "Open Source Data":
+    # Apply filters only when the data source is "Open Source Data"
+    temp_df_filtered = filter_data(temp_df)
+    rainfall_df_filtered = filter_data(rainfall_df)
+    water_df_filtered = filter_data(water_df)
+    economic_df_filtered = filter_data(economic_df)
+    health_df_filtered = filter_data(health_df)
+else:
+    # For Governmental Data, no filtering is required (or provide defaults if needed)
+    temp_df_filtered = None
+    rainfall_df_filtered = None
+    water_df_filtered = None
+    economic_df_filtered = None
+    health_df_filtered = None
+
 # === PART 3 END ===
 # === PART 4 START: VISUALIZATION CODE ===
 # Main content area
