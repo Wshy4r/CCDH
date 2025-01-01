@@ -484,44 +484,113 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         key="data_source_selectbox"  # Add unique key
     )
 
-    # Step 2: Select Category
-    category = None  # Default value
-    chart_type = None  # Default value
+# Step 2: Select Category and Indicator
+category = None
+chart_type = None
 
-    if data_source == "Open Source Data":
-        category = st.sidebar.selectbox(
-            "Select Category (Open Source Data)",
+if data_source == "Open Source Data":
+    # Display category dropdown for Open Source Data
+    category = st.sidebar.selectbox(
+        "Select Category (Open Source Data)",
+        [
+            "Temperature & Precipitation",
+            "Water Resources",
+            "Economic Impact",
+            "Health Impact",
+            "Seasonal Analysis",
+            "Future Projections",
+            "Comparative Analysis"
+        ],
+        key="open_source_category"  # Unique key for Open Source Data category
+    )
+
+    # Display indicator dropdown based on selected category
+    if category == "Temperature & Precipitation":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
             [
-                "Temperature & Precipitation",
-                "Water Resources",
-                "Economic Impact",
-                "Health Impact",
-                "Seasonal Analysis",
-                "Future Projections",
-                "Comparative Analysis"
+                "Temperature Trends",
+                "Rainfall Patterns",
+                "Extreme Weather Events",
+                "Drought Analysis",
+                "Combined View"
             ],
-            key="open_source_category"  # Add unique key
+            key="temperature_precipitation_indicator"  # Unique key for indicators
         )
+    elif category == "Water Resources":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            [
+                "River Levels",
+                "Groundwater Levels",
+                "Water Stress Index",
+                "Combined Water Resources"
+            ],
+            key="water_resources_indicator"  # Unique key for indicators
+        )
+    elif category == "Economic Impact":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            [
+                "Energy Demand",
+                "Agricultural Production",
+                "Economic Trends",
+                "Combined Economic Impact"
+            ],
+            key="economic_impact_indicator"  # Unique key for indicators
+        )
+    elif category == "Health Impact":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            [
+                "Heat Stress Index",
+                "Air Health Index",
+                "Health Risk Patterns",
+                "Combined Health Indicators"
+            ],
+            key="health_impact_indicator"  # Unique key for indicators
+        )
+    elif category == "Seasonal Analysis":
+        chart_type = st.sidebar.selectbox(
+            "Select Analysis",
+            [
+                "Temperature Patterns",
+                "Rainfall Distribution",
+                "Seasonal Comparisons",
+                "Year-over-Year Changes"
+            ],
+            key="seasonal_analysis_indicator"  # Unique key for indicators
+        )
+    elif category == "Future Projections":
+        chart_type = st.sidebar.selectbox(
+            "Select Projection",
+            [
+                "Temperature Forecast",
+                "Rainfall Forecast",
+                "Water Resource Outlook",
+                "Combined Projections"
+            ],
+            key="future_projections_indicator"  # Unique key for indicators
+        )
+    elif category == "Comparative Analysis":
+        chart_type = st.sidebar.selectbox(
+            "Select Analysis",
+            [
+                "City Comparisons",
+                "Trend Analysis",
+                "Regional Patterns",
+                "Historical Benchmarks"
+            ],
+            key="comparative_analysis_indicator"  # Unique key for indicators
+        )
+elif data_source == "Governmental Data":
+    # Display category dropdown for Governmental Data
+    category = st.sidebar.selectbox(
+        "Select Category (Governmental Data)",
+        ["Waste Management", "Power & Energy", "Water Resources Management"],
+        key="governmental_category"  # Unique key for Governmental Data category
+    )
 
-        # Step 3: Select Indicator
-        if category == "Temperature & Precipitation":
-            chart_type = st.sidebar.selectbox(
-                "Select Indicator",
-                [
-                    "Temperature Trends",
-                    "Rainfall Patterns",
-                    "Extreme Weather Events",
-                    "Drought Analysis",
-                    "Combined View"
-                ],
-                key="indicator_selectbox"  # Add unique key
-            )
-    elif data_source == "Governmental Data":
-        category = st.sidebar.selectbox(
-            "Select Category (Governmental Data)",
-            ["Waste Management", "Power & Energy", "Water Resources Management"],
-            key="governmental_category"  # Add unique key
-        )
 
     # Step 4: Select Cities
     selected_cities = st.sidebar.multiselect(
