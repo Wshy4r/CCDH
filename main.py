@@ -484,11 +484,12 @@ data_source = st.sidebar.selectbox(
 if data_source == "Open Source Data":
     # Render "Select Cities"
     selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="selected_cities"
-    )
+    "Select Cities",
+    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+    key="selected_cities"
+)
+
 
     # Render "Select Time Frame"
     time_frame = st.sidebar.radio(
