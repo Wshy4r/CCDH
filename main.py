@@ -562,22 +562,6 @@ if show_research_hub:
         # Placeholder for additional sections (if required)
         st.markdown("### Add any additional sections for the Research Hub here")
 
-elif show_data_sources:
-    # Data Sources Content
-    st.title("Data Sources")
-    st.write("This section provides detailed information about the data sources used.")
-    st.markdown("---")
-
-    # Example Sources
-    sources = {
-        "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
-        "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
-        "FAO AQUASTAT": "https://www.fao.org/aquastat/en/databases/"
-    }
-
-    for source_name, source_link in sources.items():
-        st.markdown(f"- [{source_name}]({source_link})")
-
 
 # Time range
 time_frame = st.sidebar.radio(
