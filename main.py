@@ -450,6 +450,7 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
 
+@st.cache_data
 def load_research_hub_data():
     """Loads data for the Research Hub from an Excel file."""
     file_path = "GovData/profiles/research_hub_data.xlsx"  # Update this path to match your directory
@@ -459,17 +460,12 @@ def load_research_hub_data():
     except Exception as e:
         st.error(f"Error loading Research Hub data: {e}")
         return {}
-
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     # Load the research data
     research_data = load_research_hub_data()
-
-    # Debug: Print the loaded data
-    st.write("Loaded Research Data:")
-    st.write(research_data)
 
     if not research_data:
         st.error("Research Hub data is unavailable.")
@@ -479,11 +475,6 @@ def render_research_hub():
     st.subheader("Expert Profiles")
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
-        st.write("Debug: Profiles DataFrame")
-        st.dataframe(profiles_df)  # Show the full DataFrame
-
-
-        # Display each profile dynamically
         for _, row in profiles_df.iterrows():
             col1, col2 = st.columns([1, 3])
             with col1:
@@ -504,8 +495,6 @@ def render_research_hub():
     st.subheader("Research Papers")
     if "Papers" in research_data:
         papers_df = research_data["Papers"]
-        st.write("Papers DataFrame:")
-        st.write(papers_df)
         st.dataframe(papers_df)
     else:
         st.warning("No research papers available.")
@@ -514,12 +503,9 @@ def render_research_hub():
     st.subheader("Research Topics")
     if "Topics" in research_data:
         topics_df = research_data["Topics"]
-        st.write("Topics DataFrame:")
-        st.write(topics_df)
         st.dataframe(topics_df)
     else:
         st.warning("No research topics available.")
-
 
 # Load all data
 temp_df = load_temperature_data()
@@ -554,7 +540,50 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
     # ... rest of the dashboard code ...
 
 elif show_research_hub:
-    render_research_hub()
+    st.title("Research Hub")
+    st.write("Explore expert profiles and their research papers.")
+
+    # Load the research data
+    research_data = load_research_hub_data()
+
+    if not research_data:
+        st.error("Research Hub data is unavailable.")
+    else:
+        # Display expert profiles
+        st.subheader("Expert Profiles")
+        if "Profiles" in research_data:
+            profiles_df = research_data["Profiles"]
+            for _, row in profiles_df.iterrows():
+                col1, col2 = st.columns([1, 3])
+                with col1:
+                    st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
+                with col2:
+                    st.subheader(row.get("Name", "Unknown"))
+                    st.write(row.get("Description", "No description provided."))
+                    
+                    # Display linked papers
+                    for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
+                        paper = row.get(paper_key)
+                        if paper:
+                            st.markdown(f"- {paper}")
+        else:
+            st.warning("No expert profiles available.")
+
+        # Display research papers
+        st.subheader("Research Papers")
+        if "Papers" in research_data:
+            papers_df = research_data["Papers"]
+            st.dataframe(papers_df)
+        else:
+            st.warning("No research papers available.")
+
+        # Display research topics
+        st.subheader("Research Topics")
+        if "Topics" in research_data:
+            topics_df = research_data["Topics"]
+            st.dataframe(topics_df)
+        else:
+            st.warning("No research topics available.")
 
 elif show_data_sources:
     # Data Sources Content
@@ -570,7 +599,6 @@ elif show_data_sources:
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
-
 
 # Time range
 time_frame = st.sidebar.radio(
