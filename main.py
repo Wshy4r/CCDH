@@ -473,6 +473,13 @@ show_research_hub = st.sidebar.button("Research Hub", key="research_hub_button")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources_button")
 
 # Sidebar controls
+st.sidebar.header("Navigation")
+# Sidebar Navigation with Buttons
+show_dashboard = st.sidebar.button("Dashboard", key="dashboard_button")
+show_research_hub = st.sidebar.button("Research Hub", key="research_hub_button")
+show_data_sources = st.sidebar.button("Data Sources", key="data_sources_button")
+
+# Sidebar controls
 if show_dashboard or (not show_research_hub and not show_data_sources):
     st.sidebar.header("Dashboard Controls")
 
@@ -484,7 +491,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         key="data_source"
     )
 
-    # Step 2: Select Category
+    # Step 2: Select Category (Higher level, only one is functional)
     if data_source == "Open Source Data":
         category = st.sidebar.selectbox(
             "Select Category",
