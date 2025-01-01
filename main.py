@@ -463,71 +463,45 @@ def load_research_hub_data():
         st.error(f"An error occurred while loading the research hub data: {e}")
         return {}
     
-# Function to render Research Hub with Profile Cards
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Hardcoded data for expert profiles and research papers
-    research_profiles = [
-        {
-            "Name": "Dr. John Doe",
-            "Sector": "Climate Mitigation",
-            "Discipline": "Environmental Science",
-            "Rating": 5.0,
-            "Image_URL": "https://via.placeholder.com/150",
-            "Description": "An expert in climate resilience and mitigation strategies.",
-            "Papers": [
-                "Impact of Extreme Weather Events",
-                "Future of Climate Adaptation Policies",
-            ],
-        },
-        {
-            "Name": "Dr. Jane Doe",
-            "Sector": "Water Resources",
-            "Discipline": "Hydrology",
-            "Rating": 4.9,
-            "Image_URL": "https://via.placeholder.com/150",
-            "Description": "Specialist in water resource management and optimization.",
-            "Papers": [
-                "Water Resource Optimization",
-                "Sustainable Hydrology in Urban Areas",
-            ],
-        },
-    ]
+    # Load the research data
+    research_data = load_research_hub_data()
+
+    if not research_data:
+        st.error("Research Hub data is unavailable.")
+        return
 
     # Display expert profiles
     st.subheader("Expert Profiles")
-    cols = st.columns(len(research_profiles))
+    if "Profiles" in research_data:
+        profiles_df = research_data["Profiles"]
 
-    for idx, profile in enumerate(research_profiles):
-        with cols[idx % len(cols)]:
-            st.image(profile["Image_URL"], width=150, use_column_width=True)
-            st.markdown(f"### {profile['Name']}")
-            st.markdown(f"**Sector:** {profile['Sector']}")
-            st.markdown(f"**Discipline:** {profile['Discipline']}")
-            st.markdown(f"**Rating:** {profile['Rating']} ⭐")
-            st.write(profile["Description"])
-            st.markdown("#### Research Papers:")
-            for paper in profile["Papers"]:
-                st.markdown(f"- {paper}")
+        # Create columns for displaying profiles
+        num_cols = 3  # Set the number of columns for layout
+        columns = st.columns(num_cols)
 
+        for index, row in profiles_df.iterrows():
+            with columns[index % num_cols]:  # Cycle through columns
+                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
+                st.subheader(row.get("Name", "Unknown"))
+                st.write(row.get("Description", "No description provided."))
+                
+                # Link papers
+                for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
+                    paper = row.get(paper_key)
+                    if paper:
+                        st.markdown(f"- {paper}")
 
-# Navigation Logic
-if show_dashboard:
-    st.title("Dashboard")
-    st.write("This is the dashboard page.")
-    # Add dashboard-specific content here...
+        # If not enough profiles to fill the grid, keep the layout tidy
+        for i in range(len(profiles_df) % num_cols):
+            with columns[num_cols - 1]:
+                st.write("")  # Placeholder to keep the layout neat
 
-elif show_data_sources:
-    st.title("Data Sources")
-    st.write("Explore data sources and references.")
-    # Add data sources-specific content here...
-
-elif show_research_hub:
-    render_research_hub()
-
-
+    else:
+        st.warning("No expert profiles available.")
 
 # Load all data
 temp_df = load_temperature_data()
