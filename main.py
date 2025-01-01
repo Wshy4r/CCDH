@@ -450,7 +450,11 @@ def load_planning_dams_data():
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
     
-
+def filter_data(df, cities=None):
+    filtered = df[
+        (df['Year'] >= start_year) & 
+        (df['Year'] <= end_year)
+    ]
     
     if cities:  # Apply city filter only if cities are provided
         filtered = filtered[df['City'].isin(cities)]
@@ -475,6 +479,7 @@ health_df = load_health_impact_data()
 # Display logo in the sidebar
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
+
 # Sidebar Navigation with Session State
 st.sidebar.header("Navigation")
 
@@ -490,19 +495,27 @@ if st.sidebar.button("Research Hub", key="research_hub"):
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
 
-# Conditional logic based on the current page
+
+
+# Render content based on the current page
 if st.session_state.current_page == "Dashboard":
     # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
-   
-    st.write("### Dashboard Page")
-    st.write("Add your dashboard content here.")
+    selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+    )
+    st.title("Kurdistan Cities Climate Dashboard")
+    # Add your dashboard-specific content here (charts, filters, etc.)
+    st.write("Dashboard content goes here.")
 
 elif st.session_state.current_page == "Research Hub":
     # Research Hub Content
-    st.write("### Research Hub")
+    st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
+    # Example Profiles
     profiles = [
         {
             "name": "Dr. John Doe",
@@ -518,6 +531,7 @@ elif st.session_state.current_page == "Research Hub":
         }
     ]
 
+    # Display Profiles
     for profile in profiles:
         col1, col2 = st.columns([1, 3])
         with col1:
@@ -530,9 +544,10 @@ elif st.session_state.current_page == "Research Hub":
 
 elif st.session_state.current_page == "Data Sources":
     # Data Sources Content
-    st.write("### Data Sources")
-    st.write("Provide details about your data sources here.")
+    st.title("Data Sources")
+    st.write("This section provides detailed information about the data sources used.")
 
+    # Example Sources
     sources = {
         "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
         "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
@@ -544,6 +559,31 @@ elif st.session_state.current_page == "Data Sources":
 
 
 
+
+# Time range
+time_frame = st.sidebar.radio(
+    "Select Time Frame",
+    ["Yearly", "Monthly", "Seasonal"]
+)
+
+# Year range
+start_year, end_year = st.sidebar.slider(
+    "Select Year Range",
+    1950, 2023, (1950, 2023)
+)
+
+if time_frame == "Monthly":
+    months = st.sidebar.multiselect(
+        "Select Months",
+        list(calendar.month_name)[1:],
+        default=list(calendar.month_name)[1:]
+    )
+elif time_frame == "Seasonal":
+    seasons = st.sidebar.multiselect(
+        "Select Seasons",
+        ["Winter", "Spring", "Summer", "Autumn"],
+        default=["Winter", "Spring", "Summer", "Autumn"]
+    )
 
 # Data source selection
 data_source = st.sidebar.selectbox(
@@ -886,9 +926,27 @@ if st.sidebar.button("Download Data"):
     st.sidebar.success("Data downloaded successfully!")
 
 # Filter data based on time frame and selection
+def filter_data(df):
+    filtered = df[
+        (df['Year'] >= start_year) & 
+        (df['Year'] <= end_year) & 
+        (df['City'].isin(selected_cities))
+    ]
+    
+    if time_frame == "Monthly" and 'Month' in df.columns:
+        filtered = filtered[filtered['MonthName'].isin(months)]
+    elif time_frame == "Seasonal" and 'Season' in df.columns:
+        filtered = filtered[filtered['Season'].isin(seasons)]
+    
+    return filtered
 
-
-
+# Apply filters to all dataframes
+temp_df_filtered = filter_data(temp_df)
+rainfall_df_filtered = filter_data(rainfall_df)
+water_df_filtered = filter_data(water_df)
+economic_df_filtered = filter_data(economic_df)
+health_df_filtered = filter_data(health_df)
+# === PART 3 END ===
 # === PART 4 START: VISUALIZATION CODE ===
 # Main content area
 col1, col2 = st.columns([2, 1])
@@ -980,7 +1038,7 @@ with col1:
         source = get_data_source('water_resources')
         if chart_type == "River Levels":
             fig = px.line(
- 
+                water_df_filtered,
                 x='Year',
                 y='RiverLevel',
                 color='City',
@@ -991,7 +1049,7 @@ with col1:
             
         elif chart_type == "Groundwater Levels":
             fig = px.line(
-
+                water_df_filtered,
                 x='Year',
                 y='GroundwaterLevel',
                 color='City',
