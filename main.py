@@ -475,38 +475,41 @@ def render_research_hub():
         st.error("Research Hub data is unavailable.")
         return
 
-    # Display expert profiles
-    st.subheader("Expert Profiles")
+    # Debug: Display the keys and preview the data
+    st.write("### Debug: Loaded Research Data")
+    st.write(research_data)
+
+    # Ensure 'Profiles' sheet exists and has required columns
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
+        st.write("### Debug: Profiles Data")
+        st.write(profiles_df)  # Preview the raw data
+
+        # Validate the necessary columns
+        required_columns = {"Name", "Description", "Image_URL", "Paper_1", "Paper_2"}
+        if not required_columns.issubset(profiles_df.columns):
+            st.error(f"Profiles data is missing one or more required columns: {required_columns}")
+            return
 
         if profiles_df.empty:
             st.warning("No expert profiles available.")
         else:
-            # Create a grid layout for profiles
-            num_cols = 3  # Number of columns in the grid
+            # Display profiles in a card-style layout
+            num_cols = 3
             columns = st.columns(num_cols)
 
             for index, row in profiles_df.iterrows():
                 with columns[index % num_cols]:
-                    # Display profile image
                     st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
-
-                    # Display profile name
                     st.markdown(f"### {row.get('Name', 'Unknown')}")
-
-                    # Display description (if available)
-                    st.write(row.get("Description", "No description provided."))
-
-                    # Display linked research papers
+                    st.write(row.get("Description", "No description available."))
                     st.markdown("#### Research Papers:")
                     if row.get("Paper_1"):
                         st.markdown(f"- {row['Paper_1']}")
                     if row.get("Paper_2"):
                         st.markdown(f"- {row['Paper_2']}")
-
     else:
-        st.warning("No expert profiles available.")
+        st.error("The 'Profiles' sheet is missing in the data.")
 
 
 
