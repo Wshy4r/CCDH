@@ -469,52 +469,45 @@ def render_research_hub():
     # Load the research data
     research_data = load_research_hub_data()
 
-    # Add detailed checks for research data
-    if not research_data or not isinstance(research_data, dict) or "Profiles" not in research_data or research_data["Profiles"].empty:
-        st.error("Research Hub data is unavailable or 'Profiles' sheet is missing/empty.")
+    if not research_data:
+        st.error("Research Hub data is unavailable.")
         return
 
-    profiles_df = research_data["Profiles"]
+    if "Profiles" in research_data:
+        profiles_df = research_data["Profiles"]
 
-    # Display profiles in styled cards
-    st.subheader("Expert Profiles")
-    num_cols = 4  # Number of cards per row
-    columns = st.columns(num_cols)
+        # Display profiles in a styled grid layout
+        st.markdown("<style>" +
+                    ".profile-card {border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);}" +
+                    ".profile-img {border-radius: 50%; width: 80px; height: 80px; margin-bottom: 10px;}" +
+                    ".profile-title {font-size: 18px; font-weight: bold; margin: 5px 0;}" +
+                    ".profile-desc {font-size: 14px; color: #555; margin: 5px 0;}" +
+                    ".profile-sector, .profile-discipline {font-size: 12px; color: #888; margin: 5px 0;}" +
+                    ".profile-btn {display: inline-block; padding: 8px 12px; background-color: #007bff; color: white; text-align: center; border-radius: 5px; text-decoration: none; font-size: 14px; margin-top: 10px;}" +
+                    "</style>", unsafe_allow_html=True)
 
-    for idx, row in profiles_df.iterrows():
-        with columns[idx % num_cols]:
-            st.markdown(
-                f"""
-                <div style="
-                    border: 1px solid #e0e0e0;
-                    border-radius: 8px;
-                    padding: 10px;
-                    text-align: center;
-                    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-                    margin: 10px;
-                    background-color: #ffffff;
-                ">
-                    <img src="{row.get('Image_URL', 'https://via.placeholder.com/150')}" 
-                         style="border-radius: 50%; width: 100px; height: 100px; margin-bottom: 10px;" alt="Profile Image">
-                    <h4 style="margin-bottom: 5px;">{row.get('Name', 'N/A')}</h4>
-                    <p style="margin-bottom: 5px; font-size: 14px; color: #555;">
-                        <b>Sector:</b> {row.get('Sector', 'N/A')}
-                    </p>
-                    <p style="margin-bottom: 5px; font-size: 14px; color: #555;">
-                        <b>Discipline:</b> {row.get('Discipline', 'N/A')}
-                    </p>
-                    <p style="margin-bottom: 5px; font-size: 14px; color: #555;">
-                        <b>Rating:</b> {row.get('Rating', 'N/A')} ⭐
-                    </p>
-                    <a href="#" style="display: inline-block; margin-top: 10px; padding: 5px 10px; 
-                        background-color: #007bff; color: #ffffff; text-decoration: none; 
-                        border-radius: 4px; font-size: 14px;">
-                        View Profile
-                    </a>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        # Create rows of profiles
+        num_cols = 3
+        columns = st.columns(num_cols)
+
+        for idx, row in profiles_df.iterrows():
+            with columns[idx % num_cols]:
+                st.markdown(
+                    f"""
+                    <div class="profile-card">
+                        <img src="{row.get('Image URL', 'https://via.placeholder.com/80')}" alt="Profile Image" class="profile-img">
+                        <div class="profile-title">{row.get('Name', 'Unknown')}</div>
+                        <div class="profile-desc">{row.get('Description', 'No description provided.')}</div>
+                        <div class="profile-sector"><b>Sector:</b> {row.get('Sector', 'N/A')}</div>
+                        <div class="profile-discipline"><b>Discipline:</b> {row.get('Discipline', 'N/A')}</div>
+                        <div class="profile-discipline"><b>Rating:</b> {row.get('Rating', 'N/A')}</div>
+                        <a href="#" class="profile-btn">View Profile</a>
+                    </div>
+                    """, unsafe_allow_html=True
+                )
+    else:
+        st.warning("No expert profiles available.")
+
 
 
 # Load all data
