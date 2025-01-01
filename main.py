@@ -462,7 +462,7 @@ def load_research_hub_data():
     except Exception as e:
         st.error(f"An error occurred while loading the research hub data: {e}")
         return {}
-    
+
 def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
@@ -479,17 +479,29 @@ def render_research_hub():
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
 
-        # Create columns for displaying profiles
+        # Create a styled grid layout for profiles
         num_cols = 3  # Set the number of columns for layout
         columns = st.columns(num_cols)
 
         for index, row in profiles_df.iterrows():
             with columns[index % num_cols]:  # Cycle through columns
-                st.image(row.get("Image URL", "https://via.placeholder.com/150"), width=120)
-                st.subheader(row.get("Name", "Unknown"))
-                st.write(row.get("Description", "No description provided."))
-                
-                # Link papers
+                # Profile card styling
+                st.markdown(
+                    f"""
+                    <div style="border: 1px solid #ccc; border-radius: 8px; padding: 16px; text-align: center; background-color: #f9f9f9; margin-bottom: 16px;">
+                        <img src="{row.get("Image URL", "https://via.placeholder.com/150")}" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 8px;">
+                        <h4 style="margin: 0;">{row.get("Name", "Unknown")}</h4>
+                        <p style="margin: 8px 0; font-size: 14px; color: #555;">{row.get("Description", "No description provided.")}</p>
+                        <p style="font-size: 14px; color: #333;"><b>Sector:</b> {row.get("Sector", "N/A")}</p>
+                        <p style="font-size: 14px; color: #333;"><b>Discipline:</b> {row.get("Discipline", "N/A")}</p>
+                        <p style="font-size: 14px; color: #333;"><b>Rating:</b> {row.get("Rating", "N/A")}</p>
+                        <h5 style="margin: 8px 0 4px; font-size: 16px;">Research Papers:</h5>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+                # List research papers
                 for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
                     paper = row.get(paper_key)
                     if paper:
@@ -502,6 +514,7 @@ def render_research_hub():
 
     else:
         st.warning("No expert profiles available.")
+
 
 # Load all data
 temp_df = load_temperature_data()
