@@ -461,86 +461,93 @@ def load_research_hub_data():
         return pd.DataFrame()  # Return an empty DataFrame if loading fails
 
 def render_research_hub():
-    st.markdown(
-        """
-        <style>
-        .main-container {
-            background-color: #1E1E1E;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .title {
-            color: white;
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            color: #CCCCCC;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        .data-table th, .data-table td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid #333;
-        }
-        .data-table th {
-            background-color: #2A2A2A;
-            color: white;
-        }
-        .data-table td {
-            background-color: #1E1E1E;
-            color: #CCCCCC;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown('<div class="main-container">', unsafe_allow_html=True)
-    st.markdown('<h1 class="title">Research Hub</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">Explore expert profiles and their research papers.</p>', unsafe_allow_html=True)
+    st.title("Research Hub")
+    st.write("Explore expert profiles and their research papers.")
 
     # Load the research data
     research_data = load_research_hub_data()
 
     if research_data.empty:
         st.error("Research Hub data is unavailable.")
-    else:
-        st.markdown('<h3 style="color: white;">Loaded Research Data:</h3>', unsafe_allow_html=True)
-        
-        # Create a table-like structure
-        table_html = '''
-        <table class="data-table">
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Image_URL</th>
-                <th>Paper_1</th>
-                <th>Paper_2</th>
-            </tr>
-        '''
-        
-        for _, row in research_data.iterrows():
-            table_html += f'''
-            <tr>
-                <td>{row.get("Name", "Unknown")}</td>
-                <td>{row.get("Description", "No description")}</td>
-                <td>{row.get("Image_URL", "")}</td>
-                <td>{row.get("Paper_1", "")}</td>
-                <td>{row.get("Paper_2", "")}</td>
-            </tr>
-            '''
-        
-        table_html += '</table>'
-        st.markdown(table_html, unsafe_allow_html=True)
+        return
 
+    # CSS for the card layout
+    st.markdown("""
+    <style>
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+    .profile-card {
+        width: 300px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        text-align: center;
+    }
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+    }
+    .profile-img {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        margin-bottom: 15px;
+    }
+    .profile-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    .profile-desc {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 15px;
+    }
+    .profile-btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    .profile-btn:hover {
+        background-color: #0056b3;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Card container to organize profiles in a grid
+    st.markdown('<div class="card-container">', unsafe_allow_html=True)
+
+    # Iterate over each profile and render a card
+    for _, row in research_data.iterrows():
+        st.markdown(f"""
+        <div class="profile-card">
+            <img src="{row.get('Image_URL', 'https://via.placeholder.com/100')}" class="profile-img" alt="Profile Image">
+            <div class="profile-title">{row.get('Name', 'Unknown')}</div>
+            <div class="profile-desc">{row.get('Description', 'No description available.')}</div>
+            <div>
+                <strong>Research Papers:</strong>
+                <ul>
+                    <li>{row.get('Paper_1', 'N/A')}</li>
+                    <li>{row.get('Paper_2', 'N/A')}</li>
+                </ul>
+            </div>
+            <a href="#" class="profile-btn">View Profile</a>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Close the container
     st.markdown('</div>', unsafe_allow_html=True)
 
 
