@@ -529,6 +529,7 @@ def render_research_hub():
 
 
 
+
 # Load all data
 temp_df = load_temperature_data()
 rainfall_df = load_rainfall_data()
