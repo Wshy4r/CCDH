@@ -528,8 +528,6 @@ if st.sidebar.button("Research Hub", key="research_hub"):
 if st.sidebar.button("Data Sources", key="data_sources"):
     st.session_state.current_page = "Data Sources"
 
-
-# Render content based on the current page
 if st.session_state.current_page == "Dashboard":
     # Sidebar filters for Dashboard
     st.sidebar.header("Dashboard Controls")
@@ -549,6 +547,7 @@ if st.session_state.current_page == "Dashboard":
         1950, 2023, (1950, 2023)
     )
 
+    months, seasons = None, None
     if time_frame == "Monthly":
         months = st.sidebar.multiselect(
             "Select Months",
@@ -573,13 +572,12 @@ if st.session_state.current_page == "Dashboard":
     st.title("Kurdistan Cities Climate Dashboard")
     # Add your dashboard-specific content here (e.g., charts, tables)
     st.write("Dashboard content goes here.")
-
 elif st.session_state.current_page == "Research Hub":
     render_research_hub()
-
 elif st.session_state.current_page == "Data Sources":
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
+
     # Add your data sources content here
 
 
@@ -962,20 +960,22 @@ if st.sidebar.button("Download Data"):
     st.sidebar.success("Data downloaded successfully!")
 
 # Filter data based on time frame and selection
-def filter_data(df):
-    if df is not None and 'City' in df.columns:
-        filtered = df[
+def filter_data(df, cities=None, start_year=1950, end_year=2023, time_frame=None, months=None, seasons=None):
+    filtered = df[
         (df['Year'] >= start_year) & 
-        (df['Year'] <= end_year) & 
-        (df['City'].isin(selected_cities))
+        (df['Year'] <= end_year)
     ]
     
-    if time_frame == "Monthly" and 'Month' in df.columns:
+    if cities:  # Apply city filter only if cities are provided
+        filtered = filtered[df['City'].isin(cities)]
+    
+    if time_frame == "Monthly" and 'Month' in df.columns and months:
         filtered = filtered[filtered['MonthName'].isin(months)]
-    elif time_frame == "Seasonal" and 'Season' in df.columns:
+    elif time_frame == "Seasonal" and 'Season' in df.columns and seasons:
         filtered = filtered[filtered['Season'].isin(seasons)]
     
     return filtered
+
 
 # Apply filters to all dataframes
 temp_df_filtered = filter_data(temp_df)
