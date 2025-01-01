@@ -472,9 +472,6 @@ health_df = load_health_impact_data()
 # Display logo in the sidebar
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
-# Sidebar Controls
-st.sidebar.header("Dashboard Controls")
-
 # Data source selection
 data_source = st.sidebar.selectbox(
     "Select Data Source",
@@ -482,6 +479,9 @@ data_source = st.sidebar.selectbox(
     index=0,  # Default to "Open Source Data"
     key="data_source"
 )
+
+# Initialize category variable
+category = None
 
 # Show controls based on the selected data source
 if data_source == "Open Source Data":
@@ -524,7 +524,6 @@ elif data_source == "Governmental Data":
         ["Waste Management", "Power & Energy", "Water Resources Management"],
         key="category_gov"
     )
-
 
     if category == "Waste Management":
         # Load Municipal Solid Waste Composition data
@@ -576,6 +575,7 @@ elif data_source == "Governmental Data":
                 st.write(waste_forecast_data)
         else:
             st.error("Waste Generation Forecast data is unavailable.")
+            pass
 
     elif category == "Power & Energy":
         # Load Power Demand Data
@@ -696,6 +696,7 @@ elif data_source == "Governmental Data":
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("Peak Power Demand data is unavailable.")
+            pass
 
 if category == "Water Resources Management":
         # Load Dams and Ponds Data
@@ -765,6 +766,7 @@ if category == "Water Resources Management":
                 st.write(planning_dams_data)
         else:
             st.error("Planning Dams data is unavailable.")
+            pass
 
 
 # Additional analysis options
