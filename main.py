@@ -492,7 +492,7 @@ if not show_research_hub and not show_data_sources:
     * Helebce (Halabja)
     * Kerkûk (Kirkuk)
     """)
-    # Existing dashboard controls
+    # Existing dashboard controls and content
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
@@ -512,7 +512,7 @@ elif show_research_hub:
         {
             "name": "Dr. John Doe",
             "description": "Expert in Climate Change Adaptation.",
-            "image_url": "https://i.imgur.com/zLYxLQw.jpeg",  # Replace with actual image URLs
+            "image_url": "https://via.placeholder.com/150",  # Replace with actual image URLs
             "papers": ["Research Paper 1", "Research Paper 2"]
         },
         {
@@ -546,6 +546,7 @@ elif show_data_sources:
     }
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
+
 
 
 
