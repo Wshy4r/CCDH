@@ -480,6 +480,7 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 # Sidebar Navigation with Session State
+# Sidebar Navigation with Session State
 st.sidebar.header("Navigation")
 
 # Initialize navigation state
@@ -503,6 +504,54 @@ if st.session_state.current_page == "Dashboard":
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
+
+    # Time frame and year range filters
+    time_frame = st.sidebar.radio(
+        "Select Time Frame",
+        ["Yearly", "Monthly", "Seasonal"]
+    )
+    start_year, end_year = st.sidebar.slider(
+        "Select Year Range",
+        1950, 2023, (1950, 2023)
+    )
+
+    # Additional filters for Monthly and Seasonal time frames
+    if time_frame == "Monthly":
+        months = st.sidebar.multiselect(
+            "Select Months",
+            list(calendar.month_name)[1:],
+            default=list(calendar.month_name)[1:]
+        )
+    elif time_frame == "Seasonal":
+        seasons = st.sidebar.multiselect(
+            "Select Seasons",
+            ["Winter", "Spring", "Summer", "Autumn"],
+            default=["Winter", "Spring", "Summer", "Autumn"]
+        )
+
+    # Filter data for the dashboard
+    def filter_data(df):
+        filtered = df[
+            (df['Year'] >= start_year) & 
+            (df['Year'] <= end_year) & 
+            (df['City'].isin(selected_cities))
+        ]
+        
+        if time_frame == "Monthly" and 'MonthName' in df.columns:
+            filtered = filtered[filtered['MonthName'].isin(months)]
+        elif time_frame == "Seasonal" and 'Season' in df.columns:
+            filtered = filtered[filtered['Season'].isin(seasons)]
+        
+        return filtered
+
+    # Apply filtering to dashboard-relevant data
+    temp_df_filtered = filter_data(temp_df)
+    rainfall_df_filtered = filter_data(rainfall_df)
+    water_df_filtered = filter_data(water_df)
+    economic_df_filtered = filter_data(economic_df)
+    health_df_filtered = filter_data(health_df)
+
+    # Display the dashboard content
     st.write("### Dashboard Page")
     st.write("Add your dashboard content here.")
 
@@ -549,7 +598,6 @@ elif st.session_state.current_page == "Data Sources":
 
     for source_name, source_link in sources.items():
         st.markdown(f"- [{source_name}]({source_link})")
-
 
 
 
