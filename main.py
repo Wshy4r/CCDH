@@ -503,7 +503,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
 
 elif show_research_hub:
     # Research Hub Content
-    st.title("Research Hub")
+    st.header("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
     # Example Profiles
@@ -532,6 +532,7 @@ elif show_research_hub:
             st.write(profile["description"])
             for paper in profile["papers"]:
                 st.markdown(f"- [{paper}](#)")
+
 
 elif show_data_sources:
     # Data Sources Content
