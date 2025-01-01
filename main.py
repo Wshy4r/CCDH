@@ -465,41 +465,38 @@ logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
 # Sidebar Navigation with Session State
-if "active_page" not in st.session_state:
-    st.session_state.active_page = "Dashboard"  # Default page
-
-# Sidebar Header
 st.sidebar.header("Navigation")
 
-# Sidebar Navigation Menu
-navigation_options = ["Dashboard", "Research Hub", "Data Sources"]
-selected_page = st.sidebar.radio(
-    "Select a Page",
-    navigation_options,
-    index=navigation_options.index(st.session_state.active_page)
-)
+# Initialize navigation state
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "Dashboard"  # Default page
 
-# Update session state based on the selected page
-st.session_state.active_page = selected_page
+# Define navigation buttons and update state
+if st.sidebar.button("Dashboard", key="dashboard"):
+    st.session_state.current_page = "Dashboard"
+if st.sidebar.button("Research Hub", key="research_hub"):
+    st.session_state.current_page = "Research Hub"
+if st.sidebar.button("Data Sources", key="data_sources"):
+    st.session_state.current_page = "Data Sources"
 
-# Main Content Based on Selected Page
-if st.session_state.active_page == "Dashboard":
-    # Dashboard Content
-    st.title("Dashboard")
+# Render content based on the current page
+if st.session_state.current_page == "Dashboard":
+    # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Add your dashboard-specific content here
-    st.write("Welcome to the Kurdistan Cities Climate Dashboard!")
-    # Example chart or data display
-elif st.session_state.active_page == "Research Hub":
+    st.title("Kurdistan Cities Climate Dashboard")
+    # Add your dashboard-specific content here (charts, filters, etc.)
+    st.write("Dashboard content goes here.")
+
+elif st.session_state.current_page == "Research Hub":
     # Research Hub Content
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
-    
+
     # Example Profiles
     profiles = [
         {
@@ -527,21 +524,10 @@ elif st.session_state.active_page == "Research Hub":
             for paper in profile["papers"]:
                 st.markdown(f"- [{paper}](#)")
 
-elif st.session_state.active_page == "Data Sources":
+elif st.session_state.current_page == "Data Sources":
     # Data Sources Content
     st.title("Data Sources")
     st.write("This section provides detailed information about the data sources used.")
-
-    # Example Sources
-    sources = {
-        "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
-        "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
-        "FAO AQUASTAT": "https://www.fao.org/aquastat/en/databases/"
-    }
-
-    for source_name, source_link in sources.items():
-        st.markdown(f"- [{source_name}]({source_link})")
-
 
     # Example Sources
     sources = {
