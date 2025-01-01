@@ -586,27 +586,26 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
             key="governmental_category"
         )
 
-
-    # Step 4: Select Cities
+    # Step 3: Select Cities
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="cities_multiselect"  # Add unique key
+        key="cities_multiselect"
     )
 
-    # Step 5: Select Time Frame
+    # Step 4: Select Time Frame
     time_frame = st.sidebar.radio(
         "Select Time Frame",
         ["Yearly", "Monthly", "Seasonal"],
-        key="time_frame_radio"  # Add unique key
+        key="time_frame_radio"
     )
 
-    # Step 6: Select Year Range
+    # Step 5: Select Year Range
     start_year, end_year = st.sidebar.slider(
         "Select Year Range",
         1950, 2023, (1950, 2023),
-        key="year_range_slider"  # Add unique key
+        key="year_range_slider"
     )
 
     # Additional conditional filters for time frames
@@ -615,15 +614,20 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
             "Select Months",
             list(calendar.month_name)[1:],
             default=list(calendar.month_name)[1:],
-            key="monthly_filter"  # Add unique key
+            key="monthly_filter"
         )
     elif time_frame == "Seasonal":
         seasons = st.sidebar.multiselect(
             "Select Seasons",
             ["Winter", "Spring", "Summer", "Autumn"],
             default=["Winter", "Spring", "Summer", "Autumn"],
-            key="seasonal_filter"  # Add unique key
+            key="seasonal_filter"
         )
+
+    # Step 6: Optional Analysis Options
+    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
+    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence_checkbox")
+
 
     # Optional: Additional Analysis Options
     show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
