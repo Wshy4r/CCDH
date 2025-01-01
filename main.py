@@ -472,6 +472,7 @@ show_dashboard = st.sidebar.button("Dashboard", key="dashboard_button")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub_button")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources_button")
 
+# Sidebar controls
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
@@ -484,7 +485,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         key="data_source_selectbox"
     )
 
-    # Step 2: Select Category and Indicator (Only One Instance)
+    # Step 2: Select Category and Indicator
     if data_source == "Open Source Data":
         category = st.sidebar.selectbox(
             "Select Category (Open Source Data)",
@@ -524,61 +525,8 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
                 ],
                 key="water_resources_indicator"
             )
-        elif category == "Economic Impact":
-            chart_type = st.sidebar.selectbox(
-                "Select Indicator",
-                [
-                    "Energy Demand",
-                    "Agricultural Production",
-                    "Economic Trends",
-                    "Combined Economic Impact"
-                ],
-                key="economic_impact_indicator"
-            )
-        elif category == "Health Impact":
-            chart_type = st.sidebar.selectbox(
-                "Select Indicator",
-                [
-                    "Heat Stress Index",
-                    "Air Health Index",
-                    "Health Risk Patterns",
-                    "Combined Health Indicators"
-                ],
-                key="health_impact_indicator"
-            )
-        elif category == "Seasonal Analysis":
-            chart_type = st.sidebar.selectbox(
-                "Select Analysis",
-                [
-                    "Temperature Patterns",
-                    "Rainfall Distribution",
-                    "Seasonal Comparisons",
-                    "Year-over-Year Changes"
-                ],
-                key="seasonal_analysis_indicator"
-            )
-        elif category == "Future Projections":
-            chart_type = st.sidebar.selectbox(
-                "Select Projection",
-                [
-                    "Temperature Forecast",
-                    "Rainfall Forecast",
-                    "Water Resource Outlook",
-                    "Combined Projections"
-                ],
-                key="future_projections_indicator"
-            )
-        elif category == "Comparative Analysis":
-            chart_type = st.sidebar.selectbox(
-                "Select Analysis",
-                [
-                    "City Comparisons",
-                    "Trend Analysis",
-                    "Regional Patterns",
-                    "Historical Benchmarks"
-                ],
-                key="comparative_analysis_indicator"
-            )
+        # Add other categories here as needed.
+
     elif data_source == "Governmental Data":
         category = st.sidebar.selectbox(
             "Select Category (Governmental Data)",
@@ -624,10 +572,10 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
             key="seasonal_filter"
         )
 
-
     # Optional: Additional Analysis Options
-    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="show_trend_checkbox")
-    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="show_confidence_checkbox")
+    show_trend = st.sidebar.checkbox("Show Trend Lines", value=True, key="unique_show_trend_checkbox")
+    show_confidence = st.sidebar.checkbox("Show Confidence Intervals", key="unique_show_confidence_checkbox")
+
 
 # Variables for category and chart type
 category = None
