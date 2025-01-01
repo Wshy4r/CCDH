@@ -465,11 +465,11 @@ def load_research_hub_data():
         },
         {
             "Name": "Prof. Dr. Dana Mawlood",
-            "Description": "Specialist in Water Resources.",
+            "Description": "Water and Environment Resources",
             "Image_URL": "https://i.imgur.com/eFKieco.jpeg",
-            "Paper_1": "Hydrology and Water Management",
+            "Paper_1": "Mapping groundwater levels in Erbil Basin",
             "Paper_1_URL": "https://example.com/hydrology",
-            "Paper_2": "Water Resource Optimization",
+            "Paper_2": "Estimating of Groundwater Recharge In North, Central, And South Basin of Erbil",
             "Paper_2_URL": "https://example.com/optimization"
         }
     ]
