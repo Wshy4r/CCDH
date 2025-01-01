@@ -462,7 +462,7 @@ def load_research_hub_data():
             "Paper_2": "Impact of Extreme Weather Events"
         },
         {
-            "Name": "Dr. Jane Doe",
+            "Name": "Dr. Janee Doe",
             "Description": "Specialist in Water Resources.",
             "Image_URL": "https://via.placeholder.com/150",
             "Paper_1": "Hydrology and Water Management",
@@ -485,19 +485,26 @@ def render_research_hub():
         st.error("No research data is available.")
         return
 
-    # Render each profile as an expander
-    for _, row in research_data.iterrows():
-        with st.expander(row.get('Name', 'Unknown Expert')):
-            st.image(row.get('Image_URL', 'https://via.placeholder.com/100'), width=150, caption=row.get('Name', 'No Name'))
-            st.write(f"**Description:** {row.get('Description', 'No description available.')}")
-            
+    # Horizontal Scrolling Layout
+    num_profiles = len(research_data)
+    start = st.slider("Scroll through profiles", 0, max(0, num_profiles - 3), step=1)
+
+    for i in range(start, min(start + 3, num_profiles)):
+        row = research_data.iloc[i]
+        col1, col2 = st.columns([1, 3])
+        with col1:
+            st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=120)
+        with col2:
+            st.subheader(row.get("Name", "Unknown"))
+            st.write(row.get("Description", "No description provided."))
             st.write("**Research Papers:**")
-            papers = [
-                row.get('Paper_1', 'No paper available'),
-                row.get('Paper_2', 'No paper available')
-            ]
+            papers = [row.get("Paper_1", "No paper available"), row.get("Paper_2", "No paper available")]
             for paper in papers:
-                st.markdown(f"- {paper}")
+                if paper:
+                    st.markdown(f"- {paper}")
+
+        # Add spacing
+        st.markdown("---")
 
 
 # Load all data
