@@ -466,7 +466,11 @@ def render_research_hub():
 
     # Load the research data
     research_data = load_research_hub_data()
-    
+
+    # Debug: Print the loaded data
+    st.write("Loaded Research Data:")
+    st.write(research_data)  # This will display the structure of the loaded data
+
     if not research_data:
         st.error("Research Hub data is unavailable.")
         return
@@ -475,6 +479,8 @@ def render_research_hub():
     st.subheader("Expert Profiles")
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
+        st.write("Profiles DataFrame:")
+        st.write(profiles_df)  # Debug the Profiles DataFrame structure
         for _, row in profiles_df.iterrows():
             col1, col2 = st.columns([1, 3])
             with col1:
@@ -492,6 +498,8 @@ def render_research_hub():
     if "Papers" in research_data:
         st.subheader("Research Papers")
         papers_df = research_data["Papers"]
+        st.write("Papers DataFrame:")
+        st.write(papers_df)  # Debug the Papers DataFrame structure
         st.dataframe(papers_df)
     else:
         st.warning("No research papers available.")
@@ -500,10 +508,11 @@ def render_research_hub():
     if "Topics" in research_data:
         st.subheader("Research Topics")
         topics_df = research_data["Topics"]
+        st.write("Topics DataFrame:")
+        st.write(topics_df)  # Debug the Topics DataFrame structure
         st.dataframe(topics_df)
     else:
         st.warning("No research topics available.")
-
 
 
 # Load all data
