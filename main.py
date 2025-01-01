@@ -458,13 +458,13 @@ def load_planning_dams_data():
 def load_research_hub_data():
     """Loads data for the Research Hub from an Excel file."""
     try:
-        file_path = "GovData/profiles/research_hub_data.xlsx"  # Update this path to match your directory
-        research_data = pd.read_excel(file_path, sheet_name=None)  # Load all sheets as a dictionary
-        
-        # Strip column names for each sheet to avoid whitespace issues
+        file_path = "GovData/profiles/research_hub_data.xlsx"  # Update path as needed
+        research_data = pd.read_excel(file_path, sheet_name=None)  # Load all sheets as dictionary
+
+        # Clean column names
         for sheet_name, df in research_data.items():
             research_data[sheet_name].columns = df.columns.str.strip()
-        
+
         return research_data
     except FileNotFoundError:
         st.error("Error: The Research Hub data file could not be found.")
@@ -472,6 +472,7 @@ def load_research_hub_data():
     except Exception as e:
         st.error(f"An error occurred while loading Research Hub data: {str(e)}")
         return {}
+
 
 def render_research_hub():
     """
