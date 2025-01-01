@@ -458,9 +458,9 @@ def load_research_hub_data():
             "Name": "Hawkar Ali Abdulhaq",
             "Description": "Mineralogy Geochemistry & Petrology.",
             "Image_URL": "https://i.imgur.com/ewXfYUz.jpeg",
-            "Paper_1": "Research on Climate Adaptation",
+            "Paper_1": "Characteristics of changes in rainfall data in the Kurdistan Region, Iraq",
             "Paper_1_URL": "https://example.com/climate-adaptation",
-            "Paper_2": "Impact of Extreme Weather Events",
+            "Paper_2": "Shakrook anticline, a very complicated structural form, North Iraq, Kurdistan Region",
             "Paper_2_URL": "https://example.com/optimization"
         },
         {
