@@ -449,21 +449,6 @@ def load_planning_dams_data():
         # Display an error message if the file cannot be loaded
         st.error(f"Error loading planning dams data: {str(e)}")
         return pd.DataFrame()
-def filter_data(df, cities=None):
-    filtered = df[
-        (df['Year'] >= start_year) & 
-        (df['Year'] <= end_year)
-    ]
-    
-    if cities:  # Apply city filter only if cities are provided
-        filtered = filtered[df['City'].isin(cities)]
-    
-    if time_frame == "Monthly" and 'Month' in df.columns:
-        filtered = filtered[filtered['MonthName'].isin(months)]
-    elif time_frame == "Seasonal" and 'Season' in df.columns:
-        filtered = filtered[filtered['Season'].isin(seasons)]
-    
-    return filtered
 
 
 # Load all data
@@ -478,15 +463,24 @@ health_df = load_health_impact_data()
 # Display logo in the sidebar
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
-# Sidebar Navigation with Radio Buttons
-st.sidebar.header("Navigation")
-selected_page = st.sidebar.radio(
-    "Select Page",
-    ["Dashboard", "Research Hub", "Data Sources"]
-)
 
-# Conditional logic based on the selected page
-if selected_page == "Dashboard":
+# Sidebar Navigation with Session State
+st.sidebar.header("Navigation")
+
+# Initialize navigation state
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "Dashboard"  # Default page
+
+# Define navigation buttons and update state
+if st.sidebar.button("Dashboard", key="dashboard"):
+    st.session_state.current_page = "Dashboard"
+if st.sidebar.button("Research Hub", key="research_hub"):
+    st.session_state.current_page = "Research Hub"
+if st.sidebar.button("Data Sources", key="data_sources"):
+    st.session_state.current_page = "Data Sources"
+
+# Render content based on the current page
+if st.session_state.current_page == "Dashboard":
     # Main Dashboard Content
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
@@ -494,14 +488,16 @@ if selected_page == "Dashboard":
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    st.write("### Dashboard Page")
-    st.write("Add your dashboard content here.")
+    st.title("Kurdistan Cities Climate Dashboard")
+    # Add your dashboard-specific content here (charts, filters, etc.)
+    st.write("Dashboard content goes here.")
 
-elif selected_page == "Research Hub":
+elif st.session_state.current_page == "Research Hub":
     # Research Hub Content
-    st.write("### Research Hub")
+    st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
+    # Example Profiles
     profiles = [
         {
             "name": "Dr. John Doe",
@@ -517,6 +513,7 @@ elif selected_page == "Research Hub":
         }
     ]
 
+    # Display Profiles
     for profile in profiles:
         col1, col2 = st.columns([1, 3])
         with col1:
@@ -527,11 +524,12 @@ elif selected_page == "Research Hub":
             for paper in profile["papers"]:
                 st.markdown(f"- [{paper}](#)")
 
-elif selected_page == "Data Sources":
+elif st.session_state.current_page == "Data Sources":
     # Data Sources Content
-    st.write("### Data Sources")
-    st.write("Provide details about your data sources here.")
+    st.title("Data Sources")
+    st.write("This section provides detailed information about the data sources used.")
 
+    # Example Sources
     sources = {
         "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
         "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
