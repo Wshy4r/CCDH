@@ -498,12 +498,13 @@ def render_research_hub():
             st.subheader(row.get("Name", "Unknown"))
             st.write(row.get("Description", "No description provided."))
             st.write("**Research Papers:**")
-            
+
             # Render clickable links for research papers using HTML
             for paper_idx in [1, 2]:  # Handle up to two papers
                 paper_title = row.get(f"Paper_{paper_idx}", None)
                 paper_url = row.get(f"Paper_{paper_idx}_URL", None)
                 if paper_title and paper_url:
+                    # Use HTML to create a clickable link
                     st.markdown(
                         f'<a href="{paper_url}" target="_blank">{paper_title}</a>',
                         unsafe_allow_html=True
