@@ -490,34 +490,29 @@ def render_research_hub():
         return
 
     # Display profiles in a grid layout
-    num_profiles = len(research_data)
-    cols_per_row = 3  # Number of columns per row
+    num_columns = 3  # Adjust number of columns per row
+    cols = st.columns(num_columns)
 
-    for idx, row in enumerate(research_data.itertuples()):
-        # Create a new row every `cols_per_row` profiles
-        if idx % cols_per_row == 0:
-            cols = st.columns(cols_per_row)
-
-        col = cols[idx % cols_per_row]
+    for idx, row in research_data.iterrows():
+        col = cols[idx % num_columns]
         with col:
-            with st.container():
-                st.image(row.Image_URL, width=150)
-                st.subheader(row.Name)
-                st.write(f"**Description:** {row.Description}")
-                st.write("**Research Papers:**")
+            st.image(row.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+            st.subheader(row.get("Name", "Unknown"))
+            st.write(row.get("Description", "No description provided."))
+            st.write("**Research Papers:**")
 
-                # Render research papers with links
-                papers = [
-                    {"title": getattr(row, "Paper_1", "No title available"), "url": getattr(row, "Paper_1_URL", "#")},
-                    {"title": getattr(row, "Paper_2", "No title available"), "url": getattr(row, "Paper_2_URL", "#")},
-                ]
-                for paper in papers:
-                    if paper["title"] and paper["url"]:
-                        st.markdown(f"- [{paper['title']}]({paper['url']})")
-                    else:
-                        st.markdown("- No research paper available")
-
-    st.markdown("---")
+            # Render research papers with titles as clickable links
+            for paper_idx in [1, 2]:  # Iterate over possible paper indices
+                title_key = f"Paper_{paper_idx}_Title"
+                url_key = f"Paper_{paper_idx}_URL"
+                title = row.get(title_key)
+                url = row.get(url_key)
+                
+                if title and url:  # Check if both title and URL are available
+                    st.markdown(f"- [{title}]({url})")
+                else:
+                    st.markdown("- No research paper available")
+            st.markdown("---")  # Separator for each card
 
 
 
