@@ -482,15 +482,15 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Load research data
-    research_data = load_research_hub_data()
+    # Load the research data
+    research_data = load_research_hub_data()  # Ensure this function returns a DataFrame
 
     if research_data.empty:
         st.error("No research data is available.")
         return
 
     # Display profiles in a grid layout
-    num_columns = 2  # Adjust the number of columns per row
+    num_columns = 2
     cols = st.columns(num_columns)
 
     for idx, row in research_data.iterrows():
@@ -503,17 +503,18 @@ def render_research_hub():
             st.write("**Research Papers:**")
 
             # Render clickable links for research papers
-for paper_idx in [1, 2]:  # Handle up to two papers
-    paper_title = row.get(f"Paper_{paper_idx}", None)
-    paper_url = row.get(f"Paper_{paper_idx}_URL", None)
-    if paper_title and paper_url:
-        st.markdown(
-            f'<a href="{paper_url}" target="_blank" style="color:blue; text-decoration:underline;">{paper_title}</a>',
-            unsafe_allow_html=True
-        )
-    elif paper_title:
-        st.write(f"- {paper_title} (No URL provided)")
-            
+            for paper_idx in [1, 2]:  # Handle up to two papers
+                paper_title = row.get(f"Paper_{paper_idx}", None)
+                paper_url = row.get(f"Paper_{paper_idx}_URL", None)
+                if paper_title and paper_url:
+                    # Ensure correct URL format and HTML rendering
+                    st.markdown(
+                        f'<a href="{paper_url}" target="_blank" style="color:blue; text-decoration:underline;">{paper_title}</a>',
+                        unsafe_allow_html=True
+                    )
+                elif paper_title:
+                    st.write(f"- {paper_title} (No URL provided)")
+            st.markdown("---")
 
 
 
