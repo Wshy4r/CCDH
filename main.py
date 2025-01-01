@@ -452,9 +452,9 @@ def load_planning_dams_data():
 
 @st.cache_data  # Cache the data for performance
 def load_research_hub_data():
-    """Loads data for the Research Hub from an Excel file (research_hub.xlsx)."""
+    """Loads data for the Research Hub from an Excel file (research_hub_data.xlsx)."""
     try:
-        research_hub_data = pd.read_excel("GovData/profiles/research_hub.xlsx", sheet_name=None)
+        research_hub_data = pd.read_excel("GovData/profiles/research_hub_data.xlsx", sheet_name=None)
         return research_hub_data
     except FileNotFoundError:
         st.error("The research_hub.xlsx file was not found.")
