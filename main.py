@@ -508,11 +508,14 @@ def render_research_hub():
 
                 # Render research papers with links
                 papers = [
-                    {"title": getattr(row, "Paper_1_Title", "No title"), "url": getattr(row, "Paper_1_URL", "#")},
-                    {"title": getattr(row, "Paper_2_Title", "No title"), "url": getattr(row, "Paper_2_URL", "#")}
+                    {"title": getattr(row, "Paper_1", "No title available"), "url": getattr(row, "Paper_1_URL", "#")},
+                    {"title": getattr(row, "Paper_2", "No title available"), "url": getattr(row, "Paper_2_URL", "#")},
                 ]
                 for paper in papers:
-                    st.markdown(f"- [{paper['title']}]({paper['url']})")
+                    if paper["title"] and paper["url"]:
+                        st.markdown(f"- [{paper['title']}]({paper['url']})")
+                    else:
+                        st.markdown("- No research paper available")
 
     st.markdown("---")
 
