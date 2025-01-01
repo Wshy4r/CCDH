@@ -890,19 +890,7 @@ if st.sidebar.button("Download Data"):
     st.sidebar.success("Data downloaded successfully!")
 
 # Filter data based on time frame and selection
-def filter_data(df):
-    filtered = df[
-        (df['Year'] >= start_year) & 
-        (df['Year'] <= end_year) & 
-        (df['City'].isin(selected_cities))
-    ]
-    
-    if time_frame == "Monthly" and 'Month' in df.columns:
-        filtered = filtered[filtered['MonthName'].isin(months)]
-    elif time_frame == "Seasonal" and 'Season' in df.columns:
-        filtered = filtered[filtered['Season'].isin(seasons)]
-    
-    return filtered
+
 
 # Apply filters to all dataframes
 temp_df_filtered = filter_data(temp_df)
