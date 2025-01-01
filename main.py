@@ -488,25 +488,24 @@ def render_research_hub():
 
     # Display expert profiles
     st.subheader("Expert Profiles")
-    if not research_data:
-        st.error("No research hub data is available.")
-        return
+    if research_data:
+        # Create a grid layout for expert profiles
+        num_cols = 2
+        columns = st.columns(num_cols)
 
-    # Create a grid layout for expert profiles
-    num_cols = 3
-    columns = st.columns(num_cols)
-
-    for index, profile in enumerate(research_data):
-        with columns[index % num_cols]:
-            # Display profile information
-            st.image(profile.get("Image_URL", "https://via.placeholder.com/150"), width=150)
-            st.markdown(f"### {profile.get('Name', 'Unknown')}")
-            st.write(profile.get("Description", "No description provided."))
-            st.markdown("#### Research Papers:")
-            if profile.get("Paper_1"):
-                st.markdown(f"- {profile['Paper_1']}")
-            if profile.get("Paper_2"):
-                st.markdown(f"- {profile['Paper_2']}")
+        for index, profile in enumerate(research_data):
+            with columns[index % num_cols]:
+                # Display profile information
+                st.image(profile.get("Image_URL", "https://via.placeholder.com/150"), width=150)
+                st.markdown(f"### {profile.get('Name', 'Unknown')}")
+                st.write(profile.get("Description", "No description provided."))
+                st.markdown("#### Research Papers:")
+                if profile.get("Paper_1"):
+                    st.markdown(f"- {profile['Paper_1']}")
+                if profile.get("Paper_2"):
+                    st.markdown(f"- {profile['Paper_2']}")
+                else:
+                    st.error("No expert profiles available.")
 
 
 
