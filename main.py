@@ -513,9 +513,6 @@ def render_research_hub():
                 st.markdown(f"- {paper}")
 
 
-# Ensure Research Hub content is isolated to its section
-if show_research_hub:
-    render_research_hub()
 
 
 
