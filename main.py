@@ -980,7 +980,7 @@ with col1:
         source = get_data_source('water_resources')
         if chart_type == "River Levels":
             fig = px.line(
-                water_df_filtered,
+ 
                 x='Year',
                 y='RiverLevel',
                 color='City',
@@ -991,7 +991,7 @@ with col1:
             
         elif chart_type == "Groundwater Levels":
             fig = px.line(
-                water_df_filtered,
+
                 x='Year',
                 y='GroundwaterLevel',
                 color='City',
