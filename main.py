@@ -472,57 +472,129 @@ health_df = load_health_impact_data()
 # Display logo in the sidebar
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
+
+st.sidebar.header("Dashboard Controls")
+
+
+selected_cities = st.sidebar.multiselect(
+    "Select Cities",
+    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+    key="selected_cities_open_source"  # Unique key for Open Source
+)
+
+# Time range
+time_frame = st.sidebar.radio(
+    "Select Time Frame",
+    ["Yearly", "Monthly", "Seasonal"]
+)
+
+# Year range
+start_year, end_year = st.sidebar.slider(
+    "Select Year Range",
+    1950, 2023, (1950, 2023)
+)
+
+if time_frame == "Monthly":
+    months = st.sidebar.multiselect(
+        "Select Months",
+        list(calendar.month_name)[1:],
+        default=list(calendar.month_name)[1:]
+    )
+elif time_frame == "Seasonal":
+    seasons = st.sidebar.multiselect(
+        "Select Seasons",
+        ["Winter", "Spring", "Summer", "Autumn"],
+        default=["Winter", "Spring", "Summer", "Autumn"]
+    )
+
 # Data source selection
 data_source = st.sidebar.selectbox(
     "Select Data Source",
     ["Open Source Data", "Governmental Data"],
-    index=0,  # Default to "Open Source Data"
-    key="data_source"
+    index=0  # Default to "Open Source Data"
 )
 
-# Initialize category variable
+# Variables for category and chart type
 category = None
+chart_type = None
 
-# Show controls based on the selected data source
 if data_source == "Open Source Data":
-    # Open Source-specific controls
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        key="selected_cities_open_source"
+    # Categories specific to Open Source Data
+    category = st.sidebar.selectbox(
+        "Select Category (Open Source Data)",
+        ["Temperature & Precipitation",
+         "Water Resources",
+         "Economic Impact",
+         "Health Impact",
+         "Seasonal Analysis",
+         "Future Projections",
+         "Comparative Analysis"]
     )
-    time_frame = st.sidebar.radio(
-        "Select Time Frame",
-        ["Yearly", "Monthly", "Seasonal"],
-        key="time_frame_open_source"
-    )
-    start_year, end_year = st.sidebar.slider(
-        "Select Year Range",
-        1950, 2023, (1950, 2023),
-        key="year_range_open_source"
-    )
-    if time_frame == "Monthly":
-        months = st.sidebar.multiselect(
-            "Select Months",
-            list(calendar.month_name)[1:],  # Exclude empty month
-            default=list(calendar.month_name)[1:],
-            key="months_open_source"
-        )
-    elif time_frame == "Seasonal":
-        seasons = st.sidebar.multiselect(
-            "Select Seasons",
-            ["Winter", "Spring", "Summer", "Autumn"],
-            default=["Winter", "Spring", "Summer", "Autumn"],
-            key="seasons_open_source"
-        )
 
-elif data_source == "Governmental Data":
-    # Governmental Data-specific controls
+    # Category-specific options for Open Source Data
+    if category == "Temperature & Precipitation":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            ["Temperature Trends",
+             "Rainfall Patterns",
+             "Extreme Weather Events",
+             "Drought Analysis",
+             "Combined View"]
+        )
+    elif category == "Water Resources":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            ["River Levels",
+             "Groundwater Levels",
+             "Water Stress Index",
+             "Combined Water Resources"]
+        )
+    elif category == "Economic Impact":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            ["Energy Demand",
+             "Agricultural Production",
+             "Economic Trends",
+             "Combined Economic Impact"]
+        )
+    elif category == "Health Impact":
+        chart_type = st.sidebar.selectbox(
+            "Select Indicator",
+            ["Heat Stress Index",
+             "Air Health Index",
+             "Health Risk Patterns",
+             "Combined Health Indicators"]
+        )
+    elif category == "Seasonal Analysis":
+        chart_type = st.sidebar.selectbox(
+            "Select Analysis",
+            ["Temperature Patterns",
+             "Rainfall Distribution",
+             "Seasonal Comparisons",
+             "Year-over-Year Changes"]
+        )
+    elif category == "Future Projections":
+        chart_type = st.sidebar.selectbox(
+            "Select Projection",
+            ["Temperature Forecast",
+             "Rainfall Forecast",
+             "Water Resource Outlook",
+             "Combined Projections"]
+        )
+    else:  # Comparative Analysis
+        chart_type = st.sidebar.selectbox(
+            "Select Analysis",
+            ["City Comparisons",
+             "Trend Analysis",
+             "Regional Patterns",
+             "Historical Benchmarks"]
+        )
+if data_source == "Governmental Data":
+    # Categories specific to Governmental Data
     category = st.sidebar.selectbox(
         "Select Category (Governmental Data)",
-        ["Waste Management", "Power & Energy", "Water Resources Management"],
-        key="category_gov"
+        ["Waste Management", "Power & Energy", "Water Resources Management"]  # Add other categories as needed
     )
 
     if category == "Waste Management":
@@ -575,7 +647,6 @@ elif data_source == "Governmental Data":
                 st.write(waste_forecast_data)
         else:
             st.error("Waste Generation Forecast data is unavailable.")
-            pass
 
     elif category == "Power & Energy":
         # Load Power Demand Data
