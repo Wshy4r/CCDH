@@ -475,27 +475,46 @@ def render_research_hub():
             color: white;
             font-size: 36px;
             font-weight: bold;
-        }
-        .subtitle {
-            color: #CCCCCC;
-            font-size: 18px;
             margin-bottom: 20px;
         }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
+        .profile-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
         }
-        .data-table th {
-            background-color: #333333;
-            color: white;
-            text-align: left;
-            padding: 10px;
-        }
-        .data-table td {
+        .profile-card {
             background-color: #2A2A2A;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 10px;
+            display: block;
+        }
+        .profile-name {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .profile-description {
             color: #CCCCCC;
-            padding: 10px;
-            border-top: 1px solid #444444;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .profile-details {
+            color: #AAAAAA;
+            font-size: 12px;
+            text-align: center;
         }
         </style>
         """,
@@ -504,7 +523,6 @@ def render_research_hub():
 
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     st.markdown('<h1 class="title">Research Hub</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">Explore expert profiles and their research papers.</p>', unsafe_allow_html=True)
 
     # Load the research data
     research_data = load_research_hub_data()
@@ -512,16 +530,24 @@ def render_research_hub():
     if research_data.empty:
         st.error("Research Hub data is unavailable.")
     else:
-        st.markdown('<h2 style="color: white;">Loaded Research Data:</h2>', unsafe_allow_html=True)
-        
-        # Create a table-like structure
-        table_html = '<table class="data-table"><tr><th>Name</th><th>Description</th><th>Image URL</th><th>Paper 1</th><th>Paper 2</th></tr>'
+        st.markdown('<div class="profile-grid">', unsafe_allow_html=True)
         
         for _, row in research_data.iterrows():
-            table_html += f'<tr><td>{row.get("Name", "Unknown")}</td><td>{row.get("Description", "No description")}</td><td>{row.get("Image_URL", "")}</td><td>{row.get("Paper_1", "")}</td><td>{row.get("Paper_2", "")}</td></tr>'
+            profile_html = f"""
+            <div class="profile-card">
+                <img src="{row.get('Image_URL', 'https://via.placeholder.com/100')}" alt="{row.get('Name', 'Profile')}" class="profile-image">
+                <div class="profile-name">{row.get('Name', 'Unknown')}</div>
+                <div class="profile-description">{row.get('Description', 'No description available.')}</div>
+                <div class="profile-details">
+                    <div>Sector: {row.get('Sector', 'N/A')}</div>
+                    <div>Discipline: {row.get('Discipline', 'N/A')}</div>
+                    <div>Rating: {row.get('Rating', 'N/A')}</div>
+                </div>
+            </div>
+            """
+            st.markdown(profile_html, unsafe_allow_html=True)
         
-        table_html += '</table>'
-        st.markdown(table_html, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
