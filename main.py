@@ -476,17 +476,63 @@ def render_research_hub():
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
 
-        # Display profiles in a styled grid layout
-        st.markdown("<style>" +
-                    ".profile-card {border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin: 10px; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);}" +
-                    ".profile-img {border-radius: 50%; width: 80px; height: 80px; margin-bottom: 10px;}" +
-                    ".profile-title {font-size: 18px; font-weight: bold; margin: 5px 0;}" +
-                    ".profile-desc {font-size: 14px; color: #555; margin: 5px 0;}" +
-                    ".profile-sector, .profile-discipline {font-size: 12px; color: #888; margin: 5px 0;}" +
-                    ".profile-btn {display: inline-block; padding: 8px 12px; background-color: #007bff; color: white; text-align: center; border-radius: 5px; text-decoration: none; font-size: 14px; margin-top: 10px;}" +
-                    "</style>", unsafe_allow_html=True)
+        # Inject custom CSS for profile cards
+        st.markdown("""
+        <style>
+            .profile-card {
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 10px;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                background-color: #fff;
+                text-align: center;
+                transition: transform 0.3s ease-in-out;
+            }
+            .profile-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+            }
+            .profile-img {
+                border-radius: 50%;
+                width: 100px;
+                height: 100px;
+                margin-bottom: 10px;
+            }
+            .profile-title {
+                font-size: 18px;
+                font-weight: bold;
+                margin: 5px 0;
+                color: #333;
+            }
+            .profile-desc {
+                font-size: 14px;
+                color: #666;
+                margin: 10px 0;
+            }
+            .profile-sector,
+            .profile-discipline {
+                font-size: 12px;
+                color: #888;
+                margin: 5px 0;
+            }
+            .profile-btn {
+                display: inline-block;
+                padding: 10px 15px;
+                background-color: #007bff;
+                color: white;
+                border-radius: 5px;
+                text-decoration: none;
+                font-size: 14px;
+                margin-top: 10px;
+            }
+            .profile-btn:hover {
+                background-color: #0056b3;
+            }
+        </style>
+        """, unsafe_allow_html=True)
 
-        # Create rows of profiles
+        # Render profiles in a grid layout
         num_cols = 3
         columns = st.columns(num_cols)
 
@@ -495,9 +541,9 @@ def render_research_hub():
                 st.markdown(
                     f"""
                     <div class="profile-card">
-                        <img src="{row.get('Image URL', 'https://via.placeholder.com/80')}" alt="Profile Image" class="profile-img">
+                        <img src="{row.get('Image URL', 'https://via.placeholder.com/100')}" alt="Profile Image" class="profile-img">
                         <div class="profile-title">{row.get('Name', 'Unknown')}</div>
-                        <div class="profile-desc">{row.get('Description', 'No description provided.')}</div>
+                        <div class="profile-desc">{row.get('Description', 'No description available.')}</div>
                         <div class="profile-sector"><b>Sector:</b> {row.get('Sector', 'N/A')}</div>
                         <div class="profile-discipline"><b>Discipline:</b> {row.get('Discipline', 'N/A')}</div>
                         <div class="profile-discipline"><b>Rating:</b> {row.get('Rating', 'N/A')}</div>
