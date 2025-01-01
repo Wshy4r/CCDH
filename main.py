@@ -473,15 +473,64 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-st.sidebar.header("Dashboard Controls")
-
-
-selected_cities = st.sidebar.multiselect(
-    "Select Cities",
-    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-    key="selected_cities_open_source"  # Unique key for Open Source
+# Sidebar Navigation
+st.sidebar.header("Navigation")
+menu_option = st.sidebar.radio(
+    "Navigate to:",
+    ["Research Hub", "Data Sources", "Dashboard"],  # Reordered options
+    index=2  # Default to "Dashboard"
 )
+
+# Navigation Logic
+if menu_option == "Research Hub":
+    # Research Hub Content
+    st.title("Research Hub")
+    st.write("Welcome to the Research Hub. Explore expert profiles and their research papers here.")
+    # Example Content for Research Hub
+    st.markdown("""
+    ### Featured Experts
+    - **Dr. John Doe**: Expert in Climate Change Adaptation.
+      - [Research Paper 1](#)
+      - [Research Paper 2](#)
+    - **Dr. Jane Smith**: Specialist in Hydrology and Water Resources.
+      - [Research Paper 1](#)
+      - [Research Paper 2](#)
+    """)
+
+elif menu_option == "Data Sources":
+    # Data Sources Content
+    st.title("Data Sources")
+    st.write("This section provides detailed information about the data sources used.")
+    # Example Content for Data Sources
+    sources = {
+        "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
+        "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
+        "FAO AQUASTAT": "https://www.fao.org/aquastat/en/databases/"
+    }
+    for source_name, source_link in sources.items():
+        st.markdown(f"- [{source_name}]({source_link})")
+
+elif menu_option == "Dashboard":
+    # Dashboard Content
+    st.title("Main Dashboard")
+    st.markdown("""
+    This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region:
+    * Hewlêr (Erbil)
+    * Dihok (Duhok)
+    * Silêmanî (Sulaymaniyah)
+    * Helebce (Halabja)
+    * Kerkûk (Kirkuk)
+    """)
+    # Include existing dashboard controls here
+    st.sidebar.header("Dashboard Controls")
+    selected_cities = st.sidebar.multiselect(
+        "Select Cities",
+        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+        key="selected_cities_open_source"  # Unique key for Open Source
+    )
+    # Keep the rest of your dashboard code (charts, filters, etc.) here
+
 
 # Time range
 time_frame = st.sidebar.radio(
