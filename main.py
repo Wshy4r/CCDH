@@ -474,7 +474,7 @@ def render_research_hub():
         st.error("Research Hub data is unavailable.")
         return
 
-    # Display expert profiles
+    # Display only expert profiles
     st.subheader("Expert Profiles")
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
@@ -485,7 +485,7 @@ def render_research_hub():
             with col2:
                 st.subheader(row.get("Name", "Unknown"))
                 st.write(row.get("Description", "No description provided."))
-                
+
                 # Display linked papers
                 for paper_key in [col for col in profiles_df.columns if "Paper" in col]:
                     paper = row.get(paper_key)
@@ -493,22 +493,6 @@ def render_research_hub():
                         st.markdown(f"- {paper}")
     else:
         st.warning("No expert profiles available.")
-
-    # Display research papers
-    st.subheader("Research Papers")
-    if "Papers" in research_data:
-        papers_df = research_data["Papers"]
-        st.dataframe(papers_df)
-    else:
-        st.warning("No research papers available.")
-
-    # Display research topics
-    st.subheader("Research Topics")
-    if "Topics" in research_data:
-        topics_df = research_data["Topics"]
-        st.dataframe(topics_df)
-    else:
-        st.warning("No research topics available.")
 
 # Load all data
 temp_df = load_temperature_data()
