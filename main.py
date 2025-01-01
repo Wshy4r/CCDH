@@ -468,7 +468,7 @@ def render_research_hub():
     st.title("Research Hub")
     st.write("Explore expert profiles and their research papers.")
 
-    # Hardcoded data
+    # Hardcoded data for the expert profiles
     research_data = [
         {
             "Name": "Dr. John Doe",
