@@ -62,16 +62,7 @@ def get_data_source(indicator):
     }
     return sources.get(indicator, {'link': '#', 'name': 'Data Source', 'access_date': 'Nov 2023'})
 
-# Title and description
-st.title("🌍 Kurdistan Cities Climate Dashboard (1950-Present)")
-st.markdown("""
-This comprehensive dashboard visualizes historical climate change indicators for major cities in Kurdistan Region from 1950 onwards:
-* Hewlêr (Erbil)
-* Dihok (Duhok)
-* Silêmanî (Sulaymaniyah)
-* Helebce (Halabja)
-* Kerkûk (Kirkuk)
-""")
+
 # === PART 1 END ===
 # === PART 2 START: DATA LOADING FUNCTIONS ===
 @st.cache_data
@@ -483,7 +474,7 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
     
 
-    # Add dashboard-specific content here
+    # Add dashboard-specific content heres Climate D
     st.sidebar.header("Dashboard Controls")
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
