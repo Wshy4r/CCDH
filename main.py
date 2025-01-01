@@ -484,113 +484,44 @@ if show_dashboard or (not show_research_hub and not show_data_sources):
         key="data_source_selectbox"  # Add unique key
     )
 
-# Step 2: Select Category and Indicator
-category = None
-chart_type = None
+    # Step 2: Select Category
+    category = None  # Default value
+    chart_type = None  # Default value
 
-if data_source == "Open Source Data":
-    # Display category dropdown for Open Source Data
-    category = st.sidebar.selectbox(
-        "Select Category (Open Source Data)",
-        [
-            "Temperature & Precipitation",
-            "Water Resources",
-            "Economic Impact",
-            "Health Impact",
-            "Seasonal Analysis",
-            "Future Projections",
-            "Comparative Analysis"
-        ],
-        key="open_source_category"  # Unique key for Open Source Data category
-    )
+    if data_source == "Open Source Data":
+        category = st.sidebar.selectbox(
+            "Select Category (Open Source Data)",
+            [
+                "Temperature & Precipitation",
+                "Water Resources",
+                "Economic Impact",
+                "Health Impact",
+                "Seasonal Analysis",
+                "Future Projections",
+                "Comparative Analysis"
+            ],
+            key="open_source_category"  # Add unique key
+        )
 
-    # Display indicator dropdown based on selected category
-    if category == "Temperature & Precipitation":
-        chart_type = st.sidebar.selectbox(
-            "Select Indicator",
-            [
-                "Temperature Trends",
-                "Rainfall Patterns",
-                "Extreme Weather Events",
-                "Drought Analysis",
-                "Combined View"
-            ],
-            key="temperature_precipitation_indicator"  # Unique key for indicators
+        # Step 3: Select Indicator
+        if category == "Temperature & Precipitation":
+            chart_type = st.sidebar.selectbox(
+                "Select Indicator",
+                [
+                    "Temperature Trends",
+                    "Rainfall Patterns",
+                    "Extreme Weather Events",
+                    "Drought Analysis",
+                    "Combined View"
+                ],
+                key="indicator_selectbox"  # Add unique key
+            )
+    elif data_source == "Governmental Data":
+        category = st.sidebar.selectbox(
+            "Select Category (Governmental Data)",
+            ["Waste Management", "Power & Energy", "Water Resources Management"],
+            key="governmental_category"  # Add unique key
         )
-    elif category == "Water Resources":
-        chart_type = st.sidebar.selectbox(
-            "Select Indicator",
-            [
-                "River Levels",
-                "Groundwater Levels",
-                "Water Stress Index",
-                "Combined Water Resources"
-            ],
-            key="water_resources_indicator"  # Unique key for indicators
-        )
-    elif category == "Economic Impact":
-        chart_type = st.sidebar.selectbox(
-            "Select Indicator",
-            [
-                "Energy Demand",
-                "Agricultural Production",
-                "Economic Trends",
-                "Combined Economic Impact"
-            ],
-            key="economic_impact_indicator"  # Unique key for indicators
-        )
-    elif category == "Health Impact":
-        chart_type = st.sidebar.selectbox(
-            "Select Indicator",
-            [
-                "Heat Stress Index",
-                "Air Health Index",
-                "Health Risk Patterns",
-                "Combined Health Indicators"
-            ],
-            key="health_impact_indicator"  # Unique key for indicators
-        )
-    elif category == "Seasonal Analysis":
-        chart_type = st.sidebar.selectbox(
-            "Select Analysis",
-            [
-                "Temperature Patterns",
-                "Rainfall Distribution",
-                "Seasonal Comparisons",
-                "Year-over-Year Changes"
-            ],
-            key="seasonal_analysis_indicator"  # Unique key for indicators
-        )
-    elif category == "Future Projections":
-        chart_type = st.sidebar.selectbox(
-            "Select Projection",
-            [
-                "Temperature Forecast",
-                "Rainfall Forecast",
-                "Water Resource Outlook",
-                "Combined Projections"
-            ],
-            key="future_projections_indicator"  # Unique key for indicators
-        )
-    elif category == "Comparative Analysis":
-        chart_type = st.sidebar.selectbox(
-            "Select Analysis",
-            [
-                "City Comparisons",
-                "Trend Analysis",
-                "Regional Patterns",
-                "Historical Benchmarks"
-            ],
-            key="comparative_analysis_indicator"  # Unique key for indicators
-        )
-elif data_source == "Governmental Data":
-    # Display category dropdown for Governmental Data
-    category = st.sidebar.selectbox(
-        "Select Category (Governmental Data)",
-        ["Waste Management", "Power & Energy", "Water Resources Management"],
-        key="governmental_category"  # Unique key for Governmental Data category
-    )
-
 
     # Step 4: Select Cities
     selected_cities = st.sidebar.multiselect(
@@ -969,27 +900,18 @@ if st.sidebar.button("Download Data"):
 
 # Filter data based on time frame and selection
 def filter_data(df):
-    # Ensure the DataFrame is not empty
-    if df.empty:
-        return df
-
-    # Filter by year range and cities
     filtered = df[
         (df['Year'] >= start_year) & 
         (df['Year'] <= end_year) & 
         (df['City'].isin(selected_cities))
     ]
     
-    # Filter by monthly selection
-    if time_frame == "Monthly" and 'MonthName' in df.columns:
+    if time_frame == "Monthly" and 'Month' in df.columns:
         filtered = filtered[filtered['MonthName'].isin(months)]
-    
-    # Filter by seasonal selection
     elif time_frame == "Seasonal" and 'Season' in df.columns:
         filtered = filtered[filtered['Season'].isin(seasons)]
     
     return filtered
-
 
 # Apply filters to all dataframes
 temp_df_filtered = filter_data(temp_df)
