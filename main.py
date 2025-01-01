@@ -512,11 +512,54 @@ health_df = load_health_impact_data()
 logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
-# Sidebar Navigation with Buttons
+# Move data loading before UI controls
+temp_df = load_temperature_data()
+rainfall_df = load_rainfall_data()
+water_df = load_water_resources_data()
+economic_df = load_economic_impact_data()
+health_df = load_health_impact_data()
+
+# Sidebar controls
+logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
+st.sidebar.image(logo_url, width=140)
+
 st.sidebar.header("Navigation")
 show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
 show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
+
+# Initialize selected_cities before filtering
+selected_cities = st.sidebar.multiselect(
+    "Select Cities",
+    ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
+    default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
+)
+
+# Define filter_data function
+def filter_data(df):
+    filtered = df[
+        (df['Year'] >= start_year) & 
+        (df['Year'] <= end_year) & 
+        (df['City'].isin(selected_cities))
+    ]
+    
+    if time_frame == "Monthly" and 'Month' in df.columns:
+        filtered = filtered[filtered['MonthName'].isin(months)]
+    elif time_frame == "Seasonal" and 'Season' in df.columns:
+        filtered = filtered[filtered['Season'].isin(seasons)]
+    
+    return filtered
+
+# Rest of your sidebar controls
+time_frame = st.sidebar.radio(
+    "Select Time Frame",
+    ["Yearly", "Monthly", "Seasonal"]
+)
+
+start_year, end_year = st.sidebar.slider(
+    "Select Year Range",
+    1950, 2023, (1950, 2023)
+)
 
 if show_research_hub:
     render_research_hub()
@@ -538,16 +581,19 @@ elif show_data_sources:
 else:  # Dashboard is default view
     # Sidebar controls for dashboard only
     st.sidebar.header("Dashboard Controls")
-    selected_cities = st.sidebar.multiselect(
-        "Select Cities",
-        ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
-        default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
-    )
     
-    # Rest of your dashboard code
+    # Add dashboard-specific content here
     st.title("Dashboard")
     st.write("This is the dashboard page.")
-    # Add dashboard content here (charts, filters, etc.)
+    
+    # Apply filters to all dataframes
+    temp_df_filtered = filter_data(temp_df)
+    rainfall_df_filtered = filter_data(rainfall_df)
+    water_df_filtered = filter_data(water_df)
+    economic_df_filtered = filter_data(economic_df)
+    health_df_filtered = filter_data(health_df)
+    
+    # Add your dashboard-specific content (e.g., visualizations, charts, etc.)
 
 
 # Time range
