@@ -465,6 +465,7 @@ logo_url = "https://i.imgur.com/9aRA1Rv.jpeg"
 st.sidebar.image(logo_url, width=140)  # Adjust width if needed
 
 # Sidebar Navigation with Buttons
+# Sidebar Navigation with Buttons
 st.sidebar.header("Navigation")
 show_dashboard = st.sidebar.button("Dashboard", key="dashboard")
 show_research_hub = st.sidebar.button("Research Hub", key="research_hub")
@@ -472,92 +473,87 @@ show_data_sources = st.sidebar.button("Data Sources", key="data_sources")
 
 if show_dashboard or (not show_research_hub and not show_data_sources):
     # Main Dashboard Content
-    
-
-    # Add dashboard-specific content heres Climate D
     st.sidebar.header("Dashboard Controls")
+
+    # Step 1: Select Data Source
+    data_source = st.sidebar.selectbox(
+        "Select Data Source",
+        ["Open Source Data", "Governmental Data"],
+        index=0  # Default to "Open Source Data"
+    )
+
+    # Step 2: Select Category (specific to the selected Data Source)
+    if data_source == "Open Source Data":
+        category = st.sidebar.selectbox(
+            "Select Category (Open Source Data)",
+            [
+                "Temperature & Precipitation",
+                "Water Resources",
+                "Economic Impact",
+                "Health Impact",
+                "Seasonal Analysis",
+                "Future Projections",
+                "Comparative Analysis"
+            ]
+        )
+        
+        # Step 3: Select Indicator (based on the selected category)
+        if category == "Temperature & Precipitation":
+            chart_type = st.sidebar.selectbox(
+                "Select Indicator",
+                [
+                    "Temperature Trends",
+                    "Rainfall Patterns",
+                    "Extreme Weather Events",
+                    "Drought Analysis",
+                    "Combined View"
+                ]
+            )
+        elif category == "Water Resources":
+            chart_type = st.sidebar.selectbox(
+                "Select Indicator",
+                [
+                    "River Levels",
+                    "Groundwater Levels",
+                    "Water Stress Index",
+                    "Combined Water Resources"
+                ]
+            )
+        # Add other category options here as necessary
+
+    # Step 4: Select Cities
     selected_cities = st.sidebar.multiselect(
         "Select Cities",
         ['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk'],
         default=['Hewlêr', 'Dihok', 'Silêmanî', 'Helebce', 'Kerkûk']
     )
-    # Rest of the dashboard logic (charts, filters, etc.)
 
-elif show_research_hub:
-    # Research Hub Content
-    st.header("Research Hub")
-    st.write("Explore expert profiles and their research papers.")
-
-    # Example Profiles
-    profiles = [
-        {
-            "name": "Dr. John Doe",
-            "description": "Expert in Climate Change Adaptation.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        },
-        {
-            "name": "Dr. Jane Smith",
-            "description": "Specialist in Hydrology and Water Resources.",
-            "image_url": "https://via.placeholder.com/150",
-            "papers": ["Research Paper 1", "Research Paper 2"]
-        }
-    ]
-
-    # Display Profiles
-    for profile in profiles:
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.image(profile["image_url"], width=120)
-        with col2:
-            st.subheader(profile["name"])
-            st.write(profile["description"])
-            for paper in profile["papers"]:
-                st.markdown(f"- [{paper}](#)")
-
-
-elif show_data_sources:
-    # Data Sources Content
-    st.title("Data Sources")
-    st.write("This section provides detailed information about the data sources used.")
-
-    # Example Sources
-    sources = {
-        "World Bank Climate Portal": "https://climateknowledgeportal.worldbank.org/country/iraq/climate-data-historical",
-        "NOAA Climate Data": "https://www.ncdc.noaa.gov/cdo-web/datasets",
-        "FAO AQUASTAT": "https://www.fao.org/aquastat/en/databases/"
-    }
-
-    for source_name, source_link in sources.items():
-        st.markdown(f"- [{source_name}]({source_link})")
-
-
-
-
-# Time range
-time_frame = st.sidebar.radio(
-    "Select Time Frame",
-    ["Yearly", "Monthly", "Seasonal"]
-)
-
-# Year range
-start_year, end_year = st.sidebar.slider(
-    "Select Year Range",
-    1950, 2023, (1950, 2023)
-)
-
-if time_frame == "Monthly":
-    months = st.sidebar.multiselect(
-        "Select Months",
-        list(calendar.month_name)[1:],
-        default=list(calendar.month_name)[1:]
+    # Step 5: Select Time Frame
+    time_frame = st.sidebar.radio(
+        "Select Time Frame",
+        ["Yearly", "Monthly", "Seasonal"]
     )
-elif time_frame == "Seasonal":
-    seasons = st.sidebar.multiselect(
-        "Select Seasons",
-        ["Winter", "Spring", "Summer", "Autumn"],
-        default=["Winter", "Spring", "Summer", "Autumn"]
+
+    # Step 6: Select Year Range
+    start_year, end_year = st.sidebar.slider(
+        "Select Year Range",
+        1950, 2023, (1950, 2023)
     )
+
+    # Additional conditional filters for time frames
+    if time_frame == "Monthly":
+        months = st.sidebar.multiselect(
+            "Select Months",
+            list(calendar.month_name)[1:],
+            default=list(calendar.month_name)[1:]
+        )
+    elif time_frame == "Seasonal":
+        seasons = st.sidebar.multiselect(
+            "Select Seasons",
+            ["Winter", "Spring", "Summer", "Autumn"],
+            default=["Winter", "Spring", "Summer", "Autumn"]
+        )
+
 
 # Data source selection
 data_source = st.sidebar.selectbox(
