@@ -479,8 +479,9 @@ def render_research_hub():
     st.subheader("Expert Profiles")
     if "Profiles" in research_data:
         profiles_df = research_data["Profiles"]
-        st.write("Profiles DataFrame:")
-        st.write(profiles_df)  # Debug the Profiles DataFrame structure
+        st.write("Debug: Profiles DataFrame")
+        st.dataframe(profiles_df)  # Show the full DataFrame
+
 
         # Display each profile dynamically
         for _, row in profiles_df.iterrows():
